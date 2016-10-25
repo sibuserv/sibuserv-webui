@@ -1,0 +1,10 @@
+[Unit]
+Description=Sibuserv Web UI
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/lib/sibuserv/webui_launcher
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,37 @@
+.TH "sibuserv-webui" 1 "05 Oct 2016"
+.SH "NAME"
+sibuserv-webui \- FastCGI program which passively listens for incoming connections and generates list of hosts in your IPv6 network. This daemon prepares data which may be put directly into /etc/hosts.
+.SH "SYNOPSIS"
+.PP
+.B sibuserv-webui
+[options]
+.SH "DESCRIPTION"
+.PP
+\fBSibuserv\fP \-\- Simple Build Server.
+.TP
+Project should be useful when you have to administer many computers distributed through different networks and connected via NAT. In most of cases you may just install miredo, gogoc or any other tunnel broker's software and these computers will be available via IPv6 addresses. BOSixNet includes the collection of tools for automatic updating the list of such hosts.
+.SH "OPTIONS"
+.RB "Generic options:"
+.TP
+.BR "\-h,  \-\-help"
+Show help and exit.
+.TP
+.BR "\-v,  \-\-version"
+Show version and exit.
+.TP
+.RB "Special options:"
+.TP
+.BR "\-c <file>,  \-\-conf-file <dir>"
+Set config file (default: /etc/sibuserv/sibuserv-webui.conf).
+.br
+Settings in config file have lower priority than command line options.
+.SH "FILES"
+.TP
+.B "/etc/sibuserv/"
+Directory with basic configuration files.
+.SH "DOCUMENTATION"
+.TP
+Basic information: \fBhttps://github.com/sibuserv/sibuserv-webui/blob/master/README\fR
+.SH "BUG REPORTS"
+Please report bugs here:
+\fBhttps://github.com/sibuserv/sibuserv-webui/issues\fR

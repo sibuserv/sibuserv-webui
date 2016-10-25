@@ -1,0 +1,55 @@
+*--- Build dependencies ---
+* gcc (>= 6.1) or clang (>= 3.8)
+* cmake (>= 3.4)
+* libfcgi (>= 2.4)
+* qtbase (>= 5.6)
+* gzip
+
+
+--- Runtime dependencies ---
+* spawn-fcgi
+
+
+--- Installation ---
+mkdir -p builddir
+cd builddir
+cmake -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX=/usr ..
+make
+sudo make install
+
+
+--- Extra build options ---
+* -DCMAKE_BUILD_TYPE={Release, RelWithDebInfo, Debug, MinRelSize}
+* -DWITH_SYSTEMD_SUPPORT={ON, OFF} (default: ON)
+* -DSYSTEMD_UNIT_FILES_DIR={...} (default: /lib/systemd/system/)
+* -DCMAKE_INSTALL_PREFIX=/usr
+* -DCMAKE_CXX_COMPILER=/usr/bin/g++
+* -DCMAKE_CXX_FLAGS="-s -Os -fdata-sections -ffunction-sections -fPIC -D_FORTIFY_SOURCE=2 -static-libgcc"
+* -DCMAKE_EXE_LINKER_FLAGS="-Wl,--gc-sections -Wl,--strip-all -Wl,--as-needed"
+
+*** Configuration files ***
+/etc/bosixnet/bosixnet-daemon.conf
+/etc/bosixnet/bosixnet-webui.conf
+
+
+*** Example of FastCGI settings in Nginx ***
+Edit file /etc/nginx/sites-available/default and paste something like this:
+
+    location /build-server/ {
+        fastcgi_pass   localhost:35827;
+        include        /etc/nginx/fastcgi_params;
+    }
+
+
+*** Example of FastCGI settings in lighttpd ***
+Edit file /etc/lighttpd/lighttpd.conf and paste something like this:
+
+fastcgi.server = ( "/build-server/" =>
+    ((
+        "host" => "127.0.0.1",
+        "port" => 35827,
+        "check-local" => "disable",
+        "docroot" => "/var/tmp/build-server",
+    ))
+)
+

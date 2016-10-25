@@ -1,0 +1,5 @@
+#pragma once
+
+#define PROJECT_NAME       string("@PROJECT_NAME@")
+#define PROJECT_VERSION    string("@PROJECT_VERSION@")
+

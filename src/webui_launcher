@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Config file
+CONF_FILE="/etc/sibuserv/webui-launcher.conf"
+
+# If this script is run as root, switch to the specific user
+USERID=sibuserv
+GROUPID=sibuserv
+
+# TCP port for binding on localhost
+FCGIPORT=35827
+
+# ABSOLUTE path to the spawn-fcgi binary
+SPAWNFCGI="/usr/bin/spawn-fcgi"
+
+# ABSOLUTE path to the program binary
+FCGIPROGRAM="/usr/bin/sibuserv-webui"
+
+# Number of children to spawn
+FCGI_CHILDREN=5
+
+# Read settings from config file if it exists
+[ -e "${CONF_FILE}" ] && . "${CONF_FILE}"
+
+# Check user existence
+if ! id -u ${USERID} &> /dev/null; then
+    echo ;
+    echo "User ${USERID} does not exist! Check what you use the correct USERID."
+    exit 1
+fi
+
+# Check group existence
+if ! id -g ${GROUPID} &> /dev/null; then
+    echo ;
+    echo "Group ${GROUPID} does not exist! Check what you use the correct GROUPID."
+    exit 1
+fi
+
+# spawn-fcgi command-line options
+EX="${SPAWNFCGI} -p ${FCGIPORT} -f ${FCGIPROGRAM} -u ${USERID} -g ${GROUPID} -F ${FCGI_CHILDREN}"
+
+# Clean the environment, set up a new one and launch the program
+env - ${E} ${EX} &> /dev/null
+
