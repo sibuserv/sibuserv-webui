@@ -25,7 +25,7 @@
 
 #include "counterpage.h"
 
-CounterPage::CounterPage(Request &request, const QByteArray &text) :
+CounterPage::CounterPage(const Request &request, const QByteArray &text) :
     HtmlPage(request)
 {
     setBody(text);

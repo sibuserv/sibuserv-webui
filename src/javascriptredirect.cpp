@@ -23,40 +23,19 @@
  *                                                                           *
  *****************************************************************************/
 
-#pragma once
-
-#include <QString>
 #include <QByteArray>
 
-class Response
+#include "javascriptredirect.h"
+
+JavaScriptRedirect::JavaScriptRedirect(const Request &request, const QString &url) :
+    HtmlPage(request)
 {
-public:
-    Response();
-    Response(const Response &in) = delete;
-    Response(Response &&in) = delete;
-    Response& operator=(const Response &in) = delete;
-    virtual ~Response();
-
-    void setData(const QByteArray &data);
-    void setContentType(const QString &contentType);
-    void setCookie(const QString &key,
-                   const QString &value,
-                   const QString &date = "",
-                   const QString &path = "/",
-                   const QString &domain = "",
-                   const bool secure = false,
-                   const bool httpOnly = false);
-    void show() const;
-
-    void autodetectContentType();
-
-protected:
-    inline void showHeaders() const;
-    inline void showCookies() const;
-    inline void showData() const;
-
-private:
-    struct ResponsePrivate;
-    ResponsePrivate * const d;
-};
+    // In fact the JavaScript redirect is used here.
+    const QByteArray body = "<script type=\"text/javascript\">"
+                            "location=\"" + url.toUtf8() + "\""
+                            "</script>";
+    setBody(body);
+    update();
+    show();
+}
 

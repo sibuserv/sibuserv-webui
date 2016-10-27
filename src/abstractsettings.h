@@ -31,13 +31,16 @@
 
 class AbstractSettings
 {
+    friend class ApplicationSettings;
+
 public:
-    explicit AbstractSettings(const QString &fileName);
+    explicit AbstractSettings(const QString &path, const QString &fileName);
     AbstractSettings(const AbstractSettings &in) = delete;
     AbstractSettings(AbstractSettings &&in) = delete;
     AbstractSettings& operator=(const AbstractSettings &in) = delete;
     virtual ~AbstractSettings();
 
+    void setPath(const QString &path);
     void setFileName(const QString &fileName);
     bool readSettings();
     bool writeSettings() const;

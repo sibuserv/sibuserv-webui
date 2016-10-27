@@ -26,9 +26,8 @@
 #pragma once
 
 #include "options.h"
-#include "abstractsettings.h"
 
-class ApplicationSettings : public AbstractSettings
+class ApplicationSettings
 {
 public:
     static ApplicationSettings &instance();
@@ -40,6 +39,9 @@ public:
     QString cacheDirectory() const;
     QString logDirectory() const;
     QString sessionsDirectory() const;
+    QString buildServerBinDir() const;
+    QString buildServerLogFile() const;
+    QString staticCodeAnalysisLogsSubdir() const;
 
 protected:
     inline void clear();

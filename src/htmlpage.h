@@ -33,14 +33,15 @@
 class HtmlPage : public Response
 {
 public:
-    explicit HtmlPage(Request &request);
+    explicit HtmlPage(const Request &request);
     HtmlPage(const HtmlPage &in) = delete;
     HtmlPage(HtmlPage &&in) = delete;
     HtmlPage& operator=(const HtmlPage &in) = delete;
     virtual ~HtmlPage();
 
+    void setHead(const QByteArray &head);
     void setBody(const QByteArray &body);
-    void setText(const QByteArray &text);
+    void setContent(const QByteArray &content);
 
 protected:
     void update();

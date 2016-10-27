@@ -28,35 +28,19 @@
 #include <QString>
 #include <QByteArray>
 
-class Response
+#include "resourcemanager.h"
+
+class Cache : public ResourceManager
 {
 public:
-    Response();
-    Response(const Response &in) = delete;
-    Response(Response &&in) = delete;
-    Response& operator=(const Response &in) = delete;
-    virtual ~Response();
-
-    void setData(const QByteArray &data);
-    void setContentType(const QString &contentType);
-    void setCookie(const QString &key,
-                   const QString &value,
-                   const QString &date = "",
-                   const QString &path = "/",
-                   const QString &domain = "",
-                   const bool secure = false,
-                   const bool httpOnly = false);
-    void show() const;
-
-    void autodetectContentType();
-
-protected:
-    inline void showHeaders() const;
-    inline void showCookies() const;
-    inline void showData() const;
+    static Cache &instance();
+    bool save(const QString &fileName, const QByteArray &data) const;
 
 private:
-    struct ResponsePrivate;
-    ResponsePrivate * const d;
+    Cache();
+    Cache(const Cache &in) = delete;
+    Cache(Cache &&in) = delete;
+    Cache& operator=(const Cache &in) = delete;
+    virtual ~Cache() = default;
 };
 

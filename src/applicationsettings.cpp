@@ -24,9 +24,9 @@
  *****************************************************************************/
 
 #include <QString>
-#include <QStringList>
 #include <QJsonObject>
 
+#include "abstractsettings.h"
 #include "applicationsettings.h"
 
 #define RETURN_APPLICATIONS_SETTINGS_VARIABLE(KEY) \
@@ -38,27 +38,26 @@
 
 struct ApplicationSettings::ApplicationSettingsPrivate
 {
-    ApplicationSettingsPrivate()
-    {
-        settings["prefix_string"]      = "/sibuserv/";
-        settings["config_directory"]   = "/home/sibuserv/.config/sibuserv-webui";
-        settings["cache_directory"]    = "/home/sibuserv/.local/share/sibuserv-webui/cache";
-        settings["log_directory"]      = "/home/sibuserv/.local/share/sibuserv-webui/logs";
-        settings["sessions_directory"] = "/home/sibuserv/.local/share/sibuserv-webui/sessions";
-    }
-    QJsonObject settings;
+    // Memory is freed in ~ApplicationSettings().
+    AbstractSettings *defaultSettings =
+            new AbstractSettings(":", "webui-settings.json");
+    AbstractSettings *currentSettings =
+            new AbstractSettings("/etc/sibuserv", "webui-settings.json");
     bool isReadOnly = false;
 };
 
 ApplicationSettings::ApplicationSettings() :
-    AbstractSettings("/etc/sibuserv/webui-settings.json"),
     d(new ApplicationSettingsPrivate)
 {
-    ;
+    if (d->defaultSettings)
+        d->defaultSettings->readSettings();
+    if (d->currentSettings)
+        d->currentSettings->readSettings();
 }
 
 ApplicationSettings::~ApplicationSettings()
 {
+    clear();
     delete d;
 }
 
@@ -74,9 +73,14 @@ void ApplicationSettings::update(const Options &options)
         return;
 
     if (options.isConfigFileDefine()) {
-        setFileName(options.configFile());
+        const auto configFile = options.configFile();
+        const int idx = configFile.lastIndexOf("/");
+        if (idx > 0) {
+            d->currentSettings->setPath(configFile.mid(0, idx));
+            d->currentSettings->setFileName(configFile.mid(idx+1));
+            d->currentSettings->readSettings();
+        }
     }
-    readSettings();
 }
 
 void ApplicationSettings::finalize()
@@ -90,7 +94,6 @@ void ApplicationSettings::finalize()
     sessionsDirectory();
 
     clear();
-    AbstractSettings::clear();
 }
 
 QString ApplicationSettings::prefixString() const
@@ -118,18 +121,36 @@ QString ApplicationSettings::sessionsDirectory() const
     RETURN_APPLICATIONS_SETTINGS_VARIABLE("sessions_directory");
 }
 
+QString ApplicationSettings::buildServerBinDir() const
+{
+    RETURN_APPLICATIONS_SETTINGS_VARIABLE("build_server_bin_dir");
+}
+
+QString ApplicationSettings::buildServerLogFile() const
+{
+    RETURN_APPLICATIONS_SETTINGS_VARIABLE("build_server_log_file");
+}
+
+QString ApplicationSettings::staticCodeAnalysisLogsSubdir() const
+{
+    RETURN_APPLICATIONS_SETTINGS_VARIABLE("static_code_analysis_logs_subdir");
+}
+
 void ApplicationSettings::clear()
 {
-    for (const auto &key : d->settings.keys()) {
-        d->settings.remove(key);
-    }
+    delete d->defaultSettings;
+    delete d->currentSettings;
+    d->defaultSettings = nullptr;
+    d->currentSettings = nullptr;
 }
 
 QString ApplicationSettings::get(const QString &key) const
 {
-    if (AbstractSettings::contains(key))
-        return AbstractSettings::get(key);
-
-    return d->settings[key].toString();
+    for (const auto &s: {d->currentSettings, d->defaultSettings}) {
+        if (s && s->contains(key)) {
+            return s->get(key);
+        }
+    }
+    return "";
 }
 

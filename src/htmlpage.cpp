@@ -29,34 +29,29 @@
 
 struct HtmlPage::HtmlPagePrivate
 {
-    QByteArray page     = "%body%";
-    QByteArray body     = "%text%";
-    QByteArray text     = "<h1>404</h1>\n"
-                          "This is not the web page you are looking for.";
-    QByteArray style    = "css/default.css";
-    QByteArray script   = "js/script.js";
-    QByteArray author   = "Boris Pek";
-    QByteArray year     = "2016";
-    QByteArray title    = "Sibuserv Web UI";
-    QByteArray redirect = "%prefix%/projects";
-    QByteArray prefix   = "/sibuserv/";
+    QByteArray page      = "%body%";
+    QByteArray head      = "";
+    QByteArray body      = "%content%";
+    QByteArray content   = "<h1>404</h1>\n"
+                           "This is not the web page you are looking for.";
+    QByteArray pageStyle = "%prefix%/css/default.css";
+    QByteArray script    = "%prefix%/js/script.js";
+    QByteArray author    = "Boris Pek";
+    QByteArray year      = "2016";
+    QByteArray title     = "Sibuserv Web UI";
+    QByteArray redirect  = "%prefix%/projects";
+    QByteArray prefix    = "/sibuserv/";
 };
 
-HtmlPage::HtmlPage(Request &request) :
+HtmlPage::HtmlPage(const Request &request) :
     d(new HtmlPagePrivate)
 {
-    static const QString pageTemplate = "page-template.html";
-    static const QString bodyTemplate = "body-template.html";
-    ResourceManager res;
-    res.addPath(ApplicationSettings::instance().cacheDirectory());
+    const ResourceManager res;
     if (request.get("ajax").isEmpty()) {
-        if (res.contains(pageTemplate)) {
-            d->page = res.read(pageTemplate);
-        }
+        d->page = res.read("/page-template.html");
     }
-    if (res.contains(bodyTemplate)) {
-        d->body = res.read(bodyTemplate);
-    }
+    d->head = res.read("/head-template.html");
+    d->body = res.read("/body-template.html");
     d->prefix = ApplicationSettings::instance().prefixString().toUtf8();
     d->redirect = request.scriptName().toUtf8();
     setContentType("text/html");
@@ -68,24 +63,31 @@ HtmlPage::~HtmlPage()
     delete d;
 }
 
+void HtmlPage::setHead(const QByteArray &head)
+{
+    d->head = head;
+    update();
+}
+
 void HtmlPage::setBody(const QByteArray &body)
 {
     d->body = body;
     update();
 }
 
-void HtmlPage::setText(const QByteArray &text)
+void HtmlPage::setContent(const QByteArray &content)
 {
-    d->text = text;
+    d->content = content;
     update();
 }
 
 void HtmlPage::update()
 {
     QByteArray out = d->page;
+    out.replace("%head%",       d->head);
     out.replace("%body%",       d->body);
-    out.replace("%text%",       d->text);
-    out.replace("%style%",      d->style);
+    out.replace("%content%",    d->content);
+    out.replace("%page_style%", d->pageStyle);
     out.replace("%script%",     d->script);
     out.replace("%author%",     d->author);
     out.replace("%year%",       d->year);

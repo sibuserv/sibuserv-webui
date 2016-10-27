@@ -25,10 +25,10 @@
 
 #include "projectspage.h"
 
-ProjectsPage::ProjectsPage(Request &request) :
+ProjectsPage::ProjectsPage(const Request &request) :
     HtmlPage(request)
 {
-    setText("Projects page");
+    setContent("Projects page");
     update();
     show();
 }

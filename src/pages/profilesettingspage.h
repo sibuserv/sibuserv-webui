@@ -25,38 +25,16 @@
 
 #pragma once
 
-#include <QString>
-#include <QByteArray>
+#include "htmlpage.h"
+#include "request.h"
 
-class Response
+class ProfileSettingsPage : public HtmlPage
 {
 public:
-    Response();
-    Response(const Response &in) = delete;
-    Response(Response &&in) = delete;
-    Response& operator=(const Response &in) = delete;
-    virtual ~Response();
-
-    void setData(const QByteArray &data);
-    void setContentType(const QString &contentType);
-    void setCookie(const QString &key,
-                   const QString &value,
-                   const QString &date = "",
-                   const QString &path = "/",
-                   const QString &domain = "",
-                   const bool secure = false,
-                   const bool httpOnly = false);
-    void show() const;
-
-    void autodetectContentType();
-
-protected:
-    inline void showHeaders() const;
-    inline void showCookies() const;
-    inline void showData() const;
-
-private:
-    struct ResponsePrivate;
-    ResponsePrivate * const d;
+    explicit ProfileSettingsPage(const Request &request);
+    ProfileSettingsPage(const ProfileSettingsPage &in) = delete;
+    ProfileSettingsPage(ProfileSettingsPage &&in) = delete;
+    ProfileSettingsPage& operator=(const ProfileSettingsPage &in) = delete;
+    virtual ~ProfileSettingsPage() = default;
 };
 

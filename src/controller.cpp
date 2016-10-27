@@ -29,12 +29,14 @@
 #include "applicationsettings.h"
 #include "request.h"
 #include "logmanager.h"
-#include "controller.h"
-
 #include "datafile.h"
+#include "javascriptredirect.h"
 #include "projectspage.h"
+#include "profilesettingspage.h"
+#include "settingspage.h"
 #include "debugpage.h"
 #include "counterpage.h"
+#include "controller.h"
 
 struct Controller::ControllerPrivate
 {
@@ -62,30 +64,42 @@ void Controller::start()
             continue;
         };
 
-        static const QString prefixString =
+        const QString &&prefixString =
                 ApplicationSettings::instance().prefixString();
-        const QString sriptName = d->request.scriptName();
 
-        // Pages order: most frequently viewed.
-        if (sriptName == prefixString) {
+        QString pageName = d->request.scriptName();
+        if (pageName.size() >= prefixString.size()) {
+            pageName.remove(0, prefixString.size());
+        }
+        if (pageName.endsWith("/")) {
+            pageName.remove(pageName.size()-1, 1);
+        }
+
+        // Pages order: the most frequently viewed.
+        if (pageName.isEmpty()) {
             ProjectsPage(d->request);
         }
-        else if (sriptName == prefixString + "projects") {
+        else if (pageName == "projects") {
             ProjectsPage(d->request);
         }
-        else if (sriptName.startsWith(prefixString + "project/")) {
+        else if (pageName.startsWith("projects/")) {
             DebugPage(d->request);
         }
-        else if (sriptName == prefixString + "profile/settings") {
-            DebugPage(d->request);
+        else if (pageName == "profile/settings") {
+            ProfileSettingsPage(d->request);
         }
-        else if (sriptName == prefixString + "settings") {
-            DebugPage(d->request);
+        else if (pageName == "profile") {
+            JavaScriptRedirect(d->request, prefixString + "profile/settings");
         }
-        else if (sriptName == prefixString + "counter") {
+        else if (pageName == "settings") {
+            DebugPage(d->request);
+            // SettingsPage(d->request);
+        }
+        else if (pageName == "counter") {
             CounterPage(d->request, QByteArray::number(counter));
         }
         else {
+            // DebugPage(d->request);
             DataFile(d->request);
         }
     }

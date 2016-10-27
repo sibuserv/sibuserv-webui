@@ -23,22 +23,23 @@
  *                                                                           *
  *****************************************************************************/
 
-#include <QFile>
-
+#include "applicationsettings.h"
 #include "logmanager.h"
 
-struct LogManager::LogManagerPrivate
+LogManager::LogManager()
 {
-    QByteArray data;
-};
-
-LogManager::LogManager() :
-    d(new LogManagerPrivate)
-{
-    ;
+    clearPaths();
 }
 
-LogManager::~LogManager()
+LogManager &LogManager::instance()
 {
-    delete d;
+    static LogManager inst;
+    return inst;
 }
+
+bool LogManager::write(const QString &fileName, const QByteArray &data) const
+{
+    const QString &&logDirectory = ApplicationSettings::instance().logDirectory();
+    return ResourceManager::write(logDirectory + "/" + fileName, data + "\n", true);
+}
+

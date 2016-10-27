@@ -28,19 +28,21 @@
 #include <QString>
 #include <QByteArray>
 
-class LogManager
+#include "resourcemanager.h"
+
+#define LOG(file, data) LogManager::instance().write(file, data)
+
+class LogManager : public ResourceManager
 {
 public:
-    explicit LogManager();
+    static LogManager &instance();
+    bool write(const QString &fileName, const QByteArray &data) const;
+
+private:
+    LogManager();
     LogManager(const LogManager &in) = delete;
     LogManager(LogManager &&in) = delete;
     LogManager& operator=(const LogManager &in) = delete;
-    ~LogManager();
-
-    bool write(const QByteArray &data, const QString &fileName) const;
-
-private:
-    struct LogManagerPrivate;
-    LogManagerPrivate * const d;
+    virtual ~LogManager() = default;
 };
 

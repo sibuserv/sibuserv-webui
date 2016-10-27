@@ -27,7 +27,7 @@
 
 #include "debugpage.h"
 
-DebugPage::DebugPage(Request &request) :
+DebugPage::DebugPage(const Request &request) :
     HtmlPage(request)
 {
     QByteArray body;

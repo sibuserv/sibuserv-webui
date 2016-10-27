@@ -32,19 +32,29 @@
 
 struct AbstractSettings::AbstractSettingsPrivate
 {
+    QString path;
     QString fileName;
     QJsonObject settings;
 };
 
-AbstractSettings::AbstractSettings(const QString &fileName) :
+AbstractSettings::AbstractSettings(const QString &path, const QString &fileName) :
     d(new AbstractSettingsPrivate)
 {
-    d->fileName = fileName;
+    setPath(path);
+    setFileName(fileName);
 }
 
 AbstractSettings::~AbstractSettings()
 {
     delete d;
+}
+
+void AbstractSettings::setPath(const QString &path)
+{
+    if (path.isEmpty())
+        return;
+
+    d->path = path;
 }
 
 void AbstractSettings::setFileName(const QString &fileName)
@@ -57,10 +67,10 @@ void AbstractSettings::setFileName(const QString &fileName)
 
 bool AbstractSettings::readSettings()
 {
-    if (d->fileName.isEmpty())
+    if (d->path.isEmpty() || d->fileName.isEmpty())
         return false;
 
-    const ResourceManager res;
+    const ResourceManager res(d->path);
     if (res.contains(d->fileName)) {
         if (readSetting(res.read(d->fileName))) {
             return true;
@@ -72,12 +82,12 @@ bool AbstractSettings::readSettings()
 
 bool AbstractSettings::writeSettings() const
 {
-    if (d->fileName.isEmpty() || d->settings.isEmpty())
+    if (d->path.isEmpty() ||d->fileName.isEmpty() || d->settings.isEmpty())
         return false;
 
     const ResourceManager res;
     const QJsonDocument doc(d->settings);
-    return res.write(doc.toJson(), d->fileName);
+    return res.write(d->path + "/" + d->fileName, doc.toJson());
 }
 
 void AbstractSettings::clear()

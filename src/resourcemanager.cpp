@@ -25,8 +25,10 @@
 
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QList>
 
+#include "applicationsettings.h"
 #include "resourcemanager.h"
 
 struct ResourceManager::ResourceManagerPrivate
@@ -37,7 +39,13 @@ struct ResourceManager::ResourceManagerPrivate
 ResourceManager::ResourceManager() :
     d(new ResourceManagerPrivate)
 {
-    addPath("");
+    addPath(":");
+}
+
+ResourceManager::ResourceManager(const QString &path) :
+    d(new ResourceManagerPrivate)
+{
+    addPath(path);
 }
 
 ResourceManager::~ResourceManager()
@@ -45,9 +53,18 @@ ResourceManager::~ResourceManager()
     delete d;
 }
 
+void ResourceManager::clearPaths()
+{
+    d->paths.clear();
+}
+
 void ResourceManager::addPath(const QString &path)
 {
-    // Empty path is allowed.
+    // Empty paths are not allowed due to security reasons.
+    if (path.isEmpty())
+        return;
+
+    // Duplicates are allowed.
     d->paths.prepend(path);
 }
 
@@ -58,7 +75,12 @@ bool ResourceManager::contains(const QString &fileName) const
 
     QFile file;
     for (const auto &path : d->paths) {
-        file.setFileName(path + "/" + fileName);
+        if (fileName.startsWith("/")) {
+            file.setFileName(path + fileName);
+        }
+        else {
+            file.setFileName(path + "/" + fileName);
+        }
         if (file.exists()) {
             return true;
         }
@@ -76,7 +98,12 @@ QByteArray ResourceManager::read(const QString &fileName) const
 
     QFile file;
     for (const auto &path : d->paths) {
-        file.setFileName(path + "/" + fileName);
+        if (fileName.startsWith("/")) {
+            file.setFileName(path + fileName);
+        }
+        else {
+            file.setFileName(path + "/" + fileName);
+        }
         if (file.open(QIODevice::ReadOnly)) {
             out = file.readAll();
             file.close();
@@ -87,15 +114,23 @@ QByteArray ResourceManager::read(const QString &fileName) const
     return out;
 }
 
-bool ResourceManager::write(const QByteArray &data, const QString &fileName) const
+bool ResourceManager::write(const QString &fileName,
+                            const QByteArray &data,
+                            const bool append) const
 {
     if (data.isEmpty() || fileName.isEmpty())
         return false;
 
-    qint64 len = -1;
 
+
+    const QIODevice::OpenModeFlag flag = append ?
+                QIODevice::OpenModeFlag::Append :
+                QIODevice::OpenModeFlag::WriteOnly;
+
+    qint64 len = -1;
     QFile file(fileName);
-    if (file.open(QIODevice::WriteOnly)) {
+    QDir().mkpath(QFileInfo(file).absolutePath());
+    if (file.open(flag)) {
         len = file.write(data);
         file.close();
     }

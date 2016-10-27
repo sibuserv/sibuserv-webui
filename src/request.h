@@ -32,8 +32,6 @@
 class Request
 {
 public:
-    Request() = default;
-
     bool next() const;
     bool isGet() const;
     bool isPost() const;

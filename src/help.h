@@ -28,8 +28,6 @@
 class Help
 {
 public:
-    Help() = default;
-
     void showHelp() const;
     void showVersion() const;
 };

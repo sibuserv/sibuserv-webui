@@ -31,7 +31,7 @@
 class ProjectsPage : public HtmlPage
 {
 public:
-    explicit ProjectsPage(Request &request);
+    explicit ProjectsPage(const Request &request);
     ProjectsPage(const ProjectsPage &in) = delete;
     ProjectsPage(ProjectsPage &&in) = delete;
     ProjectsPage& operator=(const ProjectsPage &in) = delete;

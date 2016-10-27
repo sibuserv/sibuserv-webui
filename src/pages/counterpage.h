@@ -33,7 +33,7 @@
 class CounterPage : public HtmlPage
 {
 public:
-    explicit CounterPage(Request &request, const QByteArray &text);
+    explicit CounterPage(const Request &request, const QByteArray &text);
     CounterPage(const CounterPage &in) = delete;
     CounterPage(CounterPage &&in) = delete;
     CounterPage& operator=(const CounterPage &in) = delete;

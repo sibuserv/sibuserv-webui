@@ -6,7 +6,10 @@ find_package (Qt5Core 5.6 REQUIRED)
 aux_source_directory (${PROJECT_SOURCE_DIR} SRC_FILES)
 aux_source_directory (${PROJECT_SOURCE_DIR}/pages WEB_PAGES)
 
-add_executable (${PROJECT_NAME} ${SRC_FILES} ${WEB_PAGES})
+list (APPEND QRC_FILES ${PROJECT_SOURCE_DIR}/resources.qrc)
+qt5_add_resources(RESOURCES ${QRC_FILES})
+
+add_executable (${PROJECT_NAME} ${SRC_FILES} ${WEB_PAGES} ${RESOURCES})
 
 include_directories (${CMAKE_BINARY_DIR}
                      ${PROJECT_SOURCE_DIR}

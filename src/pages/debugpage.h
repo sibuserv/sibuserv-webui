@@ -31,7 +31,7 @@
 class DebugPage : public HtmlPage
 {
 public:
-    explicit DebugPage(Request &request);
+    explicit DebugPage(const Request &request);
     DebugPage(const DebugPage &in) = delete;
     DebugPage(DebugPage &&in) = delete;
     DebugPage& operator=(const DebugPage &in) = delete;

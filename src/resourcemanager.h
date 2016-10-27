@@ -32,15 +32,19 @@ class ResourceManager
 {
 public:
     explicit ResourceManager();
+    explicit ResourceManager(const QString &path);
     ResourceManager(const ResourceManager &in) = delete;
     ResourceManager(ResourceManager &&in) = delete;
     ResourceManager& operator=(const ResourceManager &in) = delete;
-    ~ResourceManager();
+    virtual ~ResourceManager();
 
+    void clearPaths();
     void addPath(const QString &path);
     bool contains(const QString &fileName) const;
     QByteArray read(const QString &fileName) const;
-    bool write(const QByteArray &data, const QString &fileName) const;
+    bool write(const QString &fileName,
+               const QByteArray &data,
+               const bool append = false) const;
 
 private:
     struct ResourceManagerPrivate;

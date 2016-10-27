@@ -2,11 +2,16 @@
 /etc/sibuserv/webui-launcher.conf
 /etc/sibuserv/webui-settings.json
 /home/sibuserv/.config/sibuserv-webui/page-settings.json
+/home/sibuserv/.config/sibuserv-webui/profile-settings.json
 /home/sibuserv/.config/sibuserv-webui/project-settings.json
-/home/sibuserv/.config/sibuserv-webui/users/<user-name>.json
 /home/sibuserv/.config/sibuserv-webui/user-settings.json
+/home/sibuserv/.config/sibuserv-webui/users/<user-name>.json
 /home/sibuserv/.local/share/sibuserv-webui/cache/css/default.css
+/home/sibuserv/.local/share/sibuserv-webui/cache/404-template.html
+/home/sibuserv/.local/share/sibuserv-webui/cache/body-template.html
+/home/sibuserv/.local/share/sibuserv-webui/cache/head-template.html
 /home/sibuserv/.local/share/sibuserv-webui/cache/page-template.html
+/home/sibuserv/.local/share/sibuserv-webui/cache/projects-template.html
 /home/sibuserv/.local/share/sibuserv-webui/cache/projects.html
 /home/sibuserv/.local/share/sibuserv-webui/cache/project/<project-name>.html
 /home/sibuserv/.local/share/sibuserv-webui/cache/project/<project-name>/<version>.html
@@ -23,16 +28,18 @@
 /counter
 /profile/settings
 /projects
-/project/<project-name>
-/project/<project-name>/settings
-/project/<project-name>/<version>
-/project/<project-name>/<version>/code-analysis
-/project/<project-name>/<version>/unit-tests
-/project/<project-name>/<version>/<system>/build.log
-/project/<project-name>/<version>/<system>/<file-name>
+/projects/<project-name>
+/projects/<project-name>/settings
+/projects/<project-name>/<version>
+/projects/<project-name>/<version>/code-analysis
+/projects/<project-name>/<version>/unit-tests
+/projects/<project-name>/<version>/<system>/build.log
+/projects/<project-name>/<version>/<system>/<file-name>
 /settings
 
 
 --- Other notes ---
-...
+To become website administrator edit your user configuration file:
+/home/sibuserv/.config/sibuserv-webui/users/<user-name>.json
+where set "admin" to true.
 

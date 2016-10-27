@@ -31,7 +31,7 @@
 class DataFile : public HtmlPage
 {
 public:
-    explicit DataFile(Request &request);
+    explicit DataFile(const Request &request);
     DataFile(const DataFile &in) = delete;
     DataFile(DataFile &&in) = delete;
     DataFile& operator=(const DataFile &in) = delete;

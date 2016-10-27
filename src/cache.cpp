@@ -23,40 +23,24 @@
  *                                                                           *
  *****************************************************************************/
 
-#pragma once
+#include "applicationsettings.h"
+#include "cache.h"
 
-#include <QString>
-#include <QByteArray>
-
-class Response
+Cache::Cache() :
+    ResourceManager(ApplicationSettings::instance().cacheDirectory())
 {
-public:
-    Response();
-    Response(const Response &in) = delete;
-    Response(Response &&in) = delete;
-    Response& operator=(const Response &in) = delete;
-    virtual ~Response();
+    ;
+}
 
-    void setData(const QByteArray &data);
-    void setContentType(const QString &contentType);
-    void setCookie(const QString &key,
-                   const QString &value,
-                   const QString &date = "",
-                   const QString &path = "/",
-                   const QString &domain = "",
-                   const bool secure = false,
-                   const bool httpOnly = false);
-    void show() const;
+Cache &Cache::instance()
+{
+    static Cache inst;
+    return inst;
+}
 
-    void autodetectContentType();
-
-protected:
-    inline void showHeaders() const;
-    inline void showCookies() const;
-    inline void showData() const;
-
-private:
-    struct ResponsePrivate;
-    ResponsePrivate * const d;
-};
+bool Cache::save(const QString &fileName, const QByteArray &data) const
+{
+    const QString &&logDirectory = ApplicationSettings::instance().logDirectory();
+    return ResourceManager::write(logDirectory + "/" + fileName, data);
+}
 

@@ -27,14 +27,25 @@
 #include "resourcemanager.h"
 #include "datafile.h"
 
-DataFile::DataFile(Request &request) :
+DataFile::DataFile(const Request &request) :
     HtmlPage(request)
 {
+    const QString &&prefixString =
+            ApplicationSettings::instance().prefixString();
+    const QString &&cacheDirectory =
+            ApplicationSettings::instance().cacheDirectory();
+
     ResourceManager res;
-    res.addPath(ApplicationSettings::instance().cacheDirectory());
-    if (res.contains(request.scriptName())) {
-        setData(res.read(request.scriptName()));
+    res.clearPaths();
+    res.addPath(":");
+    res.addPath(cacheDirectory);
+
+    QString fileName = request.scriptName();
+    fileName.remove(0, prefixString.size());
+    if (res.contains(fileName)) {
+        setData(res.read(fileName));
     }
+
     autodetectContentType();
     show();
 }
