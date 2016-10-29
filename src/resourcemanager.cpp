@@ -89,6 +89,29 @@ bool ResourceManager::contains(const QString &fileName) const
     return false;
 }
 
+QString ResourceManager::path(const QString &fileName) const
+{
+    QString out;
+
+    if (fileName.isEmpty())
+        return out;
+
+    QFile file;
+    for (const auto &path : d->paths) {
+        if (fileName.startsWith("/")) {
+            file.setFileName(path + fileName);
+        }
+        else {
+            file.setFileName(path + "/" + fileName);
+        }
+        if (file.exists()) {
+            return path;
+        }
+    }
+
+    return out;
+}
+
 QByteArray ResourceManager::read(const QString &fileName) const
 {
     QByteArray out;
@@ -114,27 +137,48 @@ QByteArray ResourceManager::read(const QString &fileName) const
     return out;
 }
 
-bool ResourceManager::write(const QString &fileName,
+bool ResourceManager::write(const QString &file,
                             const QByteArray &data,
-                            const bool append) const
+                            const bool append)
 {
-    if (data.isEmpty() || fileName.isEmpty())
+    if (data.isEmpty() || file.isEmpty())
         return false;
-
-
 
     const QIODevice::OpenModeFlag flag = append ?
                 QIODevice::OpenModeFlag::Append :
                 QIODevice::OpenModeFlag::WriteOnly;
 
-    qint64 len = -1;
-    QFile file(fileName);
     QDir().mkpath(QFileInfo(file).absolutePath());
-    if (file.open(flag)) {
-        len = file.write(data);
-        file.close();
+
+    qint64 len = -1;
+    QFile f(file);
+    if (f.open(flag)) {
+        len = f.write(data);
+        f.close();
     }
 
     return (len > 0);
+}
+
+bool ResourceManager::copy(const QString &file, const QString &target)
+{
+    QDir().mkpath(QFileInfo(target).absolutePath());
+    return QFile::copy(file, target);
+}
+
+bool ResourceManager::copy(const QString &fileName,
+                           const QString &sourcePath,
+                           const QString &destinationPath)
+{
+    if (fileName.startsWith("/")) {
+        return copy(sourcePath + fileName, destinationPath + fileName);
+    }
+    return copy(sourcePath + "/" + fileName, destinationPath + "/" + fileName);
+}
+
+bool ResourceManager::unpack(const QString &fileName,
+                             const QString &destinationPath)
+{
+    return copy(fileName, ":", destinationPath);
 }
 

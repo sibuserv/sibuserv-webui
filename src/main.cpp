@@ -27,6 +27,7 @@
 #include "options.h"
 #include "controller.h"
 #include "applicationsettings.h"
+#include "unpacker.h"
 
 int main(int argc, char **argv)
 {
@@ -44,6 +45,7 @@ int main(int argc, char **argv)
         }
         ApplicationSettings::instance().update(options);
         ApplicationSettings::instance().finalize();
+        EmbeddedResourcesUnpacker();
     }
 
     Controller controller;

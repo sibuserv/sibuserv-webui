@@ -72,7 +72,7 @@ void ApplicationSettings::update(const Options &options)
     if (d->isReadOnly)
         return;
 
-    if (options.isConfigFileDefine()) {
+    if (d->currentSettings && options.isConfigFileDefine()) {
         const auto configFile = options.configFile();
         const int idx = configFile.lastIndexOf("/");
         if (idx > 0) {
@@ -89,9 +89,13 @@ void ApplicationSettings::finalize()
 
     prefixString();
     configDirectory();
+    l10nDirectory();
     cacheDirectory();
     logDirectory();
     sessionsDirectory();
+    buildServerBinDir();
+    buildServerLogFile();
+    staticCodeAnalysisLogsSubdir();
 
     clear();
 }
@@ -104,6 +108,11 @@ QString ApplicationSettings::prefixString() const
 QString ApplicationSettings::configDirectory() const
 {
     RETURN_APPLICATIONS_SETTINGS_VARIABLE("config_directory");
+}
+
+QString ApplicationSettings::l10nDirectory() const
+{
+    RETURN_APPLICATIONS_SETTINGS_VARIABLE("l10n_directory");
 }
 
 QString ApplicationSettings::cacheDirectory() const

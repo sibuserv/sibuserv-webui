@@ -35,7 +35,7 @@ sudo make install
 *** Example of FastCGI settings in Nginx ***
 Edit file /etc/nginx/sites-available/default and paste something like this:
 
-    location /build-server/ {
+    location /sibuserv/ {
         fastcgi_pass   localhost:35827;
         include        /etc/nginx/fastcgi_params;
     }
@@ -44,12 +44,19 @@ Edit file /etc/nginx/sites-available/default and paste something like this:
 *** Example of FastCGI settings in lighttpd ***
 Edit file /etc/lighttpd/lighttpd.conf and paste something like this:
 
-fastcgi.server = ( "/build-server/" =>
+fastcgi.server = ( "/sibuserv/" =>
     ((
         "host" => "127.0.0.1",
         "port" => 35827,
         "check-local" => "disable",
-        "docroot" => "/var/tmp/build-server",
+        "docroot" => "/var/tmp/sibuserv",
     ))
 )
+
+
+*** Other notes ***
+Attention! It is strongly recommended to use HTTPS for connecting to Web UI.
+Even self-signed SSL certificate is much better for security than plain HTTP
+connection.
+
 

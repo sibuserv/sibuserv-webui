@@ -36,6 +36,7 @@ public:
 
     QString prefixString() const;
     QString configDirectory() const;
+    QString l10nDirectory() const;
     QString cacheDirectory() const;
     QString logDirectory() const;
     QString sessionsDirectory() const;

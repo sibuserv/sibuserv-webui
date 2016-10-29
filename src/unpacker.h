@@ -23,31 +23,11 @@
  *                                                                           *
  *****************************************************************************/
 
-#include <QDateTime>
+#pragma once
 
-#include "applicationsettings.h"
-#include "logmanager.h"
-
-LogManager::LogManager()
+class EmbeddedResourcesUnpacker
 {
-    clearPaths();
-}
-
-LogManager &LogManager::instance()
-{
-    static LogManager inst;
-    return inst;
-}
-
-bool LogManager::write(const QString &fileName, const QByteArray &data) const
-{
-
-    const QByteArray &&dateTime = QDateTime::currentDateTime()
-            .toString("[yyyy-MM-dd_hh-mm-ss.zzz_t] ").toUtf8();
-    const QString &&logDirectory = ApplicationSettings::instance()
-            .logDirectory();
-    return ResourceManager::write(logDirectory + "/" + fileName,
-                                  dateTime + data + "\n",
-                                  true);
-}
+public:
+    EmbeddedResourcesUnpacker();
+};
 

@@ -41,10 +41,19 @@ public:
     void clearPaths();
     void addPath(const QString &path);
     bool contains(const QString &fileName) const;
+    QString path(const QString &fileName) const;
     QByteArray read(const QString &fileName) const;
-    bool write(const QString &fileName,
-               const QByteArray &data,
-               const bool append = false) const;
+
+    static bool write(const QString &file,
+                      const QByteArray &data,
+                      const bool append = false);
+    static bool copy(const QString &file,
+                     const QString &target);
+    static bool copy(const QString &fileName,
+                     const QString &sourcePath,
+                     const QString &destinationPath);
+    static bool unpack(const QString &fileName,
+                       const QString &destinationPath);
 
 private:
     struct ResourceManagerPrivate;

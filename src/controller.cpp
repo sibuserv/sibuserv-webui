@@ -95,6 +95,9 @@ void Controller::start()
             DebugPage(d->request);
             // SettingsPage(d->request);
         }
+        else if (pageName == "settings/localisation") {
+            DebugPage(d->request);
+        }
         else if (pageName == "counter") {
             CounterPage(d->request, QByteArray::number(counter));
         }

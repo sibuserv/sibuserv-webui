@@ -29,13 +29,16 @@
 /profile/settings
 /projects
 /projects/<project-name>
-/projects/<project-name>/settings
+/projects/<project-name>/settings/users
 /projects/<project-name>/<version>
 /projects/<project-name>/<version>/code-analysis
 /projects/<project-name>/<version>/unit-tests
 /projects/<project-name>/<version>/<system>/build.log
 /projects/<project-name>/<version>/<system>/<file-name>
 /settings
+/settings/localisation
+/settings/users
+/settings/users/<user-name>
 
 
 --- Other notes ---

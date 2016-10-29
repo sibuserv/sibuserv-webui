@@ -1,6 +1,7 @@
 {
     "prefix_string":         "/sibuserv/",
     "config_directory":      "/home/sibuserv/.config/sibuserv-webui",
+    "l10n_directory":        "/home/sibuserv/.config/sibuserv-webui/l10n",
     "cache_directory":       "/home/sibuserv/.local/share/sibuserv-webui/cache",
     "log_directory":         "/home/sibuserv/.local/share/sibuserv-webui/logs",
     "sessions_directory":    "/home/sibuserv/.local/share/sibuserv-webui/sessions",

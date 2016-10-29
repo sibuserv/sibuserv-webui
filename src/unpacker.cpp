@@ -23,79 +23,21 @@
  *                                                                           *
  *****************************************************************************/
 
+#include "unpacker.h"
+
 #include "applicationsettings.h"
 #include "resourcemanager.h"
-#include "htmlpage.h"
 
-struct HtmlPage::HtmlPagePrivate
+EmbeddedResourcesUnpacker::EmbeddedResourcesUnpacker()
 {
-    QByteArray page      = "%body%";
-    QByteArray head      = "";
-    QByteArray body      = "%content%";
-    QByteArray content   = "<h1>404</h1>\n"
-                           "This is not the web page you are looking for.";
-    QByteArray pageStyle = "%prefix%/css/default.css";
-    QByteArray script    = "%prefix%/js/script.js";
-    QByteArray author    = "Boris Pek";
-    QByteArray year      = "2016";
-    QByteArray title     = "Sibuserv Web UI";
-    QByteArray redirect  = "%prefix%/projects";
-    QByteArray prefix    = "/sibuserv/";
-};
+    const ResourceManager rm;
+    const ApplicationSettings &as = ApplicationSettings::instance();
 
-HtmlPage::HtmlPage(const Request &request) :
-    d(new HtmlPagePrivate)
-{
-    const ResourceManager res;
-    if (request.get("ajax").isEmpty()) {
-        d->page = res.read("/html/page-template.html");
-    }
-    setHead(res.read("/html/head-template.html"));
-    setBody(res.read("/html/body-template.html"));
-
-    d->prefix = ApplicationSettings::instance().prefixString().toUtf8();
-    d->redirect = request.scriptName().toUtf8();
-    setContentType("text/html");
-    update();
-}
-
-HtmlPage::~HtmlPage()
-{
-    delete d;
-}
-
-void HtmlPage::setHead(const QByteArray &head)
-{
-    d->head = head;
-    update();
-}
-
-void HtmlPage::setBody(const QByteArray &body)
-{
-    d->body = body;
-    update();
-}
-
-void HtmlPage::setContent(const QByteArray &content)
-{
-    d->content = content;
-    update();
-}
-
-void HtmlPage::update()
-{
-    QByteArray out = d->page;
-    out.replace("%head%",       d->head);
-    out.replace("%body%",       d->body);
-    out.replace("%content%",    d->content);
-    out.replace("%page_style%", d->pageStyle);
-    out.replace("%script%",     d->script);
-    out.replace("%author%",     d->author);
-    out.replace("%year%",       d->year);
-    out.replace("%title%",      d->title);
-    out.replace("%author%",     d->author);
-    out.replace("%redirect%",   d->redirect);
-    out.replace("%prefix%",     d->prefix);
-    setData(out);
+    rm.unpack("/access-settings.json",      as.configDirectory());
+    rm.unpack("/profile-settings.json",     as.configDirectory());
+    rm.unpack("/project-settings.json",     as.configDirectory());
+    rm.unpack("/user-settings.json",        as.configDirectory());
+    rm.unpack("/l10n/en_US.json",           as.configDirectory());
+    rm.unpack("/css/default.css",           as.cacheDirectory());
 }
 
