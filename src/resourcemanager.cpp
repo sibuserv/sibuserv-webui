@@ -48,6 +48,14 @@ ResourceManager::ResourceManager(const QString &path) :
     addPath(path);
 }
 
+ResourceManager::ResourceManager(const QList<QString> &paths) :
+    d(new ResourceManagerPrivate)
+{
+    for (const auto &path : paths) {
+        addPath(path);
+    }
+}
+
 ResourceManager::~ResourceManager()
 {
     delete d;
@@ -60,12 +68,16 @@ void ResourceManager::clearPaths()
 
 void ResourceManager::addPath(const QString &path)
 {
-    // Empty paths are not allowed due to security reasons.
     if (path.isEmpty())
         return;
 
-    // Duplicates are allowed.
     d->paths.prepend(path);
+}
+
+void ResourceManager::setPath(const QString &path)
+{
+    clearPaths();
+    addPath(path);
 }
 
 bool ResourceManager::contains(const QString &fileName) const
@@ -73,15 +85,15 @@ bool ResourceManager::contains(const QString &fileName) const
     if (fileName.isEmpty())
         return false;
 
-    QFile file;
+    QFile f;
     for (const auto &path : d->paths) {
         if (fileName.startsWith("/")) {
-            file.setFileName(path + fileName);
+            f.setFileName(path + fileName);
         }
         else {
-            file.setFileName(path + "/" + fileName);
+            f.setFileName(path + "/" + fileName);
         }
-        if (file.exists()) {
+        if (f.exists()) {
             return true;
         }
     }
@@ -89,22 +101,22 @@ bool ResourceManager::contains(const QString &fileName) const
     return false;
 }
 
-QString ResourceManager::path(const QString &fileName) const
+QString ResourceManager::find(const QString &fileName) const
 {
     QString out;
 
     if (fileName.isEmpty())
         return out;
 
-    QFile file;
+    QFile f;
     for (const auto &path : d->paths) {
         if (fileName.startsWith("/")) {
-            file.setFileName(path + fileName);
+            f.setFileName(path + fileName);
         }
         else {
-            file.setFileName(path + "/" + fileName);
+            f.setFileName(path + "/" + fileName);
         }
-        if (file.exists()) {
+        if (f.exists()) {
             return path;
         }
     }
@@ -119,17 +131,17 @@ QByteArray ResourceManager::read(const QString &fileName) const
     if (fileName.isEmpty())
         return out;
 
-    QFile file;
+    QFile f;
     for (const auto &path : d->paths) {
         if (fileName.startsWith("/")) {
-            file.setFileName(path + fileName);
+            f.setFileName(path + fileName);
         }
         else {
-            file.setFileName(path + "/" + fileName);
+            f.setFileName(path + "/" + fileName);
         }
-        if (file.open(QIODevice::ReadOnly)) {
-            out = file.readAll();
-            file.close();
+        if (f.open(QIODevice::ReadOnly)) {
+            out = f.readAll();
+            f.close();
             return out;
         }
     }
@@ -137,6 +149,7 @@ QByteArray ResourceManager::read(const QString &fileName) const
     return out;
 }
 
+// fileName variable may include relative path
 bool ResourceManager::write(const QString &file,
                             const QByteArray &data,
                             const bool append)
@@ -162,7 +175,9 @@ bool ResourceManager::write(const QString &file,
 
 bool ResourceManager::copy(const QString &file, const QString &target)
 {
+    // Get real path and make directories tree if necessary.
     QDir().mkpath(QFileInfo(target).absolutePath());
+    // Existing files will not be overridden.
     return QFile::copy(file, target);
 }
 

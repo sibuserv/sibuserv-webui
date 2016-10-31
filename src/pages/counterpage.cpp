@@ -28,8 +28,8 @@
 CounterPage::CounterPage(const Request &request, const QByteArray &text) :
     HtmlPage(request)
 {
-    setBody(text);
-    update();
+    setData(text);
+    autodetectContentType();
     show();
 }
 

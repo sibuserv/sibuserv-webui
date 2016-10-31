@@ -23,40 +23,13 @@
  *                                                                           *
  *****************************************************************************/
 
-#pragma once
+#include "applicationsettings.h"
+#include "localization.h"
 
-#include "options.h"
-
-class ApplicationSettings
+Localization::Localization(const QString &fileName) :
+    AbstractSettings(ApplicationSettings::instance().configDirectory(),
+                     fileName)
 {
-public:
-    static ApplicationSettings &instance();
-    void update(const Options &options);
-    void finalize();
-    void saveLog();
-
-    QString prefixString() const;
-    QString configDirectory() const;
-    QString l10nDirectory() const;
-    QString cacheDirectory() const;
-    QString logDirectory() const;
-    QString sessionsDirectory() const;
-    QString buildServerBinDir() const;
-    QString buildServerLogFile() const;
-    QString staticCodeAnalysisLogsSubdir() const;
-
-protected:
-    inline void clear();
-    QString get(const QString &key) const;
-
-private:
-    ApplicationSettings();
-    ApplicationSettings(const ApplicationSettings &in) = delete;
-    ApplicationSettings(ApplicationSettings &&in) = delete;
-    ApplicationSettings& operator=(const ApplicationSettings &in) = delete;
-    virtual ~ApplicationSettings();
-
-    struct ApplicationSettingsPrivate;
-    ApplicationSettingsPrivate * const d;
-};
+    ;
+}
 

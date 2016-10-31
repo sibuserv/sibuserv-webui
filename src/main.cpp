@@ -45,6 +45,7 @@ int main(int argc, char **argv)
         }
         ApplicationSettings::instance().update(options);
         ApplicationSettings::instance().finalize();
+        ApplicationSettings::instance().saveLog();
         EmbeddedResourcesUnpacker();
     }
 

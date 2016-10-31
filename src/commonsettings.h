@@ -25,38 +25,19 @@
 
 #pragma once
 
-#include "options.h"
+#include <QString>
 
-class ApplicationSettings
+#include "abstractsettings.h"
+
+class CommonSettings : public AbstractSettings
 {
 public:
-    static ApplicationSettings &instance();
-    void update(const Options &options);
-    void finalize();
-    void saveLog();
+    CommonSettings();
+    CommonSettings(const CommonSettings &in) = delete;
+    CommonSettings(CommonSettings &&in) = delete;
+    CommonSettings& operator=(const CommonSettings &in) = delete;
+    virtual ~CommonSettings() = default;
 
-    QString prefixString() const;
-    QString configDirectory() const;
-    QString l10nDirectory() const;
-    QString cacheDirectory() const;
-    QString logDirectory() const;
-    QString sessionsDirectory() const;
-    QString buildServerBinDir() const;
-    QString buildServerLogFile() const;
-    QString staticCodeAnalysisLogsSubdir() const;
-
-protected:
-    inline void clear();
-    QString get(const QString &key) const;
-
-private:
-    ApplicationSettings();
-    ApplicationSettings(const ApplicationSettings &in) = delete;
-    ApplicationSettings(ApplicationSettings &&in) = delete;
-    ApplicationSettings& operator=(const ApplicationSettings &in) = delete;
-    virtual ~ApplicationSettings();
-
-    struct ApplicationSettingsPrivate;
-    ApplicationSettingsPrivate * const d;
+    QString l10nFile() const;
 };
 

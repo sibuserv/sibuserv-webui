@@ -28,6 +28,7 @@
 
 #include "abstractsettings.h"
 #include "applicationsettings.h"
+#include "logmanager.h"
 
 #define RETURN_APPLICATIONS_SETTINGS_VARIABLE(KEY) \
     if (d->isReadOnly) { \
@@ -39,9 +40,7 @@
 struct ApplicationSettings::ApplicationSettingsPrivate
 {
     // Memory is freed in ~ApplicationSettings().
-    AbstractSettings *defaultSettings =
-            new AbstractSettings(":", "webui-settings.json");
-    AbstractSettings *currentSettings =
+    AbstractSettings *settings =
             new AbstractSettings("/etc/sibuserv", "webui-settings.json");
     bool isReadOnly = false;
 };
@@ -49,10 +48,7 @@ struct ApplicationSettings::ApplicationSettingsPrivate
 ApplicationSettings::ApplicationSettings() :
     d(new ApplicationSettingsPrivate)
 {
-    if (d->defaultSettings)
-        d->defaultSettings->readSettings();
-    if (d->currentSettings)
-        d->currentSettings->readSettings();
+    ;
 }
 
 ApplicationSettings::~ApplicationSettings()
@@ -72,13 +68,13 @@ void ApplicationSettings::update(const Options &options)
     if (d->isReadOnly)
         return;
 
-    if (d->currentSettings && options.isConfigFileDefine()) {
+    if (d->settings && options.isConfigFileDefine()) {
         const auto configFile = options.configFile();
         const int idx = configFile.lastIndexOf("/");
         if (idx > 0) {
-            d->currentSettings->setPath(configFile.mid(0, idx));
-            d->currentSettings->setFileName(configFile.mid(idx+1));
-            d->currentSettings->readSettings();
+            d->settings->setPath(configFile.mid(0, idx));
+            d->settings->setFileName(configFile.mid(idx+1));
+            d->settings->readSettings();
         }
     }
 }
@@ -98,6 +94,23 @@ void ApplicationSettings::finalize()
     staticCodeAnalysisLogsSubdir();
 
     clear();
+}
+
+void ApplicationSettings::saveLog()
+{
+    QByteArray out = "\n";
+
+    out += prefixString() + "\n";
+    out += configDirectory() + "\n";
+    out += l10nDirectory() + "\n";
+    out += cacheDirectory() + "\n";
+    out += logDirectory() + "\n";
+    out += sessionsDirectory() + "\n";
+    out += buildServerBinDir() + "\n";
+    out += buildServerLogFile() + "\n";
+    out += staticCodeAnalysisLogsSubdir() + "\n";
+
+    LOG("application-settings.log", out);
 }
 
 QString ApplicationSettings::prefixString() const
@@ -147,19 +160,15 @@ QString ApplicationSettings::staticCodeAnalysisLogsSubdir() const
 
 void ApplicationSettings::clear()
 {
-    delete d->defaultSettings;
-    delete d->currentSettings;
-    d->defaultSettings = nullptr;
-    d->currentSettings = nullptr;
+    delete d->settings;
+    d->settings = nullptr;
 }
 
 QString ApplicationSettings::get(const QString &key) const
 {
-    for (const auto &s: {d->currentSettings, d->defaultSettings}) {
-        if (s && s->contains(key)) {
-            return s->get(key);
-        }
-    }
-    return "";
+    if (!d->settings)
+        return "";
+
+    return d->settings->get(key);
 }
 

@@ -45,12 +45,14 @@ public:
     bool readSettings();
     bool writeSettings() const;
 
-protected:
-    void clear();
-    void setSettings(QJsonObject &object);
-    bool readSetting(const QByteArray &data);
     bool contains(const QString &key) const;
     QString get(const QString &key) const;
+
+protected:
+    inline void clear();
+    inline void setSettings(QJsonObject &object);
+    inline bool readSetting(const QByteArray &data,
+                            QJsonObject &settings);
 
 private:
     struct AbstractSettingsPrivate;

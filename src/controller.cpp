@@ -92,17 +92,22 @@ void Controller::start()
             JavaScriptRedirect(d->request, prefixString + "profile/settings");
         }
         else if (pageName == "settings") {
-            DebugPage(d->request);
-            // SettingsPage(d->request);
+            // DebugPage(d->request);
+            SettingsPage(d->request);
         }
-        else if (pageName == "settings/localisation") {
+        else if (pageName == "settings/localization") {
+            DebugPage(d->request);
+        }
+        else if (pageName == "settings/users") {
+            DebugPage(d->request);
+        }
+        else if (pageName.startsWith("settings/users/")) {
             DebugPage(d->request);
         }
         else if (pageName == "counter") {
             CounterPage(d->request, QByteArray::number(counter));
         }
         else {
-            // DebugPage(d->request);
             DataFile(d->request);
         }
     }

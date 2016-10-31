@@ -55,6 +55,7 @@ HtmlPage::HtmlPage(const Request &request) :
 
     d->prefix = ApplicationSettings::instance().prefixString().toUtf8();
     d->redirect = request.scriptName().toUtf8();
+
     setContentType("text/html");
     update();
 }
@@ -80,6 +81,21 @@ void HtmlPage::setContent(const QByteArray &content)
 {
     d->content = content;
     update();
+}
+
+void HtmlPage::addToHead(const QByteArray &head)
+{
+    setHead(d->head + "\n" + head);
+}
+
+void HtmlPage::addToBody(const QByteArray &body)
+{
+    setBody(d->body + "\n" + body);
+}
+
+void HtmlPage::addToContent(const QByteArray &content)
+{
+    setContent(d->content + "\n" + content);
 }
 
 void HtmlPage::update()

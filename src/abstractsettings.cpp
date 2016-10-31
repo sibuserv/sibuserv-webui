@@ -35,6 +35,7 @@ struct AbstractSettings::AbstractSettingsPrivate
     QString path;
     QString fileName;
     QJsonObject settings;
+    QJsonObject defaultSettings;
 };
 
 AbstractSettings::AbstractSettings(const QString &path, const QString &fileName) :
@@ -42,6 +43,7 @@ AbstractSettings::AbstractSettings(const QString &path, const QString &fileName)
 {
     setPath(path);
     setFileName(fileName);
+    readSettings();
 }
 
 AbstractSettings::~AbstractSettings()
@@ -70,9 +72,13 @@ bool AbstractSettings::readSettings()
     if (d->path.isEmpty() || d->fileName.isEmpty())
         return false;
 
-    const ResourceManager res(d->path);
+    ResourceManager res(":");
     if (res.contains(d->fileName)) {
-        if (readSetting(res.read(d->fileName))) {
+        readSetting(res.read(d->fileName), d->defaultSettings);
+    }
+    res.setPath(d->path);
+    if (res.contains(d->fileName)) {
+        if (readSetting(res.read(d->fileName), d->settings)) {
             return true;
         }
     }
@@ -82,7 +88,7 @@ bool AbstractSettings::readSettings()
 
 bool AbstractSettings::writeSettings() const
 {
-    if (d->path.isEmpty() ||d->fileName.isEmpty() || d->settings.isEmpty())
+    if (d->path.isEmpty() || d->fileName.isEmpty() || d->settings.isEmpty())
         return false;
 
     const ResourceManager res;
@@ -92,10 +98,14 @@ bool AbstractSettings::writeSettings() const
 
 void AbstractSettings::clear()
 {
+    for (const auto &key : d->defaultSettings.keys()) {
+        d->defaultSettings.remove(key);
+    }
     for (const auto &key : d->settings.keys()) {
         d->settings.remove(key);
     }
     d->fileName.clear();
+    d->path.clear();
 }
 
 void AbstractSettings::setSettings(QJsonObject &object)
@@ -103,14 +113,15 @@ void AbstractSettings::setSettings(QJsonObject &object)
     d->settings = object;
 }
 
-bool AbstractSettings::readSetting(const QByteArray &data)
+bool AbstractSettings::readSetting(const QByteArray &data,
+                                   QJsonObject &settings)
 {
     QJsonDocument doc;
     QJsonParseError err;
     doc = QJsonDocument::fromJson(data, &err);
 
     if (err.error == QJsonParseError::NoError && !doc.isNull()) {
-        d->settings = doc.object();
+        settings = doc.object();
         return true;
     }
 
@@ -122,8 +133,10 @@ bool AbstractSettings::contains(const QString &key) const
     if (key.isEmpty())
         return false;
 
-    if (!d->settings.isEmpty()) {
-        return d->settings.contains(key);
+    for (const auto &s: {d->settings, d->defaultSettings}) {
+        if (s.contains(key)) {
+            return true;
+        }
     }
 
     return false;
@@ -131,15 +144,15 @@ bool AbstractSettings::contains(const QString &key) const
 
 QString AbstractSettings::get(const QString &key) const
 {
-    QString out;
-
     if (key.isEmpty())
-        return out;
+        return "";
 
-    if (!d->settings.isEmpty()) {
-        out = d->settings[key].toString();
+    for (const auto &s: {d->settings, d->defaultSettings}) {
+        if (s.contains(key)) {
+            return s[key].toString();
+        }
     }
 
-    return out;
+    return "";
 }
 

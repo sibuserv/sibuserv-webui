@@ -43,6 +43,10 @@ public:
     void setBody(const QByteArray &body);
     void setContent(const QByteArray &content);
 
+    void addToHead(const QByteArray &head);
+    void addToBody(const QByteArray &body);
+    void addToContent(const QByteArray &content);
+
 protected:
     void update();
 
