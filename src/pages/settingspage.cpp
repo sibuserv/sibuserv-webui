@@ -29,6 +29,7 @@ SettingsPage::SettingsPage(const Request &request) :
     HtmlPage(request)
 {
     setContent("Settings page");
+    addToTitle(" - %common_settings%");
     update();
     show();
 }

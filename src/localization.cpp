@@ -26,6 +26,13 @@
 #include "applicationsettings.h"
 #include "localization.h"
 
+Localization::Localization() :
+    AbstractSettings(ApplicationSettings::instance().configDirectory(),
+                     "/l10n/en_US.json")
+{
+    ;
+}
+
 Localization::Localization(const QString &fileName) :
     AbstractSettings(ApplicationSettings::instance().configDirectory(),
                      fileName)

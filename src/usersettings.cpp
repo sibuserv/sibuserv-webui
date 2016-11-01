@@ -23,14 +23,19 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "counterpage.h"
+#include "logmanager.h"
+#include "applicationsettings.h"
+#include "usersettings.h"
 
-CounterPage::CounterPage(const Request &request, const QByteArray &text) :
-    HtmlPage(request)
+UserSettings::UserSettings() :
+    AbstractSettings(ApplicationSettings::instance().configDirectory(),
+                     "user-settings.json")
 {
-    setData(text);
-    addToTitle(" - %counter%");
-    autodetectContentType();
-    show();
+    ;
+}
+
+QString UserSettings::pageStyle() const
+{
+    return get("page_style");
 }
 

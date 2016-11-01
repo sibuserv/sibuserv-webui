@@ -1,14 +1,15 @@
 <RCC>
     <qresource prefix="/">
         <file alias="/common-settings.json">../config/common-settings.json</file>
-        <file alias="/profile-settings.json">../config/profile-settings.json</file>
         <file alias="/project-settings.json">../config/project-settings.json</file>
         <file alias="/user-settings.json">../config/user-settings.json</file>
         <file alias="/webui-settings.json">../config/webui-settings.json</file>
         <file alias="/css/default.css">../css/default.css</file>
         <file alias="/l10n/en_US.json">../l10n/en_US.json</file>
+        <file alias="/l10n/ru_RU.json">../l10n/ru_RU.json</file>
         <file alias="/html/head-template.html">../html/head-template.html</file>
         <file alias="/html/body-template.html">../html/body-template.html</file>
         <file alias="/html/page-template.html">../html/page-template.html</file>
+        <file alias="/robots.txt">../html/robots.txt</file>
     </qresource>
 </RCC>

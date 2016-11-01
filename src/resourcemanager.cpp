@@ -194,6 +194,17 @@ bool ResourceManager::copy(const QString &fileName,
 bool ResourceManager::unpack(const QString &fileName,
                              const QString &destinationPath)
 {
-    return copy(fileName, ":", destinationPath);
+    const bool out = copy(fileName, ":", destinationPath);
+
+    if (out) {
+        QFile f(destinationPath + fileName);
+        const QFileDevice::Permissions permissions =
+                f.permissions() |
+                QFileDevice::WriteUser |
+                QFileDevice::WriteGroup;
+        f.setPermissions(permissions);
+    }
+
+    return out;
 }
 

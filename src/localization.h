@@ -32,6 +32,7 @@
 class Localization : public AbstractSettings
 {
 public:
+    explicit Localization();
     explicit Localization(const QString &fileName);
     Localization(const Localization &in) = delete;
     Localization(Localization &&in) = delete;

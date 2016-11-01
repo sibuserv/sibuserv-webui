@@ -128,6 +128,19 @@ bool AbstractSettings::readSetting(const QByteArray &data,
     return false;
 }
 
+QStringList AbstractSettings::keys() const
+{
+    QStringList out = d->settings.keys();
+
+    for (const auto &key : d->defaultSettings.keys()) {
+        if (!out.contains(key)) {
+            out.append(key);
+        }
+    }
+
+    return out;
+}
+
 bool AbstractSettings::contains(const QString &key) const
 {
     if (key.isEmpty())

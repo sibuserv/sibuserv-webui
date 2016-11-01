@@ -25,36 +25,58 @@
 
 #include "applicationsettings.h"
 #include "resourcemanager.h"
+#include "commonsettings.h"
+#include "usersettings.h"
+#include "localization.h"
 #include "htmlpage.h"
 
 struct HtmlPage::HtmlPagePrivate
 {
-    QByteArray page      = "%body%";
-    QByteArray head      = "";
-    QByteArray body      = "%content%";
-    QByteArray content   = "<h1>404</h1>\n"
-                           "This is not the web page you are looking for.";
-    QByteArray pageStyle = "%prefix%/css/default.css";
-    QByteArray script    = "%prefix%/js/script.js";
-    QByteArray author    = "Boris Pek";
-    QByteArray year      = "2016";
-    QByteArray title     = "Sibuserv Web UI";
-    QByteArray redirect  = "%prefix%/projects";
-    QByteArray prefix    = "/sibuserv/";
+    bool authorized = false;
+
+    QByteArray page;
+    QByteArray head;
+    QByteArray body;
+    QByteArray title;
+    QByteArray style;
+    QByteArray content;
+    QByteArray redirect;
+    QByteArray prefix;
+
+    CommonSettings commonSettings;
+    UserSettings   userSettings;
+    Localization   localization;
 };
 
 HtmlPage::HtmlPage(const Request &request) :
     d(new HtmlPagePrivate)
 {
-    const ResourceManager res;
-    if (request.get("ajax").isEmpty()) {
-        d->page = res.read("/html/page-template.html");
-    }
-    setHead(res.read("/html/head-template.html"));
-    setBody(res.read("/html/body-template.html"));
-
     d->prefix = ApplicationSettings::instance().prefixString().toUtf8();
     d->redirect = request.scriptName().toUtf8();
+
+    const ResourceManager res;
+    if (!request.get("ajax").isEmpty())
+        d->page = "%body%";
+    else
+        d->page = res.read("/html/page-template.html");
+
+    setTitle("%basic_title%");
+    setHead(res.read("/html/head-template.html"));
+    setBody(res.read("/html/body-template.html"));
+    setContent(res.read("/html/404-template.html"));
+
+    checkAutorization(request);
+    if (d->authorized) {
+        d->userSettings.setFileName("users/" +
+                                    request.cookie("user_name") +
+                                    ".json");
+        d->userSettings.readSettings();
+    }
+
+    d->localization.setFileName(d->commonSettings.l10nFile());
+    d->localization.readSettings();
+
+    d->style = d->userSettings.pageStyle().toUtf8();
 
     setContentType("text/html");
     update();
@@ -68,19 +90,21 @@ HtmlPage::~HtmlPage()
 void HtmlPage::setHead(const QByteArray &head)
 {
     d->head = head;
-    update();
 }
 
 void HtmlPage::setBody(const QByteArray &body)
 {
     d->body = body;
-    update();
+}
+
+void HtmlPage::setTitle(const QByteArray &title)
+{
+    d->title = title;
 }
 
 void HtmlPage::setContent(const QByteArray &content)
 {
     d->content = content;
-    update();
 }
 
 void HtmlPage::addToHead(const QByteArray &head)
@@ -93,25 +117,42 @@ void HtmlPage::addToBody(const QByteArray &body)
     setBody(d->body + "\n" + body);
 }
 
+void HtmlPage::addToTitle(const QByteArray &title)
+{
+    setTitle(d->title + title);
+}
+
 void HtmlPage::addToContent(const QByteArray &content)
 {
     setContent(d->content + "\n" + content);
 }
 
+void HtmlPage::checkAutorization(const Request &request)
+{
+    // Debug mode!
+    if (!request.cookie("user_name").isEmpty()) {
+        d->authorized = true;
+    }
+}
+
 void HtmlPage::update()
 {
     QByteArray out = d->page;
+
     out.replace("%head%",       d->head);
     out.replace("%body%",       d->body);
-    out.replace("%content%",    d->content);
-    out.replace("%page_style%", d->pageStyle);
-    out.replace("%script%",     d->script);
-    out.replace("%author%",     d->author);
-    out.replace("%year%",       d->year);
     out.replace("%title%",      d->title);
-    out.replace("%author%",     d->author);
+    out.replace("%page_style%", d->style);
+    out.replace("%content%",    d->content);
+
+    for (const auto &key : d->localization.keys()) {
+        out.replace("%" + key.toUtf8() + "%",
+                    d->localization.get(key).toUtf8());
+    }
+
     out.replace("%redirect%",   d->redirect);
     out.replace("%prefix%",     d->prefix);
+
     setData(out);
 }
 

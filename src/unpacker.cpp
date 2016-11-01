@@ -33,11 +33,12 @@ EmbeddedResourcesUnpacker::EmbeddedResourcesUnpacker()
     const ResourceManager rm;
     const ApplicationSettings &as = ApplicationSettings::instance();
 
-    rm.unpack("/access-settings.json",      as.configDirectory());
-    rm.unpack("/profile-settings.json",     as.configDirectory());
+    rm.unpack("/common-settings.json",      as.configDirectory());
     rm.unpack("/project-settings.json",     as.configDirectory());
     rm.unpack("/user-settings.json",        as.configDirectory());
     rm.unpack("/l10n/en_US.json",           as.configDirectory());
+    rm.unpack("/l10n/ru_RU.json",           as.configDirectory());
     rm.unpack("/css/default.css",           as.cacheDirectory());
+    rm.unpack("/robots.txt",                as.cacheDirectory());
 }
 

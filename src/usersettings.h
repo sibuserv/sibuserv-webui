@@ -23,14 +23,21 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "counterpage.h"
+#pragma once
 
-CounterPage::CounterPage(const Request &request, const QByteArray &text) :
-    HtmlPage(request)
+#include <QString>
+
+#include "abstractsettings.h"
+
+class UserSettings : public AbstractSettings
 {
-    setData(text);
-    addToTitle(" - %counter%");
-    autodetectContentType();
-    show();
-}
+public:
+    UserSettings();
+    UserSettings(const UserSettings &in) = delete;
+    UserSettings(UserSettings &&in) = delete;
+    UserSettings& operator=(const UserSettings &in) = delete;
+    virtual ~UserSettings() = default;
+
+    QString pageStyle() const;
+};
 

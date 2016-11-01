@@ -1,22 +1,21 @@
-        <div id="top_bar" style="text-align: center;">
-            <br>
-            <div> &nbsp;|&nbsp; 
-                <a href="%prefix%projects">%projects%</a> &nbsp;|&nbsp; 
-                <a href="%prefix%settings/profile">%profile%</a> &nbsp;|&nbsp; 
-                <a href="%prefix%settings/admin">%admin%</a> &nbsp;|&nbsp; 
-                %user_name% &nbsp;|&nbsp; 
-                <a href="%redirect%?sign_out=true">%sign_out%</a> &nbsp;|&nbsp; 
+        <div id="top_bar">
+            <div>
+                <div id="home_page"><a href="%prefix%projects">%basic_title%</a></div>
+                <div id="projects_page"><a href="%prefix%projects">%projects%</a></div>
+                <div id="settings_page"><a href="%prefix%settings">%common_settings%</a></div>
             </div>
-            <br>
+            <div>
+                <div id="user_name"><a href="%prefix%profile/settings">%user_name%</a></div>
+                <div id="sign_in"><a href="">%sign_in%</a></div>
+                <div id="sign_out"><a href="">%sign_out%</a></div>
+            </div>
         </div>
-        <hr noshade="true" size="1px" width="90%" style="margin:0 4% 0 4%;">
         <noscript>
             %noscript_warning%
         </noscript>
         <div id="content">
 %content%
         </div>
-        <hr noshade="true" size="1px" width="90%" style="margin:0 4% 0 4%;">
         <div id="footer" style="text-align: center;">
             %author% &copy; %year%
         </div>

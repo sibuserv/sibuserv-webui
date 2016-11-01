@@ -27,11 +27,13 @@
 
 #include <QString>
 #include <QByteArray>
+#include <QStringList>
 #include <QJsonObject>
 
 class AbstractSettings
 {
     friend class ApplicationSettings;
+    friend class Localization;
 
 public:
     explicit AbstractSettings(const QString &path, const QString &fileName);
@@ -47,6 +49,7 @@ public:
 
     bool contains(const QString &key) const;
     QString get(const QString &key) const;
+    QStringList keys() const;
 
 protected:
     inline void clear();

@@ -29,6 +29,7 @@ ProfileSettingsPage::ProfileSettingsPage(const Request &request) :
     HtmlPage(request)
 {
     setContent("Profile settings page");
+    addToTitle(" - %profile_settings%");
     update();
     show();
 }

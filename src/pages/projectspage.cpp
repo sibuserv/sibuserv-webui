@@ -29,6 +29,7 @@ ProjectsPage::ProjectsPage(const Request &request) :
     HtmlPage(request)
 {
     setContent("Projects page");
+    addToTitle(" - %projects%");
     update();
     show();
 }

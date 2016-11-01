@@ -49,6 +49,7 @@ DebugPage::DebugPage(const Request &request) :
         setCookie("user_name", userName);
     }
 
+    addToTitle(" - %debug%");
     setBody(body);
     update();
     show();

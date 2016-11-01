@@ -41,13 +41,17 @@ public:
 
     void setHead(const QByteArray &head);
     void setBody(const QByteArray &body);
+    void setTitle(const QByteArray &title);
     void setContent(const QByteArray &content);
+
 
     void addToHead(const QByteArray &head);
     void addToBody(const QByteArray &body);
+    void addToTitle(const QByteArray &title);
     void addToContent(const QByteArray &content);
 
 protected:
+    void checkAutorization(const Request &request);
     void update();
 
 private:

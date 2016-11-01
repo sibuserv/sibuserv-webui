@@ -3,7 +3,6 @@
 /etc/sibuserv/webui-settings.json
 /home/sibuserv/.config/sibuserv-webui/common-settings.json
 /home/sibuserv/.config/sibuserv-webui/page-settings.json
-/home/sibuserv/.config/sibuserv-webui/profile-settings.json
 /home/sibuserv/.config/sibuserv-webui/project-settings.json
 /home/sibuserv/.config/sibuserv-webui/user-settings.json
 /home/sibuserv/.config/sibuserv-webui/l10n/<locale>.json
