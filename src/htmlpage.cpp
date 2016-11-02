@@ -23,8 +23,11 @@
  *                                                                           *
  *****************************************************************************/
 
+#include <QStringList>
+
 #include "applicationsettings.h"
 #include "resourcemanager.h"
+#include "sessionsmanager.h"
 #include "commonsettings.h"
 #include "usersettings.h"
 #include "localization.h"
@@ -32,13 +35,10 @@
 
 struct HtmlPage::HtmlPagePrivate
 {
-    bool authorized = false;
-
     QByteArray page;
     QByteArray head;
     QByteArray body;
     QByteArray title;
-    QByteArray style;
     QByteArray content;
     QByteArray redirect;
     QByteArray prefix;
@@ -66,17 +66,9 @@ HtmlPage::HtmlPage(const Request &request) :
     setContent(res.read("/html/404-template.html"));
 
     checkAutorization(request);
-    if (d->authorized) {
-        d->userSettings.setFileName("users/" +
-                                    request.cookie("user_name") +
-                                    ".json");
-        d->userSettings.readSettings();
-    }
 
     d->localization.setFileName(d->commonSettings.l10nFile());
     d->localization.readSettings();
-
-    d->style = d->userSettings.pageStyle().toUtf8();
 
     setContentType("text/html");
     update();
@@ -129,10 +121,29 @@ void HtmlPage::addToContent(const QByteArray &content)
 
 void HtmlPage::checkAutorization(const Request &request)
 {
-    // Debug mode!
-    if (!request.cookie("user_name").isEmpty()) {
-        d->authorized = true;
+    QByteArray out;
+    out += "        <script>\n";
+
+    if (SessionsManager(request).isAutorized()) {
+        d->userSettings.setFileName("users/" +
+                                    request.cookie("user_name") +
+                                    ".json");
+        d->userSettings.readSettings();
+
+        out += "            sign_in.remove();\n";
+
+        if (!d->userSettings.getBool("admin")) {
+            out += "            settings_page.remove();\n";
+        }
     }
+    else {
+        out += "            user_name.remove();\n";
+        out += "            sign_out.remove();\n";
+        out += "            settings_page.remove();\n";
+    }
+
+    out += "        </script>\n";
+    addToBody(out);
 }
 
 void HtmlPage::update()
@@ -142,14 +153,23 @@ void HtmlPage::update()
     out.replace("%head%",       d->head);
     out.replace("%body%",       d->body);
     out.replace("%title%",      d->title);
-    out.replace("%page_style%", d->style);
     out.replace("%content%",    d->content);
-
+    out.replace("%page_style%", d->userSettings.get("page_style").toUtf8());
+    out.replace("%user_email%", d->userSettings.get("user_email").toUtf8());
+    const QStringList names = {
+        d->userSettings.get("desirable_user_name"),
+        d->userSettings.get("full_user_name"),
+        d->userSettings.get("user_name")
+    };
+    for (const QString &name : names) {
+        if (!name.isEmpty()) {
+            out.replace("%user_name%", name.toUtf8());
+        }
+    }
     for (const auto &key : d->localization.keys()) {
         out.replace("%" + key.toUtf8() + "%",
                     d->localization.get(key).toUtf8());
     }
-
     out.replace("%redirect%",   d->redirect);
     out.replace("%prefix%",     d->prefix);
 

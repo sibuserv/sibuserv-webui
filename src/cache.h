@@ -41,6 +41,8 @@ private:
     Cache(const Cache &in) = delete;
     Cache(Cache &&in) = delete;
     Cache& operator=(const Cache &in) = delete;
+    void* operator new(std::size_t) = delete;
+    void* operator new[](std::size_t) = delete;
     virtual ~Cache() = default;
 };
 

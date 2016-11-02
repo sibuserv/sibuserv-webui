@@ -23,22 +23,43 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "unpacker.h"
+#include <functional>
+
+#include <QString>
+#include <QFileInfo>
+#include <QDir>
 
 #include "applicationsettings.h"
 #include "resourcemanager.h"
+#include "logmanager.h"
+#include "unpacker.h"
 
 EmbeddedResourcesUnpacker::EmbeddedResourcesUnpacker()
 {
     const ResourceManager rm;
     const ApplicationSettings &as = ApplicationSettings::instance();
 
-    rm.unpack("/common-settings.json",      as.configDirectory());
-    rm.unpack("/project-settings.json",     as.configDirectory());
-    rm.unpack("/user-settings.json",        as.configDirectory());
-    rm.unpack("/l10n/en_US.json",           as.configDirectory());
-    rm.unpack("/l10n/ru_RU.json",           as.configDirectory());
-    rm.unpack("/css/default.css",           as.cacheDirectory());
-    rm.unpack("/robots.txt",                as.cacheDirectory());
+    std::function<void(const QString &)> unpackFilesFromDir;
+    unpackFilesFromDir = [&](const QString &path) -> void
+    {
+        QString fileName;
+        for (const QString &entry : QDir(path).entryList()) {
+            fileName = path.mid(1) + "/" + entry;
+            if (fileName.endsWith(".json")) {
+                rm.unpack(fileName, as.configDirectory());
+            }
+            else if (fileName.endsWith(".css")) {
+                rm.unpack(fileName, as.cacheDirectory());
+            }
+            else if (fileName.endsWith("robots.txt")) {
+                rm.unpack(fileName, as.cacheDirectory());
+            }
+            else if (QFileInfo(":" + fileName).isDir()) {
+                unpackFilesFromDir(":" + fileName);
+            }
+        }
+    };
+
+    unpackFilesFromDir(":");
 }
 

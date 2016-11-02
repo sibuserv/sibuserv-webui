@@ -11,7 +11,7 @@
     "sign_out": "Выйти",
     "404_error_message": "Запрошенная страница не существует.",
     "noscript_warning": "<h1>Привет!</h1>
-                <p>Похоже, у вас отключен JavaScript.</p>
-                <p>JavaScript необходим для правильной работы Sibuserv Web UI.</p>
-                <p>Пожалуйста, включите JavaScript и перезагрузите страницу.</p>"
+            <p>Похоже, у вас отключен JavaScript.</p>
+            <p>JavaScript необходим для правильной работы Sibuserv Web UI.</p>
+            <p>Пожалуйста, включите JavaScript и перезагрузите страницу.</p>"
 }

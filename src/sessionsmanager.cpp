@@ -23,42 +23,52 @@
  *                                                                           *
  *****************************************************************************/
 
-#pragma once
+#include <QDateTime>
 
-#include "options.h"
+#include "applicationsettings.h"
+#include "sessionsmanager.h"
 
-class ApplicationSettings
+struct SessionsManager::SessionsManagerPrivate
 {
-public:
-    static ApplicationSettings &instance();
-    void update(const Options &options);
-    void finalize();
-    void saveLog();
-
-    QString prefixString() const;
-    QString configDirectory() const;
-    QString l10nDirectory() const;
-    QString cacheDirectory() const;
-    QString logDirectory() const;
-    QString sessionsDirectory() const;
-    QString buildServerBinDir() const;
-    QString buildServerLogFile() const;
-    QString staticCodeAnalysisLogsSubdir() const;
-
-protected:
-    inline void clear();
-    QString get(const QString &key) const;
-
-private:
-    ApplicationSettings();
-    ApplicationSettings(const ApplicationSettings &in) = delete;
-    ApplicationSettings(ApplicationSettings &&in) = delete;
-    ApplicationSettings& operator=(const ApplicationSettings &in) = delete;
-    void* operator new(std::size_t) = delete;
-    void* operator new[](std::size_t) = delete;
-    virtual ~ApplicationSettings();
-
-    struct ApplicationSettingsPrivate;
-    ApplicationSettingsPrivate * const d;
+    QString user_id;
+    QString session_id;
+    QString user_name;
 };
+
+SessionsManager::SessionsManager(const Request &request) :
+    AbstractSettings(ApplicationSettings::instance().sessionsDirectory(),
+                     request.cookie("user_id") + ".json"),
+    d(new SessionsManagerPrivate)
+{
+    d->user_id    = request.cookie("user_id");
+    d->session_id = request.cookie("session_id");
+    d->user_name  = request.cookie("user_name");
+}
+
+SessionsManager::~SessionsManager()
+{
+    delete d;
+}
+
+bool SessionsManager::isAutorized() const
+{
+    if (d->user_id.isEmpty())
+        return false;
+    if (d->session_id.isEmpty() || d->user_name.isEmpty())
+        return false;
+    if (get("session_id") != d->session_id)
+        return false;
+    if (get("user_name") != d->user_name)
+        return false;
+    if (get("expires").isEmpty())
+        return false;
+
+    const QDateTime currentDateTime = QDateTime::currentDateTime();
+    const QDateTime expires = QDateTime::fromTime_t(get("expires").toULong());
+
+    if (expires < currentDateTime)
+        return true;
+
+    return false;
+}
 

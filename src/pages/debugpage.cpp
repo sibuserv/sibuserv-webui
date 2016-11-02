@@ -30,11 +30,11 @@
 DebugPage::DebugPage(const Request &request) :
     HtmlPage(request)
 {
-    QByteArray body;
+    QByteArray content;
     for (const auto &k : request.environment()) {
-        body += k.toUtf8() + "<br>\n";
+        content += k.toUtf8() + "<br>\n";
     }
-    body += "POST_DATA=" + request.post() + "<br>\n";
+    content += "POST_DATA=" + request.post() + "<br>\n";
 
     setCookie("user_id", "shdkjvh6545dsgdfg5465s4f65sg");
     setCookie("session_id", "1dsgdxv78786642134vkbvbds");
@@ -50,7 +50,7 @@ DebugPage::DebugPage(const Request &request) :
     }
 
     addToTitle(" - %debug%");
-    setBody(body);
+    setContent(content);
     update();
     show();
 }

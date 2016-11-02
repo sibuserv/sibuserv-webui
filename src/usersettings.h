@@ -37,7 +37,5 @@ public:
     UserSettings(UserSettings &&in) = delete;
     UserSettings& operator=(const UserSettings &in) = delete;
     virtual ~UserSettings() = default;
-
-    QString pageStyle() const;
 };
 

@@ -34,8 +34,3 @@ UserSettings::UserSettings() :
     ;
 }
 
-QString UserSettings::pageStyle() const
-{
-    return get("page_style");
-}
-

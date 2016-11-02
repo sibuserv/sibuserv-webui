@@ -11,7 +11,7 @@
     "sign_out": "Sign out",
     "404_error_message": "This is not the web page you are looking for.",
     "noscript_warning": "<h1>Hey there!</h1>
-                <p>Looks like you have JavaScript disabled.</p>
-                <p>Sibuserv Web UI needs JavaScript to work properly.</p>
-                <p>Please enable JavaScript and reload this page.</p>"
+            <p>Looks like you have JavaScript disabled.</p>
+            <p>Sibuserv Web UI needs JavaScript to work properly.</p>
+            <p>Please enable JavaScript and reload this page.</p>"
 }

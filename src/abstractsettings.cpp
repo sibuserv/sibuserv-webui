@@ -169,3 +169,17 @@ QString AbstractSettings::get(const QString &key) const
     return "";
 }
 
+bool AbstractSettings::getBool(const QString &key) const
+{
+    if (key.isEmpty())
+        return false;
+
+    for (const auto &s: {d->settings, d->defaultSettings}) {
+        if (s.contains(key)) {
+            return s[key].toBool();
+        }
+    }
+
+    return false;
+}
+

@@ -49,6 +49,7 @@ public:
 
     bool contains(const QString &key) const;
     QString get(const QString &key) const;
+    bool getBool(const QString &key) const;
     QStringList keys() const;
 
 protected:

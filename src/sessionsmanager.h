@@ -25,40 +25,24 @@
 
 #pragma once
 
-#include "options.h"
+#include <QString>
 
-class ApplicationSettings
+#include "abstractsettings.h"
+#include "request.h"
+
+class SessionsManager : public AbstractSettings
 {
 public:
-    static ApplicationSettings &instance();
-    void update(const Options &options);
-    void finalize();
-    void saveLog();
+    explicit SessionsManager(const Request &request);
+    SessionsManager(const SessionsManager &in) = delete;
+    SessionsManager(SessionsManager &&in) = delete;
+    SessionsManager& operator=(const SessionsManager &in) = delete;
+    virtual ~SessionsManager();
 
-    QString prefixString() const;
-    QString configDirectory() const;
-    QString l10nDirectory() const;
-    QString cacheDirectory() const;
-    QString logDirectory() const;
-    QString sessionsDirectory() const;
-    QString buildServerBinDir() const;
-    QString buildServerLogFile() const;
-    QString staticCodeAnalysisLogsSubdir() const;
-
-protected:
-    inline void clear();
-    QString get(const QString &key) const;
+    bool isAutorized() const;
 
 private:
-    ApplicationSettings();
-    ApplicationSettings(const ApplicationSettings &in) = delete;
-    ApplicationSettings(ApplicationSettings &&in) = delete;
-    ApplicationSettings& operator=(const ApplicationSettings &in) = delete;
-    void* operator new(std::size_t) = delete;
-    void* operator new[](std::size_t) = delete;
-    virtual ~ApplicationSettings();
-
-    struct ApplicationSettingsPrivate;
-    ApplicationSettingsPrivate * const d;
+    struct SessionsManagerPrivate;
+    SessionsManagerPrivate * const d;
 };
 
