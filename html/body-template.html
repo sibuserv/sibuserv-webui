@@ -1,21 +1,30 @@
-        <div id="top_bar">
-            <div id="top_left">
-                <div id="home_page"><a href="%prefix%">%basic_title%</a></div>
-                <div id="projects_page"><a href="%prefix%projects">%projects%</a></div>
-                <div id="settings_page"><a href="%prefix%settings">%common_settings%</a></div>
-            </div>
-            <div id="top_right">
-                <div id="user_name"><a href="%prefix%profile/settings">%user_name%</a></div>
-                <div id="sign_in"><a href="">%sign_in%</a></div>
-                <div id="sign_out"><a href="">%sign_out%</a></div>
+        <div id="header">
+            <div id="top_bar" class="centered">
+                <ul id="navigation">
+                    <li id="logo"><h1><a href="%prefix%">%basic_title%</a></h1></li>
+                    <li id="projects_page"><a href="%prefix%projects">%projects%</a></li>
+                    <li id="settings_page"><a href="%prefix%settings">%common_settings%</a></li>
+                    <li id="sign_in" class="right"><a href="#" class="button">%sign_in%</a></li>
+                    <li id="sign_out" class="right"><a href="#" class="button">%sign_out%</a></li>
+                    <li id="user_name" class="right"><a href="%prefix%profile/settings">%user_name%</a></li>
+                    <li id="user_avatar" class="right">
+                        <a href="%prefix%profile/settings">
+                            <img id="avatar" src="%gravatar_icon_url%" height="40" width="40">
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <noscript>
             %noscript_warning%
         </noscript>
-        <div id="content">
+        <div id="center">
+            <div id="content" class="centered">
 %content%
+            </div>
         </div>
         <div id="footer">
-            %author% &copy; %year%
+            <div id="bottom_bar" class="centered">
+                %author% &copy; %year%
+            </div>
         </div>

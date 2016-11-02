@@ -26,6 +26,7 @@
 #pragma once
 
 #include <QString>
+#include <QByteArray>
 
 #include "abstractsettings.h"
 
@@ -37,5 +38,12 @@ public:
     UserSettings(UserSettings &&in) = delete;
     UserSettings& operator=(const UserSettings &in) = delete;
     virtual ~UserSettings() = default;
+
+    bool isValidAutorizationRequest(const QByteArray &post);
+    QByteArray gravatarIconUrl() const;
+
+protected:
+    inline QByteArray calcEmailHash() const;
+    inline QString calcPasswordHash(const QString &password) const;
 };
 

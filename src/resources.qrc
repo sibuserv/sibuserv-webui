@@ -10,6 +10,7 @@
         <file alias="/html/head-template.html">../html/head-template.html</file>
         <file alias="/html/body-template.html">../html/body-template.html</file>
         <file alias="/html/page-template.html">../html/page-template.html</file>
+        <file alias="/html/403-template.html">../html/403-template.html</file>
         <file alias="/html/404-template.html">../html/404-template.html</file>
         <file alias="/robots.txt">../html/robots.txt</file>
     </qresource>

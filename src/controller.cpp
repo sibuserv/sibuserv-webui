@@ -92,7 +92,6 @@ void Controller::start()
             JavaScriptRedirect(d->request, prefixString + "profile/settings");
         }
         else if (pageName == "settings") {
-            // DebugPage(d->request);
             SettingsPage(d->request);
         }
         else if (pageName == "settings/localization") {
@@ -106,6 +105,9 @@ void Controller::start()
         }
         else if (pageName == "counter") {
             CounterPage(d->request, QByteArray::number(counter));
+        }
+        else if (pageName == "debug") {
+            DebugPage(d->request);
         }
         else {
             DataFile(d->request);

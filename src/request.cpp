@@ -82,7 +82,7 @@ QByteArray Request::post() const
 QString Request::cookie(const QString &key) const
 {
     const QString buff = getEnv("HTTP_COOKIE");
-    return getValue(buff, key, "&");
+    return getValue(buff, key, ";");
 }
 
 QString Request::scriptName() const

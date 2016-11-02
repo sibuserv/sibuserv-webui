@@ -36,5 +36,8 @@ public:
     ProjectsPage(ProjectsPage &&in) = delete;
     ProjectsPage& operator=(const ProjectsPage &in) = delete;
     virtual ~ProjectsPage() = default;
+
+protected:
+    void generateContent();
 };
 

@@ -23,14 +23,55 @@
  *                                                                           *
  *****************************************************************************/
 
+#include <QDir>
+#include <QByteArray>
+#include <QStringList>
+
+#include "applicationsettings.h"
 #include "projectspage.h"
 
 ProjectsPage::ProjectsPage(const Request &request) :
     HtmlPage(request)
 {
-    setContent("Projects page");
+    if (isAutorizedUser()) {
+        // TODO: plorerly check that user have access to project info.
+        if (true) { // Debug mode!
+            generateContent();
+        }
+        else if (getBool("logged_in_user_may_view_the_full_list_of_projects")) {
+            generateContent();
+        }
+        else {
+            forbidAccess();
+        }
+    }
+    else if (getBool("anonymous_may_view_the_list_of_projects")) {
+        generateContent();
+    }
+    else {
+        forbidAccess();
+    }
+
     addToTitle(" - %projects%");
     update();
     show();
+}
+
+void ProjectsPage::generateContent()
+{
+    // Debug mode!
+    QByteArray out;
+    out += "<ul>\n";
+
+    QByteArray tmp;
+    QDir dir(ApplicationSettings::instance().buildServerBinDir());
+    for (const auto &it : dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot)) {
+        tmp = it.toUtf8();
+        out +=  "<li><a id=\"" + tmp + "\" href=\"%prefix%projects/" +
+                tmp + "\">" + tmp + "</a></li>\n";
+    }
+
+    out += "</ul>";
+    setContent(out);
 }
 

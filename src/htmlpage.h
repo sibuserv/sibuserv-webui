@@ -44,15 +44,24 @@ public:
     void setTitle(const QByteArray &title);
     void setContent(const QByteArray &content);
 
-
     void addToHead(const QByteArray &head);
     void addToBody(const QByteArray &body);
     void addToTitle(const QByteArray &title);
     void addToContent(const QByteArray &content);
 
+    bool isAutorizedUser() const;
+    bool isAdmin() const;
+
 protected:
     void checkAutorization(const Request &request);
+    void forbidAccess();
     void update();
+
+    /// \brief Get string value from common settings.
+    QString get(const QString &key) const;
+
+    /// \brief Get bool value from common settings.
+    bool getBool(const QString &key) const;
 
 private:
     struct HtmlPagePrivate;

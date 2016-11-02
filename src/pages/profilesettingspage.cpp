@@ -28,7 +28,13 @@
 ProfileSettingsPage::ProfileSettingsPage(const Request &request) :
     HtmlPage(request)
 {
-    setContent("Profile settings page");
+    if (isAutorizedUser()) {
+        setContent("Profile settings page");
+    }
+    else {
+        forbidAccess();
+    }
+
     addToTitle(" - %profile_settings%");
     update();
     show();

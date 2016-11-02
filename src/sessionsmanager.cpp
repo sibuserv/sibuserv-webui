@@ -24,15 +24,19 @@
  *****************************************************************************/
 
 #include <QDateTime>
+#include <QJsonObject>
+#include <QCryptographicHash>
 
 #include "applicationsettings.h"
 #include "sessionsmanager.h"
+#include "logmanager.h"
+
+static const QString dateTimeFormat = "yyyy-MM-dd hh-mm-ss t";
 
 struct SessionsManager::SessionsManagerPrivate
 {
     QString user_id;
     QString session_id;
-    QString user_name;
 };
 
 SessionsManager::SessionsManager(const Request &request) :
@@ -40,9 +44,8 @@ SessionsManager::SessionsManager(const Request &request) :
                      request.cookie("user_id") + ".json"),
     d(new SessionsManagerPrivate)
 {
-    d->user_id    = request.cookie("user_id");
+    d->user_id = request.cookie("user_id");
     d->session_id = request.cookie("session_id");
-    d->user_name  = request.cookie("user_name");
 }
 
 SessionsManager::~SessionsManager()
@@ -54,19 +57,47 @@ bool SessionsManager::isAutorized() const
 {
     if (d->user_id.isEmpty())
         return false;
-    if (d->session_id.isEmpty() || d->user_name.isEmpty())
+    if (d->session_id.isEmpty())
         return false;
     if (get("session_id") != d->session_id)
         return false;
-    if (get("user_name") != d->user_name)
-        return false;
-    if (get("expires").isEmpty())
+    if (!contains("expires"))
         return false;
 
+    const QDateTime expires = QDateTime::fromString(get("expires"),
+                                                    dateTimeFormat);
     const QDateTime currentDateTime = QDateTime::currentDateTime();
-    const QDateTime expires = QDateTime::fromTime_t(get("expires").toULong());
 
     if (expires < currentDateTime)
+        return true;
+
+    return false;
+}
+
+bool SessionsManager::beginNewSession(const QString &userName)
+{
+    if (userName.isEmpty())
+        return false;
+
+    // Session ID will be valid during one day.
+    const QDateTime dateTime = QDateTime::currentDateTime().addDays(1);
+    const QString expires = dateTime.toString(dateTimeFormat);
+
+    const QString buff = expires + userName + dateTime.toString("z");
+    const QByteArray sessionId =
+            QCryptographicHash::hash(buff.toUtf8(),
+                                     QCryptographicHash::Sha1).toHex();
+
+    QJsonObject obj;
+    obj["user_name"]  = userName;
+    obj["session_id"] = QString::fromUtf8(sessionId);
+    obj["expires"]    = expires;
+    setSettings(obj);
+
+    if (!writeSettings())
+        return false;
+
+    if (readSettings())
         return true;
 
     return false;

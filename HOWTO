@@ -21,6 +21,7 @@
 --- Webpages ---
 /
 /counter
+/debug
 /profile/settings
 /projects
 /projects/<project-name>

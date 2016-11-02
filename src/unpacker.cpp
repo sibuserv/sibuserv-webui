@@ -45,7 +45,10 @@ EmbeddedResourcesUnpacker::EmbeddedResourcesUnpacker()
         QString fileName;
         for (const QString &entry : QDir(path).entryList()) {
             fileName = path.mid(1) + "/" + entry;
-            if (fileName.endsWith(".json")) {
+            if (fileName.contains("webui-settings.json")) {
+                continue;
+            }
+            else if (fileName.endsWith(".json")) {
                 rm.unpack(fileName, as.configDirectory());
             }
             else if (fileName.endsWith(".css")) {

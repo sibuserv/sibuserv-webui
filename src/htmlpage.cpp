@@ -35,6 +35,9 @@
 
 struct HtmlPage::HtmlPagePrivate
 {
+    bool admin = false;
+    bool autorized = false;
+
     QByteArray page;
     QByteArray head;
     QByteArray body;
@@ -119,31 +122,65 @@ void HtmlPage::addToContent(const QByteArray &content)
     setContent(d->content + "\n" + content);
 }
 
+bool HtmlPage::isAutorizedUser() const
+{
+    return d->autorized;
+}
+
+bool HtmlPage::isAdmin() const
+{
+    return d->admin;
+}
+
 void HtmlPage::checkAutorization(const Request &request)
 {
     QByteArray out;
     out += "        <script>\n";
 
     if (SessionsManager(request).isAutorized()) {
+        d->autorized = true;
         d->userSettings.setFileName("users/" +
                                     request.cookie("user_name") +
                                     ".json");
         d->userSettings.readSettings();
-
-        out += "            sign_in.remove();\n";
-
-        if (!d->userSettings.getBool("admin")) {
-            out += "            settings_page.remove();\n";
+    }
+    else if (d->userSettings.isValidAutorizationRequest(request.post())) {
+        d->autorized = true;
+        SessionsManager sm(request);
+        sm.setFileName(d->userSettings.get("user_id") + ".json");
+        if (sm.beginNewSession(d->userSettings.get("user_name"))) {
+            const bool httpsOnly = d->commonSettings.getBool("https_only");
+            setCookie("user_id", d->userSettings.get("user_id"),
+                      "", "/", "", httpsOnly, httpsOnly);
+            setCookie("session_id", sm.get("session_id"),
+                      "", "/", "", httpsOnly, httpsOnly);
         }
     }
+    if (d->autorized) {
+        d->admin = d->userSettings.getBool("admin");
+        if (!d->admin) {
+            out += "            settings_page.remove();\n";
+        }
+        if (d->userSettings.get("user_email").isEmpty()) {
+            out += "            user_avatar.remove();\n";
+        }
+        out += "            sign_in.remove();\n";
+    }
     else {
-        out += "            user_name.remove();\n";
-        out += "            sign_out.remove();\n";
         out += "            settings_page.remove();\n";
+        out += "            sign_out.remove();\n";
+        out += "            user_name.remove();\n";
+        out += "            user_avatar.remove();\n";
     }
 
-    out += "        </script>\n";
+    out += "        </script>";
     addToBody(out);
+}
+
+void HtmlPage::forbidAccess()
+{
+    const ResourceManager res;
+    setContent(res.read("/html/403-template.html"));
 }
 
 void HtmlPage::update()
@@ -156,6 +193,7 @@ void HtmlPage::update()
     out.replace("%content%",    d->content);
     out.replace("%page_style%", d->userSettings.get("page_style").toUtf8());
     out.replace("%user_email%", d->userSettings.get("user_email").toUtf8());
+    out.replace("%gravatar_icon_url%", d->userSettings.gravatarIconUrl());
     const QStringList names = {
         d->userSettings.get("desirable_user_name"),
         d->userSettings.get("full_user_name"),
@@ -174,5 +212,15 @@ void HtmlPage::update()
     out.replace("%prefix%",     d->prefix);
 
     setData(out);
+}
+
+QString HtmlPage::get(const QString &key) const
+{
+    return d->commonSettings.get(key);
+}
+
+bool HtmlPage::getBool(const QString &key) const
+{
+    return d->commonSettings.getBool(key);
 }
 

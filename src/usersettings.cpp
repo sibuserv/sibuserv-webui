@@ -23,6 +23,11 @@
  *                                                                           *
  *****************************************************************************/
 
+#include <QCryptographicHash>
+#include <QJsonParseError>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include "logmanager.h"
 #include "applicationsettings.h"
 #include "usersettings.h"
@@ -32,5 +37,60 @@ UserSettings::UserSettings() :
                      "user-settings.json")
 {
     ;
+}
+
+QByteArray UserSettings::gravatarIconUrl() const
+{
+    if (get("user_email").isEmpty())
+        return "";
+
+    return "https://secure.gravatar.com/avatar/" +
+            calcEmailHash() +
+            "?s=52&amp;d=blank";
+}
+
+QByteArray UserSettings::calcEmailHash() const
+{
+    QString email = get("user_email").toLower();
+    email.replace(" ","");
+    return QCryptographicHash::hash(email.toUtf8(),
+                                    QCryptographicHash::Md5).toHex();
+}
+
+QString UserSettings::calcPasswordHash(const QString &password) const
+{
+    return QCryptographicHash::hash(password.toUtf8(),
+                                    QCryptographicHash::Sha256).toHex();
+}
+
+bool UserSettings::isValidAutorizationRequest(const QByteArray &post)
+{
+    if (post.isEmpty())
+        return false;
+
+    AbstractSettings as("", "");
+    if (as.loadSettings(post)) {
+        if (as.get("user_name").isEmpty())
+            return false;
+        if (as.get("password").isEmpty())
+            return false;
+
+        QByteArray out = "\n";
+        out += as.get("user_name") + "\n";
+        out += as.get("password") + "\n";
+
+        setFileName("users/" + as.get("user_name") + ".json");
+        if (readSettings()) {
+            out += get("password_hash") + "\n";
+            out += calcPasswordHash(as.get("password")) + "\n";
+            if (get("password_hash") == calcPasswordHash(as.get("password"))) {
+                return true;
+            }
+        }
+
+        LOG("user-settings.log", out);
+    }
+
+    return false;
 }
 

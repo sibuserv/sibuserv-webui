@@ -27,6 +27,7 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 
+#include "logmanager.h"
 #include "resourcemanager.h"
 #include "abstractsettings.h"
 
@@ -74,11 +75,11 @@ bool AbstractSettings::readSettings()
 
     ResourceManager res(":");
     if (res.contains(d->fileName)) {
-        readSetting(res.read(d->fileName), d->defaultSettings);
+        readSettings(res.read(d->fileName), d->defaultSettings);
     }
     res.setPath(d->path);
     if (res.contains(d->fileName)) {
-        if (readSetting(res.read(d->fileName), d->settings)) {
+        if (readSettings(res.read(d->fileName), d->settings)) {
             return true;
         }
     }
@@ -113,8 +114,13 @@ void AbstractSettings::setSettings(QJsonObject &object)
     d->settings = object;
 }
 
-bool AbstractSettings::readSetting(const QByteArray &data,
-                                   QJsonObject &settings)
+bool AbstractSettings::loadSettings(const QByteArray &data)
+{
+    return readSettings(data, d->settings);
+}
+
+bool AbstractSettings::readSettings(const QByteArray &data,
+                                    QJsonObject &settings)
 {
     QJsonDocument doc;
     QJsonParseError err;
@@ -123,6 +129,15 @@ bool AbstractSettings::readSetting(const QByteArray &data,
     if (err.error == QJsonParseError::NoError && !doc.isNull()) {
         settings = doc.object();
         return true;
+    }
+    else if (!d->fileName.isEmpty()) {
+        // TODO: do more correct check for ignoring calls from ApplicationSettings()
+        if (!d->fileName.contains("webui-settings.json")) {
+            QByteArray out = d->fileName.toUtf8() + ": ";
+            out += err.errorString().toUtf8() + ": ";
+            out += QString::number(err.offset);
+            LOG("settings-parsing-errors.log", out);
+        }
     }
 
     return false;
@@ -169,6 +184,20 @@ QString AbstractSettings::get(const QString &key) const
     return "";
 }
 
+double AbstractSettings::getDouble(const QString &key) const
+{
+    if (key.isEmpty())
+        return false;
+
+    for (const auto &s: {d->settings, d->defaultSettings}) {
+        if (s.contains(key)) {
+            return s[key].toDouble();
+        }
+    }
+
+    return false;
+}
+
 bool AbstractSettings::getBool(const QString &key) const
 {
     if (key.isEmpty())
@@ -181,5 +210,19 @@ bool AbstractSettings::getBool(const QString &key) const
     }
 
     return false;
+}
+
+int AbstractSettings::getInt(const QString &key) const
+{
+    if (key.isEmpty())
+        return 0;
+
+    for (const auto &s: {d->settings, d->defaultSettings}) {
+        if (s.contains(key)) {
+            return s[key].toInt();
+        }
+    }
+
+    return 0;
 }
 

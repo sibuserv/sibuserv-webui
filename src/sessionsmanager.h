@@ -40,6 +40,7 @@ public:
     virtual ~SessionsManager();
 
     bool isAutorized() const;
+    bool beginNewSession(const QString &userName);
 
 private:
     struct SessionsManagerPrivate;

@@ -28,7 +28,13 @@
 SettingsPage::SettingsPage(const Request &request) :
     HtmlPage(request)
 {
-    setContent("Settings page");
+    if (isAutorizedUser() && isAdmin()) {
+        setContent("Settings page");
+    }
+    else {
+        forbidAccess();
+    }
+
     addToTitle(" - %common_settings%");
     update();
     show();

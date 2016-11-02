@@ -44,19 +44,22 @@ public:
 
     void setPath(const QString &path);
     void setFileName(const QString &fileName);
+    bool loadSettings(const QByteArray &data);
     bool readSettings();
     bool writeSettings() const;
 
+    QStringList keys() const;
     bool contains(const QString &key) const;
     QString get(const QString &key) const;
+    double getDouble(const QString &key) const;
     bool getBool(const QString &key) const;
-    QStringList keys() const;
+    int getInt(const QString &key) const;
 
 protected:
-    inline void clear();
-    inline void setSettings(QJsonObject &object);
-    inline bool readSetting(const QByteArray &data,
-                            QJsonObject &settings);
+    void clear();
+    void setSettings(QJsonObject &object);
+    bool readSettings(const QByteArray &data,
+                             QJsonObject &settings);
 
 private:
     struct AbstractSettingsPrivate;
