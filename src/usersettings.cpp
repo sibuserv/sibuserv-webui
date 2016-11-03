@@ -39,6 +39,13 @@ UserSettings::UserSettings() :
     ;
 }
 
+UserSettings::UserSettings(const QString &fileName) :
+    AbstractSettings(ApplicationSettings::instance().configDirectory(),
+                     fileName)
+{
+    ;
+}
+
 QByteArray UserSettings::gravatarIconUrl() const
 {
     if (get("user_email").isEmpty())
@@ -70,8 +77,6 @@ bool UserSettings::isValidAutorizationRequest(const Request &request)
     if (request.post().isEmpty())
         return false;
 
-    LOG("user-settings.log", request.post());
-
     const QString userName = request.post("user_name");
     const QString password = request.post("password");
 
@@ -80,16 +85,8 @@ bool UserSettings::isValidAutorizationRequest(const Request &request)
     if (password.isEmpty())
         return false;
 
-    UserSettings us;
-    us.setFileName("users/" + userName + ".json");
-    if (us.readSettings()) {
-        QByteArray out = "\n";
-        out += userName + "\n";
-        out += password + "\n";
-        out += calcPasswordHash(password) + "\n";
-        out += us.get("password_hash") + "\n";
-        LOG("user-settings.log", out);
-
+    UserSettings us("users/" + userName + ".json");
+    if (!us.get("password_hash").isEmpty()) {
         if (us.get("password_hash") == calcPasswordHash(password)) {
             setFileName("users/" + userName + ".json");
             if (readSettings()) {

@@ -34,7 +34,8 @@
 class UserSettings : public AbstractSettings
 {
 public:
-    UserSettings();
+    explicit UserSettings();
+    explicit UserSettings(const QString &fileName);
     UserSettings(const UserSettings &in) = delete;
     UserSettings(UserSettings &&in) = delete;
     UserSettings& operator=(const UserSettings &in) = delete;

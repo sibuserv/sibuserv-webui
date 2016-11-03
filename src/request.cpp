@@ -27,6 +27,23 @@
 
 #include "request.h"
 
+struct Request::RequestPrivate
+{
+    bool isPostDataStored = false;
+    QByteArray postData;
+};
+
+Request::Request() :
+    d(new RequestPrivate)
+{
+    ;
+}
+
+Request::~Request()
+{
+    delete d;
+}
+
 bool Request::next() const
 {
     return (FCGI_Accept() >= 0);
@@ -71,18 +88,19 @@ QString Request::post(const QString &key) const
 
 QByteArray Request::post() const
 {
-    QByteArray out;
+    if (d->isPostDataStored)
+        return d->postData;
 
     const int len = getEnv("CONTENT_LENGTH").toInt();
-
     if (len > 0) {
         char *buff = new char[len];
-        FCGI_fread(buff, len, 1, stdin);
-        out = QByteArray(buff, len);
+        FCGI_fread(buff, len, 1, FCGI_stdin);
+        d->postData = QByteArray(buff, len);
         delete [] buff;
     }
+    d->isPostDataStored = true;
 
-    return out;
+    return d->postData;
 }
 
 QString Request::cookie(const QString &key) const

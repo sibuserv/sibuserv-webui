@@ -137,16 +137,14 @@ void HtmlPage::checkAutorization(const Request &request)
     QByteArray out;
     out += "        <script>\n";
 
-    if (SessionsManager(request).isAutorized()) {
+    SessionsManager sm(request);
+    if (sm.isAutorized()) {
         d->autorized = true;
-        d->userSettings.setFileName("users/" +
-                                    request.cookie("user_name") +
-                                    ".json");
+        d->userSettings.setFileName("users/" + sm.get("user_name") + ".json");
         d->userSettings.readSettings();
     }
     else if (d->userSettings.isValidAutorizationRequest(request)) {
         d->autorized = true;
-        SessionsManager sm(request);
         sm.setFileName(d->userSettings.get("user_id") + ".json");
         if (sm.beginNewSession(d->userSettings.get("user_name"))) {
             const bool httpsOnly = d->commonSettings.getBool("https_only");

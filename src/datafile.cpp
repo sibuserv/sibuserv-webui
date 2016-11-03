@@ -46,7 +46,7 @@ DataFile::DataFile(const Request &request) :
         setData(res.read(fileName));
     }
 
-    autodetectContentType();
+    autodetectContentType(fileName);
     show();
 }
 

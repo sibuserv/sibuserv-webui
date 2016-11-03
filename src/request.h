@@ -32,6 +32,9 @@
 class Request
 {
 public:
+    Request();
+    ~Request();
+
     bool next() const;
     bool isGet() const;
     bool isPost() const;
@@ -43,10 +46,14 @@ public:
     QString cookie(const QString &key) const;
     QString scriptName() const;
 
-private:
+protected:
     inline QString getEnv(const QString &var) const;
     inline QString getValue(const QString &buff,
                             const QString &key,
                             const QString &separator) const;
+
+private:
+    struct RequestPrivate;
+    RequestPrivate * const d;
 };
 

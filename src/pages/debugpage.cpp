@@ -36,7 +36,9 @@ DebugPage::DebugPage(const Request &request) :
         for (const auto &k : request.environment()) {
             content += k.toUtf8() + "<br>\n";
         }
-        content += "POST_DATA=" + request.post() + "<br>\n";
+        content += "POST_DATA=<pre style=\"display: inline;\">";
+        content += request.post();
+        content += "</pre><br>\n";
         setContent(content);
     }
     else {

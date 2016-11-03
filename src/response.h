@@ -48,7 +48,7 @@ public:
                    const bool httpOnly = false);
     void show() const;
 
-    void autodetectContentType();
+    void autodetectContentType(const QString &fileName = "");
 
 protected:
     inline void showHeaders() const;

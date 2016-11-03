@@ -103,13 +103,16 @@ void Response::show() const
     showData();
 }
 
-void Response::autodetectContentType()
+void Response::autodetectContentType(const QString &fileName)
 {
     if (d->data.isEmpty())
         return;
 
     const QMimeDatabase mimeDatabase;
-    d->contentType = mimeDatabase.mimeTypeForData(d->data).name();
+    if (fileName.isEmpty())
+        d->contentType = mimeDatabase.mimeTypeForData(d->data).name();
+    else
+        d->contentType = mimeDatabase.mimeTypeForName(fileName).name();
 }
 
 void Response::showHeaders() const
