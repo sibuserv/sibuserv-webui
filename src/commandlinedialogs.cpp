@@ -23,41 +23,21 @@
  *                                                                           *
  *****************************************************************************/
 
-#pragma once
+#include <iostream>
 
-#include "options.h"
+#include "commandlinedialogs.h"
 
-class ApplicationSettings
+using std::string;
+using std::cout;
+using std::endl;
+
+void CommandLineDialogs::addUser() const
 {
-public:
-    static ApplicationSettings &instance();
-    void update(const Options &options);
-    void finalize();
+    cout << "Add new local user." << endl;
+}
 
-    QString prefixString() const;
-    QString configDirectory() const;
-    QString l10nDirectory() const;
-    QString cacheDirectory() const;
-    QString logDirectory() const;
-    QString sessionsDirectory() const;
-    QString buildServerBinDir() const;
-    QString buildServerLogFile() const;
-    QString staticCodeAnalysisLogsSubdir() const;
-
-protected:
-    inline void clear();
-    QString get(const QString &key) const;
-
-private:
-    ApplicationSettings();
-    ApplicationSettings(const ApplicationSettings &in) = delete;
-    ApplicationSettings(ApplicationSettings &&in) = delete;
-    ApplicationSettings& operator=(const ApplicationSettings &in) = delete;
-    void* operator new(std::size_t) = delete;
-    void* operator new[](std::size_t) = delete;
-    virtual ~ApplicationSettings();
-
-    struct ApplicationSettingsPrivate;
-    ApplicationSettingsPrivate * const d;
-};
+void CommandLineDialogs::delUser() const
+{
+    cout << "Delete local user." << endl;
+}
 

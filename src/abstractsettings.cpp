@@ -127,12 +127,17 @@ bool AbstractSettings::readSettings(const QByteArray &data,
         return true;
     }
     else if (!d->fileName.isEmpty()) {
-        ApplicationSettings *ap = dynamic_cast<ApplicationSettings*>(this);
-        if (!ap) {
+        // Protection from possible problems during parsing of config file in
+        // ApplicationSettings(), because LOG() uses ApplicationSettings().
+        static unsigned short counter = 0;
+        if (counter > 2) {
             QByteArray out = d->fileName.toUtf8() + ": ";
             out += err.errorString().toUtf8() + ": ";
             out += QString::number(err.offset);
             LOG("settings-parsing-errors.log", out);
+        }
+        else {
+            ++counter;
         }
     }
 

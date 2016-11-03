@@ -28,7 +28,6 @@
 
 #include "abstractsettings.h"
 #include "applicationsettings.h"
-#include "logmanager.h"
 
 #define RETURN_APPLICATIONS_SETTINGS_VARIABLE(KEY) \
     if (d->isReadOnly) { \
@@ -94,23 +93,6 @@ void ApplicationSettings::finalize()
     staticCodeAnalysisLogsSubdir();
 
     clear();
-}
-
-void ApplicationSettings::saveLog()
-{
-    QByteArray out = "\n";
-
-    out += prefixString() + "\n";
-    out += configDirectory() + "\n";
-    out += l10nDirectory() + "\n";
-    out += cacheDirectory() + "\n";
-    out += logDirectory() + "\n";
-    out += sessionsDirectory() + "\n";
-    out += buildServerBinDir() + "\n";
-    out += buildServerLogFile() + "\n";
-    out += staticCodeAnalysisLogsSubdir() + "\n";
-
-    LOG("application-settings.log", out);
 }
 
 QString ApplicationSettings::prefixString() const

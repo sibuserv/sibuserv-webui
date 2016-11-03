@@ -38,6 +38,8 @@ public:
 
     bool isHelpRequest() const;
     bool isVersionRequest() const;
+    bool isAddUserRequest() const;
+    bool isDelUserRequest() const;
     bool isConfigFileDefine() const;
 
     QString configFile() const;

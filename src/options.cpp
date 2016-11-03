@@ -29,6 +29,8 @@ struct Options::OptionsPrivate
 {
     bool helpRequest = false;
     bool versionRequest = false;
+    bool addUserRequest = false;
+    bool delUserRequest = false;
     QString confFile;
 };
 
@@ -43,6 +45,12 @@ Options::Options(int argc, char **argv) :
         }
         else if (arg == "-v" || arg == "--version") {
             d->versionRequest = true;
+        }
+        else if (arg == "-a" || arg == "--add-user") {
+            d->addUserRequest = true;
+        }
+        else if (arg == "-d" || arg == "--del-user") {
+            d->delUserRequest = true;
         }
         else if (arg == "-c" || arg == "--conf-file") {
             if (idx < argc - 1) {
@@ -77,6 +85,16 @@ bool Options::isHelpRequest() const
 bool Options::isVersionRequest() const
 {
     return d->versionRequest;
+}
+
+bool Options::isAddUserRequest() const
+{
+    return d->addUserRequest;
+}
+
+bool Options::isDelUserRequest() const
+{
+    return d->delUserRequest;
 }
 
 bool Options::isConfigFileDefine() const

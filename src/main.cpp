@@ -26,6 +26,7 @@
 #include "help.h"
 #include "options.h"
 #include "controller.h"
+#include "commandlinedialogs.h"
 #include "applicationsettings.h"
 #include "unpacker.h"
 
@@ -43,9 +44,21 @@ int main(int argc, char **argv)
 
             return 0;
         }
+
         ApplicationSettings::instance().update(options);
         ApplicationSettings::instance().finalize();
-        // ApplicationSettings::instance().saveLog();
+
+        if (options.isAddUserRequest() || options.isDelUserRequest()) {
+            CommandLineDialogs dialog;
+
+            if (options.isAddUserRequest())
+                dialog.addUser();
+            else if (options.isDelUserRequest())
+                dialog.delUser();
+
+            return 0;
+        }
+
         EmbeddedResourcesUnpacker();
     }
 

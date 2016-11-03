@@ -1,4 +1,4 @@
-.TH "sibuserv-webui" 1 "05 Oct 2016"
+.TH "sibuserv-webui" 1 "04 Nov 2016"
 .SH "NAME"
 sibuserv-webui \- FastCGI program which passively listens for incoming connections and generates list of hosts in your IPv6 network. This daemon prepares data which may be put directly into /etc/hosts.
 .SH "SYNOPSIS"
@@ -19,9 +19,15 @@ Show help and exit.
 .BR "\-v,  \-\-version"
 Show version and exit.
 .TP
+.BR "\-a,  \-\-add-user"
+Add new local user. His (her) json config will be stored in ${CONFIG_DIRECTORY}/users/ directory.
+.TP
+.BR "\-d,  \-\-del-user"
+Delete local user. His (her) json config will be removed from ${CONFIG_DIRECTORY}/users/ directory.
+.TP
 .RB "Special options:"
 .TP
-.BR "\-c <file>,  \-\-conf-file <dir>"
+.BR "\-c <file>,  \-\-conf-file <file>"
 Set config file (default: /etc/sibuserv/sibuserv-webui.conf).
 .br
 Settings in config file have lower priority than command line options.

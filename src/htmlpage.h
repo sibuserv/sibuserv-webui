@@ -53,6 +53,7 @@ public:
     bool isAdmin() const;
 
 protected:
+    void setPage(const QByteArray &page);
     void checkAutorization(const Request &request);
     void forceAuthorization();
     void forbidAccess();

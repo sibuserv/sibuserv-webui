@@ -41,7 +41,6 @@ LogManager &LogManager::instance()
 
 bool LogManager::write(const QString &fileName, const QByteArray &data) const
 {
-
     const QByteArray &&dateTime = QDateTime::currentDateTime()
             .toString("[yyyy-MM-dd_hh-mm-ss.zzz_t] ").toUtf8();
     const QString &&logDirectory = ApplicationSettings::instance()

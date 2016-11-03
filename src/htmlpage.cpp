@@ -57,24 +57,24 @@ HtmlPage::HtmlPage(const Request &request) :
     d->prefix = ApplicationSettings::instance().prefixString().toUtf8();
     d->redirect = request.scriptName().toUtf8();
 
-    const ResourceManager res;
-    if (!request.get("ajax").isEmpty())
-        d->page = "%body%";
-    else
-        d->page = res.read("/html/page-template.html");
-
-    setTitle("%basic_title%");
-    setHead(res.read("/html/head-template.html"));
-    setBody(res.read("/html/body-template.html"));
-    setContent(res.read("/html/404-template.html"));
+    if (request.get("ajax").isEmpty()) {
+        const ResourceManager res;
+        setPage(res.read("/html/page-template.html"));
+        setTitle("%basic_title%");
+        setHead(res.read("/html/head-template.html"));
+        setBody(res.read("/html/body-template.html"));
+        setContent(res.read("/html/404-template.html"));
+    }
 
     checkAutorization(request);
 
-    d->localization.setFileName(d->commonSettings.l10nFile());
-    d->localization.readSettings();
+    if (request.get("ajax").isEmpty()) {
+        d->localization.setFileName(d->commonSettings.l10nFile());
+        d->localization.readSettings();
 
-    setContentType("text/html");
-    update();
+        setContentType("text/html");
+        update();
+    }
 }
 
 HtmlPage::~HtmlPage()
@@ -130,6 +130,11 @@ bool HtmlPage::isAutorizedUser() const
 bool HtmlPage::isAdmin() const
 {
     return d->admin;
+}
+
+void HtmlPage::setPage(const QByteArray &page)
+{
+    d->page = page;
 }
 
 void HtmlPage::checkAutorization(const Request &request)
