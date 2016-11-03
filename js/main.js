@@ -2,20 +2,23 @@ function begin_authorization() {
     document.getElementById("sign_in").style.display = "none";
     document.getElementById("content").style.display = "none";
     document.getElementById("auth").style.display = "flex";
+    return false;
 }
 
 function authorized_user() {
-    document.getElementById("sign_out").style.display = "inline-block";
     document.getElementById("sign_in").remove();
+    document.getElementById("sign_out").style.display = "inline-block";
+    document.getElementById("user_name").style.display = "inline-block";
+    document.getElementById("user_avatar").style.display = "inline-block";
     document.getElementById("auth").remove();
 }
 
 function unauthorized_user() {
-    document.getElementById("sign_out").style.display = "inline-block";
-    document.getElementById("settings_page").remove();
+    document.getElementById("sign_in").style.display = "inline-block";
     document.getElementById("sign_out").remove();
     document.getElementById("user_name").remove();
-    document.getElementById("user_avatar").remove();
+    email_is_unknown();
+    not_admin();
 }
 
 function not_admin() {
@@ -26,14 +29,24 @@ function email_is_unknown() {
     document.getElementById("user_avatar").remove();
 }
 
-$(document).on("click", "#sign_in *", function() {
-    begin_authorization();
-    return false;
-});
+function sign_out() {
+    document.cookie = "user_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    document.cookie = "session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    return true;
+}
 
-$(document).ready(function() {
+function store_user_name() {
+    localStorage.setItem("user_name", $("#input_user_name").val());
+}
+
+function document_postprocessing() {
     if ($("#input_user_name")) {
         $("#input_user_name").val(localStorage.getItem("user_name"));
     }
-});
+}
+
+$(document).on("click", "#sign_in *", begin_authorization);
+$(document).on("click", "#sign_out *", sign_out);
+$(document).on("submit", "#auth_form", store_user_name);
+$(document).ready(document_postprocessing);
 

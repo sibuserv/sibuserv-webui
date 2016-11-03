@@ -107,10 +107,6 @@ h1 {
     font-size: 16px;
 }
 
-#sign_in {
-    display: none;
-}
-
 #sign_in a {
     text-decoration: none;
     background-color: #3cb371;
@@ -118,10 +114,6 @@ h1 {
 
 #sign_in a:hover {
     background-color: #2ba260;
-}
-
-#sign_out {
-    display: none;
 }
 
 #sign_out a {
@@ -143,7 +135,6 @@ h1 {
 }
 
 #auth {
-    display: none;
     top: 0;
     left: 0;
     width: 100%;

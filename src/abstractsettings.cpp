@@ -29,6 +29,7 @@
 
 #include "logmanager.h"
 #include "resourcemanager.h"
+#include "applicationsettings.h"
 #include "abstractsettings.h"
 
 struct AbstractSettings::AbstractSettingsPrivate
@@ -126,8 +127,8 @@ bool AbstractSettings::readSettings(const QByteArray &data,
         return true;
     }
     else if (!d->fileName.isEmpty()) {
-        // TODO: do more correct check for ignoring calls from ApplicationSettings()
-        if (!d->fileName.contains("webui-settings.json")) {
+        ApplicationSettings *ap = dynamic_cast<ApplicationSettings*>(this);
+        if (!ap) {
             QByteArray out = d->fileName.toUtf8() + ": ";
             out += err.errorString().toUtf8() + ": ";
             out += QString::number(err.offset);
