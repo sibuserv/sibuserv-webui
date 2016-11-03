@@ -54,6 +54,7 @@ public:
 
 protected:
     void checkAutorization(const Request &request);
+    void forceAuthorization();
     void forbidAccess();
     void update();
 

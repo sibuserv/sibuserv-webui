@@ -29,6 +29,7 @@
 #include <QByteArray>
 
 #include "abstractsettings.h"
+#include "request.h"
 
 class UserSettings : public AbstractSettings
 {
@@ -39,7 +40,7 @@ public:
     UserSettings& operator=(const UserSettings &in) = delete;
     virtual ~UserSettings() = default;
 
-    bool isValidAutorizationRequest(const QByteArray &post);
+    bool isValidAutorizationRequest(const Request &request);
     QByteArray gravatarIconUrl() const;
 
 protected:

@@ -63,6 +63,12 @@ QString Request::get(const QString &key) const
     return getValue(buff, key, "&");
 }
 
+QString Request::post(const QString &key) const
+{
+    const QString buff = QString::fromUtf8(post());
+    return getValue(buff, key, "&");
+}
+
 QByteArray Request::post() const
 {
     QByteArray out;

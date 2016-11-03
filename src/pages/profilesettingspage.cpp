@@ -33,6 +33,7 @@ ProfileSettingsPage::ProfileSettingsPage(const Request &request) :
     }
     else {
         forbidAccess();
+        forceAuthorization();
     }
 
     addToTitle(" - %profile_settings%");

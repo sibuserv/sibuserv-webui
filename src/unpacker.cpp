@@ -54,6 +54,9 @@ EmbeddedResourcesUnpacker::EmbeddedResourcesUnpacker()
             else if (fileName.endsWith(".css")) {
                 rm.unpack(fileName, as.cacheDirectory());
             }
+            else if (fileName.endsWith(".js")) {
+                rm.unpack(fileName, as.cacheDirectory());
+            }
             else if (fileName.endsWith("robots.txt")) {
                 rm.unpack(fileName, as.cacheDirectory());
             }

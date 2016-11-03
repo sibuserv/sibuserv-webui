@@ -44,7 +44,6 @@ public:
 
     void setPath(const QString &path);
     void setFileName(const QString &fileName);
-    bool loadSettings(const QByteArray &data);
     bool readSettings();
     bool writeSettings() const;
 
@@ -59,7 +58,7 @@ protected:
     void clear();
     void setSettings(QJsonObject &object);
     bool readSettings(const QByteArray &data,
-                             QJsonObject &settings);
+                      QJsonObject &settings);
 
 private:
     struct AbstractSettingsPrivate;

@@ -114,11 +114,6 @@ void AbstractSettings::setSettings(QJsonObject &object)
     d->settings = object;
 }
 
-bool AbstractSettings::loadSettings(const QByteArray &data)
-{
-    return readSettings(data, d->settings);
-}
-
 bool AbstractSettings::readSettings(const QByteArray &data,
                                     QJsonObject &settings)
 {

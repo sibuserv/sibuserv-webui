@@ -144,7 +144,7 @@ void HtmlPage::checkAutorization(const Request &request)
                                     ".json");
         d->userSettings.readSettings();
     }
-    else if (d->userSettings.isValidAutorizationRequest(request.post())) {
+    else if (d->userSettings.isValidAutorizationRequest(request)) {
         d->autorized = true;
         SessionsManager sm(request);
         sm.setFileName(d->userSettings.get("user_id") + ".json");
@@ -159,22 +159,26 @@ void HtmlPage::checkAutorization(const Request &request)
     if (d->autorized) {
         d->admin = d->userSettings.getBool("admin");
         if (!d->admin) {
-            out += "            settings_page.remove();\n";
+            out += "            not_admin();\n";
         }
         if (d->userSettings.get("user_email").isEmpty()) {
-            out += "            user_avatar.remove();\n";
+            out += "            email_is_unknown();\n";
         }
-        out += "            sign_in.remove();\n";
+        out += "            authorized_user();\n";
     }
     else {
-        out += "            settings_page.remove();\n";
-        out += "            sign_out.remove();\n";
-        out += "            user_name.remove();\n";
-        out += "            user_avatar.remove();\n";
+        out += "            unauthorized_user();\n";
     }
 
     out += "        </script>";
     addToBody(out);
+}
+
+void HtmlPage::forceAuthorization()
+{
+    if (!d->autorized) {
+        addToBody("        <script>begin_authorization()</script>");
+    }
 }
 
 void HtmlPage::forbidAccess()
@@ -194,6 +198,13 @@ void HtmlPage::update()
     out.replace("%page_style%", d->userSettings.get("page_style").toUtf8());
     out.replace("%user_email%", d->userSettings.get("user_email").toUtf8());
     out.replace("%gravatar_icon_url%", d->userSettings.gravatarIconUrl());
+    if (!d->autorized) {
+        const ResourceManager res;
+        out.replace("%auth_form%", res.read("/html/auth-template.html"));
+    }
+    else {
+        out.replace("%auth_form%", "");
+    }
     const QStringList names = {
         d->userSettings.get("desirable_user_name"),
         d->userSettings.get("full_user_name"),

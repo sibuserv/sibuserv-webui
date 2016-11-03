@@ -24,6 +24,7 @@
  *****************************************************************************/
 
 #include <QDir>
+#include <QFileInfo>
 #include <QByteArray>
 #include <QStringList>
 
@@ -63,9 +64,16 @@ void ProjectsPage::generateContent()
     QByteArray out;
     out += "<ul>\n";
 
+    const QString logFile =
+            QFileInfo(ApplicationSettings::instance().buildServerLogFile())
+            .fileName();
+
     QByteArray tmp;
     QDir dir(ApplicationSettings::instance().buildServerBinDir());
     for (const auto &it : dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot)) {
+        if (it == logFile) {
+            continue;
+        }
         tmp = it.toUtf8();
         out +=  "<li><a id=\"" + tmp + "\" href=\"%prefix%projects/" +
                 tmp + "\">" + tmp + "</a></li>\n";

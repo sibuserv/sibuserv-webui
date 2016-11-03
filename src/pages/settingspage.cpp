@@ -33,6 +33,7 @@ SettingsPage::SettingsPage(const Request &request) :
     }
     else {
         forbidAccess();
+        forceAuthorization();
     }
 
     addToTitle(" - %common_settings%");

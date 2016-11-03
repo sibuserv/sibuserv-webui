@@ -63,32 +63,39 @@ QString UserSettings::calcPasswordHash(const QString &password) const
                                     QCryptographicHash::Sha256).toHex();
 }
 
-bool UserSettings::isValidAutorizationRequest(const QByteArray &post)
+bool UserSettings::isValidAutorizationRequest(const Request &request)
 {
-    if (post.isEmpty())
+    if (!request.isPost())
+        return false;
+    if (request.post().isEmpty())
         return false;
 
-    AbstractSettings as("", "");
-    if (as.loadSettings(post)) {
-        if (as.get("user_name").isEmpty())
-            return false;
-        if (as.get("password").isEmpty())
-            return false;
+    LOG("user-settings.log", request.post());
 
+    const QString userName = request.post("user_name");
+    const QString password = request.post("password");
+
+    if (userName.isEmpty())
+        return false;
+    if (password.isEmpty())
+        return false;
+
+    UserSettings us;
+    us.setFileName("users/" + userName + ".json");
+    if (us.readSettings()) {
         QByteArray out = "\n";
-        out += as.get("user_name") + "\n";
-        out += as.get("password") + "\n";
+        out += userName + "\n";
+        out += password + "\n";
+        out += calcPasswordHash(password) + "\n";
+        out += us.get("password_hash") + "\n";
+        LOG("user-settings.log", out);
 
-        setFileName("users/" + as.get("user_name") + ".json");
-        if (readSettings()) {
-            out += get("password_hash") + "\n";
-            out += calcPasswordHash(as.get("password")) + "\n";
-            if (get("password_hash") == calcPasswordHash(as.get("password"))) {
+        if (us.get("password_hash") == calcPasswordHash(password)) {
+            setFileName("users/" + userName + ".json");
+            if (readSettings()) {
                 return true;
             }
         }
-
-        LOG("user-settings.log", out);
     }
 
     return false;

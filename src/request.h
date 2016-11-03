@@ -38,6 +38,7 @@ public:
 
     QList<QString> environment() const;
     QString get(const QString &key) const;
+    QString post(const QString &key) const;
     QByteArray post() const;
     QString cookie(const QString &key) const;
     QString scriptName() const;
