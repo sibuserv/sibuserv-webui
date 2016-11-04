@@ -24,16 +24,45 @@
  *****************************************************************************/
 
 #include <iostream>
+#include <QFile>
 
+#include "usersettings.h"
+#include "applicationsettings.h"
 #include "commandlinedialogs.h"
 
 using std::string;
+using std::cin;
 using std::cout;
 using std::endl;
 
 void CommandLineDialogs::addUser() const
 {
     cout << "Add new local user." << endl;
+
+    const QString userName = "test";
+    const QString fullUserName = "test test";
+    const QString userId = "lndklsnfklsdkgn32n5klwn53nk";
+    const QString password = "123";
+    const QString password_hash = UserSettings::calcPasswordHash(password);
+    const QString fileName = "users/" + userName + ".json";
+
+    UserSettings us;
+    us.setFileName(fileName);
+    QFile f(ApplicationSettings::instance().configDirectory() + "/" + fileName);
+    
+    if (us.writeSettings()) {
+        ;
+    }
+    else {
+        if (f.open(QIODevice::OpenModeFlag::WriteOnly)) {
+            f.close();
+        }
+        else {
+            ;
+        }
+    }
+
+
 }
 
 void CommandLineDialogs::delUser() const

@@ -52,19 +52,19 @@ QByteArray UserSettings::gravatarIconUrl() const
         return "";
 
     return "https://secure.gravatar.com/avatar/" +
-            calcEmailHash() +
+            calcEmailHash(get("user_email").toLower()) +
             "?s=52&amp;d=blank";
 }
 
-QByteArray UserSettings::calcEmailHash() const
+QByteArray UserSettings::calcEmailHash(const QString &email)
 {
-    QString email = get("user_email").toLower();
-    email.replace(" ","");
-    return QCryptographicHash::hash(email.toUtf8(),
+    QByteArray data = email.toUtf8();
+    data.replace(" ","");
+    return QCryptographicHash::hash(data,
                                     QCryptographicHash::Md5).toHex();
 }
 
-QString UserSettings::calcPasswordHash(const QString &password) const
+QString UserSettings::calcPasswordHash(const QString &password)
 {
     return QCryptographicHash::hash(password.toUtf8(),
                                     QCryptographicHash::Sha256).toHex();

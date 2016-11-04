@@ -33,6 +33,8 @@
 
 class UserSettings : public AbstractSettings
 {
+    friend class CommandLineDialogs;
+
 public:
     explicit UserSettings();
     explicit UserSettings(const QString &fileName);
@@ -44,8 +46,7 @@ public:
     bool isValidAutorizationRequest(const Request &request);
     QByteArray gravatarIconUrl() const;
 
-protected:
-    inline QByteArray calcEmailHash() const;
-    inline QString calcPasswordHash(const QString &password) const;
+    static QByteArray calcEmailHash(const QString &email);
+    static QString calcPasswordHash(const QString &password);
 };
 
