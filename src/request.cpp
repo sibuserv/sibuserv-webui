@@ -25,6 +25,8 @@
 
 #include <fcgi_stdio.h>
 
+#include <QJsonDocument>
+
 #include "request.h"
 
 struct Request::RequestPrivate
@@ -61,6 +63,16 @@ bool Request::isPost() const
     return (requestMethod == "POST");
 }
 
+bool Request::receivedJsonArray() const
+{
+    return QJsonDocument::fromJson(post()).isArray();
+}
+
+bool Request::receivedJsonObject() const
+{
+    return QJsonDocument::fromJson(post()).isObject();
+}
+
 QList<QString> Request::environment() const
 {
     QList<QString> out;
@@ -86,7 +98,7 @@ QString Request::post(const QString &key) const
     return getValue(buff, key, "&");
 }
 
-QByteArray Request::post() const
+QByteArray& Request::post() const
 {
     if (d->isPostDataStored)
         return d->postData;
@@ -112,6 +124,16 @@ QString Request::cookie(const QString &key) const
 QString Request::scriptName() const
 {
     return getEnv("SCRIPT_NAME");
+}
+
+QJsonArray Request::getJsonArray() const
+{
+    return QJsonDocument::fromJson(post()).array();
+}
+
+QJsonObject Request::getJsonObject() const
+{
+    return QJsonDocument::fromJson(post()).object();
 }
 
 QString Request::getEnv(const QString &var) const

@@ -28,6 +28,8 @@
 #include <QMap>
 #include <QString>
 #include <QByteArray>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class Request
 {
@@ -39,12 +41,18 @@ public:
     bool isGet() const;
     bool isPost() const;
 
+    bool receivedJsonArray() const;
+    bool receivedJsonObject() const;
+
     QList<QString> environment() const;
     QString get(const QString &key) const;
     QString post(const QString &key) const;
-    QByteArray post() const;
+    QByteArray& post() const;
     QString cookie(const QString &key) const;
     QString scriptName() const;
+
+    QJsonArray  getJsonArray() const;
+    QJsonObject getJsonObject() const;
 
 protected:
     inline QString getEnv(const QString &var) const;

@@ -45,6 +45,15 @@ function document_postprocessing() {
     }
 }
 
+// Debug mode!
+// $(document).on("click", "#settings_page *", function() {
+//     $.post("/debug?ajax=body", "111", function(data) {
+//         alert(data);
+//     })
+//     return false;
+// });
+
+
 $(document).on("click", "#sign_in *", begin_authorization);
 $(document).on("click", "#sign_out *", sign_out);
 $(document).on("submit", "#auth_form", store_user_name);

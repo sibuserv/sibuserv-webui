@@ -30,7 +30,7 @@
 DebugPage::DebugPage(const Request &request) :
     HtmlPage(request)
 {
-    if (true) {
+    if (isAutorizedUser() && isAdmin()) {
         QByteArray content;
         for (const auto &k : request.environment()) {
             content += k.toUtf8() + "<br>\n";

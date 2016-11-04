@@ -70,7 +70,7 @@ void ProjectsPage::generateContent()
 
     QByteArray tmp;
     QDir dir(ApplicationSettings::instance().buildServerBinDir());
-    for (const auto &it : dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot)) {
+    for (const auto &it : dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
         if (it == logFile) {
             continue;
         }
