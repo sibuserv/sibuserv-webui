@@ -51,14 +51,14 @@ bool Request::next() const
 
 bool Request::isGet() const
 {
-    const QString request_method = getEnv("REQUEST_METHOD");
-    return (request_method == "GET");
+    const QString requestMethod = getEnv("REQUEST_METHOD");
+    return (requestMethod == "GET");
 }
 
 bool Request::isPost() const
 {
-    const QString request_method = getEnv("REQUEST_METHOD");
-    return (request_method == "POST");
+    const QString requestMethod = getEnv("REQUEST_METHOD");
+    return (requestMethod == "POST");
 }
 
 QList<QString> Request::environment() const

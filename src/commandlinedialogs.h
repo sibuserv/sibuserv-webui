@@ -25,10 +25,15 @@
 
 #pragma once
 
+#include <QString>
+
 class CommandLineDialogs
 {
 public:
     void addUser() const;
     void delUser() const;
+
+private:
+    QString getPassword() const;
 };
 

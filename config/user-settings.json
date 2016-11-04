@@ -1,10 +1,10 @@
 {
     "user_name": "guest",
-    "full_user_name": "Guest",
+    "full_user_name": "",
     "desirable_user_name": "",
-    "user_id": "61f51caf4b948a009381ddbd714b5d3b9d6e58f7",
+    "user_id": "",
     "page_style": "default.css",
-    "password_hash": "edd40e38193c9e8a3a6313fcc570f9e3929f35fbc65b254f0e29d5fc6e8f450b",
+    "password_hash": "",
     "user_email": "",
     "admin": false,
     "projects": [

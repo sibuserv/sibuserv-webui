@@ -32,6 +32,7 @@
 
 class AbstractSettings
 {
+    friend class CommandLineDialogs;
     friend class ApplicationSettings;
     friend class Localization;
 
@@ -56,6 +57,8 @@ public:
 
 protected:
     void clear();
+    void set(const QString &key, const QString &value);
+    void setBool(const QString &key, const bool &value);
     void setSettings(QJsonObject &object);
     bool readSettings(const QByteArray &data,
                       QJsonObject &settings);

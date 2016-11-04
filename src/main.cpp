@@ -47,7 +47,6 @@ int main(int argc, char **argv)
 
         ApplicationSettings::instance().update(options);
         ApplicationSettings::instance().finalize();
-        EmbeddedResourcesUnpacker();
 
         if (options.isAddUserRequest() || options.isDelUserRequest()) {
             CommandLineDialogs dialog;
@@ -59,6 +58,8 @@ int main(int argc, char **argv)
 
             return 0;
         }
+
+        EmbeddedResourcesUnpacker();
     }
 
     Controller controller;

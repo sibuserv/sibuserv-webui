@@ -110,6 +110,16 @@ void AbstractSettings::clear()
     d->path.clear();
 }
 
+void AbstractSettings::set(const QString &key, const QString &value)
+{
+    d->settings[key] = value;
+}
+
+void AbstractSettings::setBool(const QString &key, const bool &value)
+{
+    d->settings[key] = value;
+}
+
 void AbstractSettings::setSettings(QJsonObject &object)
 {
     d->settings = object;
