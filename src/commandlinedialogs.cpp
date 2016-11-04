@@ -92,6 +92,15 @@ void CommandLineDialogs::addUser() const
         return;
     }
     const QString userName = QString::fromStdString(line);
+    const QString fileName = "users/" + userName + ".json";
+
+    {
+        UserSettings us(fileName);
+        if (!us.get("user_id").isEmpty()) {
+            cout << "User is already exist!" << endl;
+            return;
+        }
+    }
 
     cout << "Full user name: ";
     std::getline(cin, line);
@@ -134,16 +143,13 @@ void CommandLineDialogs::addUser() const
         cout << "Password is empty!" << endl;
         return;
     }
-
     cout << "Confirm password: ";
     const QString confirmPassword = getPassword();
     if (confirmPassword != password) {
         cout << "Passwords do not match!" << endl;
         return;
     }
-
     const QString passwordHash = UserSettings::calcPasswordHash(password);
-    const QString fileName = "users/" + userName + ".json";
 
     UserSettings us;
     us.setFileName(fileName);
