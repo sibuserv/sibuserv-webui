@@ -1,4 +1,4 @@
-*--- Build dependencies ---
+===== Build dependencies =====
 * gcc (>= 6.1) or clang (>= 3.8)
 * cmake (>= 3.4)
 * libfcgi (>= 2.4)
@@ -6,11 +6,23 @@
 * gzip
 
 
---- Runtime dependencies ---
+===== Runtime dependencies =====
+* libfcgi
+* libqt5core
 * spawn-fcgi
 
 
---- Installation ---
+===== Some configuration options =====
+* -DWITH_SYSTEMD_SUPPORT={ON, OFF} (default: ON)
+* -DSYSTEMD_UNIT_FILES_DIR={...} (default: /lib/systemd/system/)
+* -DCMAKE_INSTALL_PREFIX=/usr
+* -DCMAKE_BUILD_TYPE={Release, RelWithDebInfo, Debug, MinRelSize}
+* -DCMAKE_CXX_COMPILER=/usr/bin/g++
+* -DCMAKE_CXX_FLAGS="-s -Os -fdata-sections -ffunction-sections -fPIC -D_FORTIFY_SOURCE=2 -static-libgcc"
+* -DCMAKE_EXE_LINKER_FLAGS="-Wl,--gc-sections -Wl,--strip-all -Wl,--as-needed"
+
+
+===== Installation =====
 mkdir -p builddir
 cd builddir
 cmake -DCMAKE_BUILD_TYPE=Release  -DCMAKE_INSTALL_PREFIX=/usr ..
@@ -18,45 +30,94 @@ make
 sudo make install
 
 
---- Extra build options ---
-* -DCMAKE_BUILD_TYPE={Release, RelWithDebInfo, Debug, MinRelSize}
-* -DWITH_SYSTEMD_SUPPORT={ON, OFF} (default: ON)
-* -DSYSTEMD_UNIT_FILES_DIR={...} (default: /lib/systemd/system/)
-* -DCMAKE_INSTALL_PREFIX=/usr
-* -DCMAKE_CXX_COMPILER=/usr/bin/g++
-* -DCMAKE_CXX_FLAGS="-s -Os -fdata-sections -ffunction-sections -fPIC -D_FORTIFY_SOURCE=2 -static-libgcc"
-* -DCMAKE_EXE_LINKER_FLAGS="-Wl,--gc-sections -Wl,--strip-all -Wl,--as-needed"
+===== Basic configuration files =====
+* /etc/sibuserv/webui-launcher.conf
+* /etc/sibuserv/webui-settings.json
 
-*** Configuration files ***
-/etc/bosixnet/bosixnet-daemon.conf
-/etc/bosixnet/bosixnet-webui.conf
+For better perfomance place "cache_directory" and "sessions_directory" on SSD
+or even in RAM (tmpfs).
 
 
-*** Example of FastCGI settings in Nginx ***
-Edit file /etc/nginx/sites-available/default and paste something like this:
+===== Launching sibuserv-webui daemon using systemd =====
+sudo systemctl daemon-reload
+sudo systemctl enable sibuserv-webui
+sudo systemctl restart sibuserv-webui
 
-    location /sibuserv/ {
-        fastcgi_pass   localhost:35827;
-        include        /etc/nginx/fastcgi_params;
+At first launch sibuserv-webui will unpack embedded resources into specified
+directories (see "config_directory" and "cache_directory" variables in
+webui-settings.json config). By default:
+* /home/sibuserv/.config/sibuserv-webui
+* /home/sibuserv/.local/share/sibuserv-webui/cache
+
+
+===== Configuring FastCGI in Nginx =====
+* If you want to use Sibuserv Web UI as part of your basic website:
+  http://localhost/build-server/
+  http://<your-domain-name>/build-server/
+  
+  when edit nginx config (for example, /etc/nginx/sites-available/default)
+  where you need to paste something like this:
+  
+server {
+    listen   80 default;
+    listen   [::]:80 default;
+    
+    location /build-server/ {
+        fastcgi_pass    localhost:35827;
+        include         /etc/nginx/fastcgi_params;
     }
+}
+  
+  And do not forget to edit /etc/sibuserv/webui-settings.json
+  where you need to change "prefix_string" variable:
+  
+    "prefix_string": "/build-server/",
+
+* If you want to use Sibuserv Web UI as separate website on specific domain name:
+  http://build-server.local/
+  http://build-server.<your-domain-name>/
+
+  when edit Nginx config (for example, /etc/nginx/sites-available/default)
+  where you need to paste something like this:
+  
+server {
+    listen 80;
+    listen [::]:80;
+    
+    server_name build-server.local;
+    
+    location / {
+        fastcgi_pass    localhost:35827;
+        include         /etc/nginx/fastcgi_params;
+    }
+}
+  
+  And do not forget to edit /etc/sibuserv/webui-settings.json
+  where you need to change "prefix_string" variable:
+
+    "prefix_string": "/",
+
+* Attention! It is strongly recommended to use HTTPS for connecting to Web UI.
+  Even self-signed SSL certificate is much better for security than plain HTTP
+  connections.
+  
+  To force HTTPS usage you need to configure Nginx accordingly. And do not
+  forget to edit /home/sibuserv/.config/sibuserv-webui/common-settings.json
+  config in text editor or using "/settings" page at website:
+  
+    "https_only": true,
 
 
-*** Example of FastCGI settings in lighttpd ***
-Edit file /etc/lighttpd/lighttpd.conf and paste something like this:
+===== Adding website users =====
+su sibuserv --command 'sibuserv-webui --add-user'
+or
+sudo --user sibuserv sibuserv-webui --add-user
 
-fastcgi.server = ( "/sibuserv/" =>
-    ((
-        "host" => "127.0.0.1",
-        "port" => 35827,
-        "check-local" => "disable",
-        "docroot" => "/var/tmp/sibuserv",
-    ))
-)
+All user configs are stored in <config_directory>/users/ subdirectory.
+By default: /home/sibuserv/.config/sibuserv-webui/users/
 
+Since JSON format is used there you may edit user configs in any text editor.
 
-*** Other notes ***
-Attention! It is strongly recommended to use HTTPS for connecting to Web UI.
-Even self-signed SSL certificate is much better for security than plain HTTP
-connection.
-
+Once you add website user with admin privileges and signing in as this user you
+will be able to add and edit other user configs at "/settings/users" web page.
 
