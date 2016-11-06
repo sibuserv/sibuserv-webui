@@ -203,3 +203,38 @@ h1 {
     border: none;
 }
 
+#auth_error {
+    padding: 10px 20px;
+    color: #991111;
+    background-color: #fcdede;
+    border: 1px solid #d2b2b2;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    word-break: break-all;
+    width: 340px;
+}
+
+#auth_error div {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#auth_error_label {
+    font-size: 12px;
+    text-align: left;
+    width: 95%;
+}
+
+#close_auth_error {
+    color: #cc4444;
+    font-size: 18px;
+    text-align: right;
+    cursor: pointer;
+    margin: 5px;
+    width: 5%;
+}
+
+#close_auth_error:hover {
+    color: #991111;
+}
+

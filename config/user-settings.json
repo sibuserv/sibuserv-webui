@@ -1,24 +1,11 @@
 {
+    "admin": false,
     "user_name": "guest",
+    "page_style": "default.css",
     "full_user_name": "",
     "desirable_user_name": "",
     "user_id": "",
-    "page_style": "default.css",
     "password_hash": "",
     "user_email": "",
-    "admin": false,
-    "projects": [
-        {
-            "project_name": "NonExistentProject-0",
-            "user_role": "owner"
-        },
-        {
-            "project_name": "NonExistentProject-1",
-            "user_role": "developer"
-        },
-        {
-            "project_name": "NonExistentProject-2",
-            "user_role": "guest"
-        }
-    ]
+    "projects": {}
 }

@@ -11,6 +11,7 @@
     "sign_out": "Sign out",
     "username": "Username",
     "password": "Password",
+    "auth_error": "Incorrect username or password.",
     "403_error_message": "You do not have permissions to view this web page.",
     "404_error_message": "This is not the web page you are looking for.",
     "noscript_warning": "<h1>Hey there!</h1>

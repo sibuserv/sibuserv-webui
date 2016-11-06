@@ -48,6 +48,9 @@ Request::~Request()
 
 bool Request::next() const
 {
+    // Do not forget to clear data from previous request.
+    d->postData.clear();
+    d->isPostDataStored = false;
     return (FCGI_Accept() >= 0);
 }
 

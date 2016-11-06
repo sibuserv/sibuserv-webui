@@ -45,15 +45,17 @@ function document_postprocessing() {
     }
 }
 
-// Debug mode!
-// $(document).on("click", "#settings_page *", function() {
-//     $.post("/debug?ajax=body", "111", function(data) {
-//         alert(data);
-//     })
-//     return false;
-// });
+function show_auth_error() {
+    document.getElementById("auth_error").style.display = "table";
+}
 
+function close_auth_error() {
+    document.getElementById("auth_error").style.display = "none";
+    document.getElementById("input_user_name").focus();
+    document.getElementById("input_user_name").scrollIntoView();
+}
 
+$(document).on("click", "#close_auth_error", close_auth_error);
 $(document).on("click", "#sign_in *", begin_authorization);
 $(document).on("click", "#sign_out *", sign_out);
 $(document).on("submit", "#auth_form", store_user_name);

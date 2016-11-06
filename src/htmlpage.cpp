@@ -159,6 +159,16 @@ void HtmlPage::checkAutorization(const Request &request)
                       "", "/", "", httpsOnly, httpsOnly);
         }
     }
+    else {
+        if (request.isPost()) {
+            if (!request.post().isEmpty()) {
+                if (!request.post("user_name").isEmpty() &&
+                        !request.post("password").isEmpty()) {
+                    out += "            show_auth_error();\n";
+                }
+            }
+        }
+    }
     if (d->autorized) {
         d->admin = d->userSettings.getBool("admin");
         if (!d->admin) {
