@@ -62,7 +62,7 @@ bool Request::isGet() const
 
 bool Request::isPost() const
 {
-    const QString requestMethod = getEnv("REQUEST_METHOD");
+    const QString &&requestMethod = getEnv("REQUEST_METHOD");
     return (requestMethod == "POST");
 }
 
@@ -91,13 +91,13 @@ QList<QString> Request::environment() const
 
 QString Request::get(const QString &key) const
 {
-    const QString buff = getEnv("QUERY_STRING");
+    const QString &&buff = getEnv("QUERY_STRING");
     return getValue(buff, key, "&");
 }
 
 QString Request::post(const QString &key) const
 {
-    const QString buff = QString::fromUtf8(post());
+    const QString &&buff = QString::fromUtf8(post());
     return getValue(buff, key, "&");
 }
 
@@ -120,7 +120,7 @@ QByteArray& Request::post() const
 
 QString Request::cookie(const QString &key) const
 {
-    const QString buff = getEnv("HTTP_COOKIE");
+    const QString &&buff = getEnv("HTTP_COOKIE");
     return getValue(buff, key, ";");
 }
 
