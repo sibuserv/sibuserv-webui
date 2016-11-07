@@ -42,6 +42,7 @@ public:
     QString buildServerBinDir() const;
     QString buildServerLogFile() const;
     QString staticCodeAnalysisLogsSubdir() const;
+    QString jqueryUrl() const;
 
 protected:
     inline void clear();

@@ -42,7 +42,9 @@ struct HtmlPage::HtmlPagePrivate
     QByteArray title;
     QByteArray content;
     QByteArray redirect;
-    QByteArray prefix;
+
+    QByteArray prefix = ApplicationSettings::instance().prefixString().toUtf8();
+    QByteArray jquery = ApplicationSettings::instance().jqueryUrl().toUtf8();
 
     CommonSettings commonSettings;
     UserSettings   userSettings;
@@ -52,7 +54,6 @@ struct HtmlPage::HtmlPagePrivate
 HtmlPage::HtmlPage(const Request &request) :
     d(new HtmlPagePrivate)
 {
-    d->prefix = ApplicationSettings::instance().prefixString().toUtf8();
     d->redirect = request.scriptName().toUtf8();
 
     if (request.get("ajax").isEmpty()) {
@@ -232,6 +233,7 @@ void HtmlPage::update()
     }
     out.replace("%redirect%",   d->redirect);
     out.replace("%prefix%",     d->prefix);
+    out.replace("%jquery_url%", d->jquery);
 
     setData(out);
 }

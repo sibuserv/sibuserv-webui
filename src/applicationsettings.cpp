@@ -90,6 +90,7 @@ void ApplicationSettings::finalize()
     buildServerBinDir();
     buildServerLogFile();
     staticCodeAnalysisLogsSubdir();
+    jqueryUrl();
 
     clear();
 }
@@ -132,6 +133,11 @@ QString ApplicationSettings::buildServerLogFile() const
 QString ApplicationSettings::staticCodeAnalysisLogsSubdir() const
 {
     RETURN_APPLICATIONS_SETTINGS_VARIABLE("static_code_analysis_logs_subdir");
+}
+
+QString ApplicationSettings::jqueryUrl() const
+{
+    RETURN_APPLICATIONS_SETTINGS_VARIABLE("jquery_url");
 }
 
 void ApplicationSettings::clear()
