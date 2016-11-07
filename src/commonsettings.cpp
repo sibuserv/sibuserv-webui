@@ -27,8 +27,7 @@
 #include "commonsettings.h"
 
 CommonSettings::CommonSettings() :
-    AbstractSettings(ApplicationSettings::instance().configDirectory(),
-                     "common-settings.json")
+    AbstractSettings(APP_S().configDirectory(), "common-settings.json")
 {
     ;
 }

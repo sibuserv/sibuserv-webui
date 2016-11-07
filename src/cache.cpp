@@ -27,7 +27,7 @@
 #include "cache.h"
 
 Cache::Cache() :
-    ResourceManager(ApplicationSettings::instance().cacheDirectory())
+    ResourceManager(APP_S().cacheDirectory())
 {
     ;
 }
@@ -40,7 +40,7 @@ Cache &Cache::instance()
 
 bool Cache::save(const QString &fileName, const QByteArray &data) const
 {
-    const QString &&logDirectory = ApplicationSettings::instance().logDirectory();
+    const QString &&logDirectory = APP_S().logDirectory();
     return ResourceManager::write(logDirectory + "/" + fileName, data);
 }
 

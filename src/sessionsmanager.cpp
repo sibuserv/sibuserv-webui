@@ -40,7 +40,7 @@ struct SessionsManager::SessionsManagerPrivate
 };
 
 SessionsManager::SessionsManager(const Request &request) :
-    AbstractSettings(ApplicationSettings::instance().sessionsDirectory(),
+    AbstractSettings(APP_S().sessionsDirectory(),
                      request.cookie("user_id") + ".json"),
     d(new SessionsManagerPrivate)
 {

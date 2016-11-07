@@ -76,7 +76,7 @@ void ProjectsPage::generateHtmlTemplate()
 
 void ProjectsPage::generateAjaxResponse()
 {
-    const QDir dir(ApplicationSettings::instance().buildServerBinDir());
+    const QDir dir(APP_S().buildServerBinDir());
     const auto &&all = dir.entryList(QDir::AllDirs |
                                      QDir::NoDotAndDotDot);
     const auto &&allowed = allowedProjects();
@@ -123,7 +123,7 @@ bool ProjectsPage::allowedProjectsExist()
     if (projects.isEmpty())
         return false;
 
-    QDir dir(ApplicationSettings::instance().buildServerBinDir());
+    QDir dir(APP_S().buildServerBinDir());
     for (const auto &it : dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
         if (projects.contains(it)) {
             return true;

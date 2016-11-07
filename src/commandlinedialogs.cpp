@@ -153,7 +153,7 @@ void CommandLineDialogs::addUser() const
 
     UserSettings us;
     us.setFileName(fileName);
-    QFile f(ApplicationSettings::instance().configDirectory() + "/" + fileName);
+    QFile f(APP_S().configDirectory() + "/" + fileName);
 
     us.set("user_name",      userName);
     us.set("full_user_name", fullUserName);
@@ -218,7 +218,7 @@ void CommandLineDialogs::delUser() const
         return;
     }
 
-    QFile f(ApplicationSettings::instance().configDirectory() + "/" + fileName);
+    QFile f(APP_S().configDirectory() + "/" + fileName);
     if (f.remove()) {
         cout << "User config \""
              << QFileInfo(f).absoluteFilePath().toStdString()

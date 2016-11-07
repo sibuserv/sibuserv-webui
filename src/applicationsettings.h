@@ -27,6 +27,8 @@
 
 #include "options.h"
 
+#define APP_S() ApplicationSettings::instance()
+
 class ApplicationSettings
 {
 public:

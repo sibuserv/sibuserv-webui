@@ -37,7 +37,7 @@
 EmbeddedResourcesUnpacker::EmbeddedResourcesUnpacker()
 {
     const ResourceManager rm;
-    const ApplicationSettings &as = ApplicationSettings::instance();
+    const ApplicationSettings &as = APP_S();
 
     std::function<void(const QString &)> unpackFilesFromDir;
     unpackFilesFromDir = [&](const QString &path) -> void

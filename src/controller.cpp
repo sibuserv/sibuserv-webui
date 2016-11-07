@@ -64,8 +64,7 @@ void Controller::start()
             continue;
         };
 
-        const QString &&prefixString =
-                ApplicationSettings::instance().prefixString();
+        const QString &&prefixString = APP_S().prefixString();
 
         QString pageName = d->request.scriptName();
         if (pageName.size() >= prefixString.size()) {

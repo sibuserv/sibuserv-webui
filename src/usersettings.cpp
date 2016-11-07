@@ -33,15 +33,13 @@
 #include "usersettings.h"
 
 UserSettings::UserSettings() :
-    AbstractSettings(ApplicationSettings::instance().configDirectory(),
-                     "user-settings.json")
+    AbstractSettings(APP_S().configDirectory(), "user-settings.json")
 {
     ;
 }
 
 UserSettings::UserSettings(const QString &fileName) :
-    AbstractSettings(ApplicationSettings::instance().configDirectory(),
-                     fileName)
+    AbstractSettings(APP_S().configDirectory(), fileName)
 {
     ;
 }

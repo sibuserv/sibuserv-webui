@@ -30,10 +30,8 @@
 DataFile::DataFile(const Request &request) :
     HtmlPage(request)
 {
-    const QString &&prefixString =
-            ApplicationSettings::instance().prefixString();
-    const QString &&cacheDirectory =
-            ApplicationSettings::instance().cacheDirectory();
+    const QString &&prefixString = APP_S().prefixString();
+    const QString &&cacheDirectory = APP_S().cacheDirectory();
 
     ResourceManager res;
     res.clearPaths();
