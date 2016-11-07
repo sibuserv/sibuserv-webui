@@ -152,9 +152,9 @@ void HtmlPage::checkAutorization(const Request &request)
         if (sm.beginNewSession(d->userSettings.get("user_name"))) {
             const bool httpsOnly = d->commonSettings.getBool("https_only");
             setCookie("user_id", d->userSettings.get("user_id"),
-                      "", "/", "", httpsOnly, httpsOnly);
+                      "", "/", "", httpsOnly, false);
             setCookie("session_id", sm.get("session_id"),
-                      "", "/", "", httpsOnly, httpsOnly);
+                      "", "/", "", httpsOnly, false);
         }
     }
     else {
