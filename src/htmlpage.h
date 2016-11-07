@@ -27,6 +27,8 @@
 
 #include <QByteArray>
 
+#include "commonsettings.h"
+#include "usersettings.h"
 #include "request.h"
 #include "response.h"
 
@@ -58,6 +60,9 @@ protected:
     void forceAuthorization();
     void forbidAccess();
     void update();
+
+    CommonSettings& commonSettings();
+    UserSettings&   userSettings();
 
     /// \brief Get string value from common settings.
     QString get(const QString &key) const;

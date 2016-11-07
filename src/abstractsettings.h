@@ -51,6 +51,7 @@ public:
     QStringList keys() const;
     bool contains(const QString &key) const;
     QString get(const QString &key) const;
+    QJsonObject getObject(const QString &key) const;
     double getDouble(const QString &key) const;
     bool getBool(const QString &key) const;
     int getInt(const QString &key) const;

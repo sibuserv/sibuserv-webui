@@ -28,8 +28,6 @@
 #include "applicationsettings.h"
 #include "resourcemanager.h"
 #include "sessionsmanager.h"
-#include "commonsettings.h"
-#include "usersettings.h"
 #include "localization.h"
 #include "htmlpage.h"
 
@@ -170,6 +168,7 @@ void HtmlPage::checkAutorization(const Request &request)
         }
     }
     if (d->autorized) {
+        out += "            authorized_user();\n";
         d->admin = d->userSettings.getBool("admin");
         if (!d->admin) {
             out += "            not_admin();\n";
@@ -177,7 +176,6 @@ void HtmlPage::checkAutorization(const Request &request)
         if (d->userSettings.get("user_email").isEmpty()) {
             out += "            email_is_unknown();\n";
         }
-        out += "            authorized_user();\n";
     }
     else {
         out += "            unauthorized_user();\n";
@@ -236,6 +234,16 @@ void HtmlPage::update()
     out.replace("%prefix%",     d->prefix);
 
     setData(out);
+}
+
+CommonSettings& HtmlPage::commonSettings()
+{
+    return d->commonSettings;
+}
+
+UserSettings &HtmlPage::userSettings()
+{
+    return d->userSettings;
 }
 
 QString HtmlPage::get(const QString &key) const

@@ -25,6 +25,8 @@
 
 #pragma once
 
+#include <QStringList>
+
 #include "htmlpage.h"
 #include "request.h"
 
@@ -38,6 +40,9 @@ public:
     virtual ~ProjectsPage() = default;
 
 protected:
-    void generateContent();
+    void generateHtmlTemplate();
+    void generateAjaxResponse();
+    bool allowedProjectsExist();
+    QStringList allowedProjects();
 };
 

@@ -195,10 +195,24 @@ QString AbstractSettings::get(const QString &key) const
     return "";
 }
 
+QJsonObject AbstractSettings::getObject(const QString &key) const
+{
+    if (key.isEmpty())
+        return QJsonObject();
+
+    for (const auto &s: {d->settings, d->defaultSettings}) {
+        if (s.contains(key)) {
+            return s[key].toObject();
+        }
+    }
+
+    return QJsonObject();
+}
+
 double AbstractSettings::getDouble(const QString &key) const
 {
     if (key.isEmpty())
-        return false;
+        return 0.;
 
     for (const auto &s: {d->settings, d->defaultSettings}) {
         if (s.contains(key)) {
@@ -206,7 +220,7 @@ double AbstractSettings::getDouble(const QString &key) const
         }
     }
 
-    return false;
+    return 0.;
 }
 
 bool AbstractSettings::getBool(const QString &key) const

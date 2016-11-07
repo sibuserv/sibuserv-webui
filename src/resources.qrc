@@ -14,6 +14,8 @@
         <file alias="/html/auth-template.html">../html/auth-template.html</file>
         <file alias="/html/403-template.html">../html/403-template.html</file>
         <file alias="/html/404-template.html">../html/404-template.html</file>
+        <file alias="/html/projects-template.html">../html/projects-template.html</file>
+        <file alias="/html/no-projects-template.html">../html/no-projects-template.html</file>
         <file alias="/robots.txt">../html/robots.txt</file>
     </qresource>
 </RCC>

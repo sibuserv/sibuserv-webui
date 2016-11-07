@@ -26,60 +26,117 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QByteArray>
-#include <QStringList>
+#include <QJsonParseError>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include "applicationsettings.h"
+#include "resourcemanager.h"
+#include "usersettings.h"
 #include "projectspage.h"
 
 ProjectsPage::ProjectsPage(const Request &request) :
     HtmlPage(request)
 {
+    if (request.get("ajax").isEmpty()) {
+        addToTitle(" - %projects%");
+        generateHtmlTemplate();
+        update();
+        show();
+    }
+    else {
+        generateAjaxResponse();
+        show();
+    }
+}
+
+void ProjectsPage::generateHtmlTemplate()
+{
+    const ResourceManager res;
     if (isAutorizedUser()) {
-        // TODO: plorerly check that user have access to project info.
-        if (true) { // Debug mode!
-            generateContent();
+        if (getBool("anonymous_may_view_the_list_of_projects") ||
+                getBool("logged_in_user_may_view_the_full_list_of_projects")) {
+            setContent(res.read("/html/projects-template.html"));
         }
-        else if (getBool("logged_in_user_may_view_the_full_list_of_projects")) {
-            generateContent();
+        else if (allowedProjectsExist()) {
+            setContent(res.read("/html/projects-template.html"));
         }
         else {
-            forbidAccess();
+            setContent(res.read("/html/no-projects-template.html"));
         }
     }
     else if (getBool("anonymous_may_view_the_list_of_projects")) {
-        generateContent();
+        setContent(res.read("/html/projects-template.html"));
     }
     else {
         forbidAccess();
     }
-
-    addToTitle(" - %projects%");
-    update();
-    show();
 }
 
-void ProjectsPage::generateContent()
+void ProjectsPage::generateAjaxResponse()
 {
-    // Debug mode!
-    QByteArray out;
-    out += "<ul>\n";
+    const QDir dir(ApplicationSettings::instance().buildServerBinDir());
+    const auto &&all = dir.entryList(QDir::AllDirs |
+                                     QDir::NoDotAndDotDot);
+    const auto &&allowed = allowedProjects();
 
-    const QString logFile =
-            QFileInfo(ApplicationSettings::instance().buildServerLogFile())
-            .fileName();
-
-    QByteArray tmp;
-    QDir dir(ApplicationSettings::instance().buildServerBinDir());
-    for (const auto &it : dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
-        if (it == logFile) {
-            continue;
+    QStringList projects;
+    if (isAutorizedUser()) {
+        if (getBool("anonymous_may_view_the_list_of_projects") ||
+                getBool("logged_in_user_may_view_the_full_list_of_projects")) {
+            projects = all;
         }
-        tmp = it.toUtf8();
-        out +=  "<li><a id=\"" + tmp + "\" href=\"%prefix%projects/" +
-                tmp + "\">" + tmp + "</a></li>\n";
+        else if (!allowed.isEmpty()) {
+            for (const auto &p : all) {
+                if (allowed.contains(p)) {
+                    projects.append(p);
+                }
+            }
+        }
+    }
+    else if (getBool("anonymous_may_view_the_list_of_projects")) {
+        projects = all;
     }
 
-    out += "</ul>";
-    setContent(out);
+    if (projects.isEmpty())
+        return;
+
+    QJsonArray out;
+
+    // Debug mode!
+    QJsonObject tmp;
+    for (const auto &p : projects) {
+        // TODO: make ProjectsTableItem() class.
+        tmp = {
+            {"project_name", p}
+        };
+        out += tmp;
+    }
+
+    setData(QJsonDocument(out).toJson());
+}
+
+bool ProjectsPage::allowedProjectsExist()
+{
+    QStringList &&projects = allowedProjects();
+    if (projects.isEmpty())
+        return false;
+
+    QDir dir(ApplicationSettings::instance().buildServerBinDir());
+    for (const auto &it : dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
+        if (projects.contains(it)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+QStringList ProjectsPage::allowedProjects()
+{
+    UserSettings &us = userSettings();
+    QJsonObject &&obj = us.getObject("projects");
+    return obj.keys();
 }
 

@@ -77,9 +77,6 @@ bool UserSettings::isValidAutorizationRequest(const Request &request)
     if (request.post().isEmpty())
         return false;
 
-    // Debug mode!
-    LOG("user-settings.log", request.post());
-
     const QString userName = request.post("user_name");
     const QString password = request.post("password");
 
