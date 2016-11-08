@@ -19,5 +19,6 @@
     "noscript_warning": "<h1>Hey there!</h1>
             <p>Looks like you have JavaScript disabled.</p>
             <p>Sibuserv Web UI needs JavaScript to work properly.</p>
-            <p>Please enable JavaScript and reload this page.</p>"
+            <p>Please enable JavaScript and reload this page.</p>",
+    "show_more": "Show more"
 }

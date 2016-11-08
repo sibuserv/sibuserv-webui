@@ -46,7 +46,7 @@ ProjectsPage::ProjectsPage(const Request &request) :
         show();
     }
     else {
-        generateAjaxResponse();
+        generateAjaxResponse(request);
         show();
     }
 }
@@ -74,7 +74,7 @@ void ProjectsPage::generateHtmlTemplate()
     }
 }
 
-void ProjectsPage::generateAjaxResponse()
+void ProjectsPage::generateAjaxResponse(const Request &request)
 {
     const QDir dir(APP_S().buildServerBinDir());
     const auto &&all = dir.entryList(QDir::AllDirs |
@@ -102,19 +102,58 @@ void ProjectsPage::generateAjaxResponse()
     if (projects.isEmpty())
         return;
 
-    QJsonArray out;
+    if (request.get("ajax") == "projects_list") {
+        const int &&fullSize = projects.size();
+        int first = 0;
+        int end = fullSize;
 
-    // Debug mode!
-    QJsonObject tmp;
-    for (const auto &p : projects) {
-        // TODO: make ProjectsTableItem() class.
-        tmp = {
-            {"project_name", p}
-        };
-        out += tmp;
+        if (!request.post("pos").isEmpty() && !request.post("len").isEmpty()) {
+            const int pos = request.post("pos").toInt();
+            const int len = request.post("len").toInt();
+            if (pos >= 0 && len > 0) {
+                first = qMin(pos, fullSize);
+                end   = qMin(pos + len, fullSize);
+            }
+        }
+
+        QJsonArray out;
+        QJsonObject tmp;
+        for (int k = first; k < end; ++k) {
+            // Debug mode!
+            // TODO: make ProjectsTableItem() class.
+            tmp = {
+                { "project_name", projects[k] },
+                { "builds_number", "121" },
+                { "last_status", "passed" }, // passed, failed, started
+                { "last_version", "1.2.3" },
+                { "last_timestamp", "2016-11-08 15:01:20" },
+                { "role", "guest" } // guest, developer, owner
+            };
+            if (k == fullSize -1) {
+                tmp["last_project"] = true;
+            }
+            out += tmp;
+        }
+        setData(QJsonDocument(out).toJson());
     }
-
-    setData(QJsonDocument(out).toJson());
+    else if (request.get("ajax") == "project") {
+        QJsonObject out;
+        if (!request.post("pos").isEmpty()) {
+            if (projects.contains(request.post("project_name"))) {
+                // Debug mode!
+                // TODO: make ProjectsTableItem() class.
+                out = {
+                    { "project_name", request.post("project_name") },
+                    { "builds_number", "121" },
+                    { "last_status", "passed" }, // passed, failed, started
+                    { "last_version", "1.2.3" },
+                    { "last_timestamp", "2016-11-08 15:01:20" },
+                    { "role", "guest" } // guest, developer, owner
+                };
+            }
+        }
+        setData(QJsonDocument(out).toJson());
+    }
 }
 
 bool ProjectsPage::allowedProjectsExist()

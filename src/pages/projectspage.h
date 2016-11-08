@@ -41,7 +41,7 @@ public:
 
 protected:
     void generateHtmlTemplate();
-    void generateAjaxResponse();
+    void generateAjaxResponse(const Request &request);
     bool allowedProjectsExist();
     QStringList allowedProjects();
 };
