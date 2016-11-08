@@ -252,7 +252,6 @@ h1 {
     display: table-cell;
     list-style-type: none;
     vertical-align: middle;
-    border: 1px dashed #d1d1d1; /* Debug mode! */
 }
 
 #projects_table_container .table_item {
@@ -293,7 +292,7 @@ h1 {
 
 #projects_table_container .last_timestamp {
     white-space: nowrap;
-    min-width: 170px;
+    min-width: 150px;
 }
 
 #projects_table_container .role {

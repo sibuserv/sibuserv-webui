@@ -124,7 +124,7 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
             tmp = {
                 { "project_name", projects[k] },
                 { "builds_number", rand()%10000 },
-                { "last_status", "started" }, // passed, failed, started
+                { "last_status", "passed" }, // passed, failed, started
                 { "last_version", "1.2.3" },
                 { "last_timestamp", "2016-11-08 15:01:20" },
                 { "role", "guest" } // guest, tester, developer, owner
