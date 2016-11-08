@@ -123,11 +123,11 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
             // TODO: make ProjectsTableItem() class.
             tmp = {
                 { "project_name", projects[k] },
-                { "builds_number", "121" },
-                { "last_status", "passed" }, // passed, failed, started
+                { "builds_number", rand()%10000 },
+                { "last_status", "started" }, // passed, failed, started
                 { "last_version", "1.2.3" },
                 { "last_timestamp", "2016-11-08 15:01:20" },
-                { "role", "guest" } // guest, developer, owner
+                { "role", "guest" } // guest, tester, developer, owner
             };
             if (k == fullSize -1) {
                 tmp["last_project"] = true;

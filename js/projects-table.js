@@ -3,10 +3,35 @@
 function add_item_into_projects_table(i, item) {
     num = +localStorage.projects_number;
     localStorage.projects_number = num + 1;
-    html =  "<li id=\"" + item.project_name + "\">\n" +
-            "<a href=\"" + $("#projects_page").find("a").attr("href") + "/" +
-                item.project_name + "\">" + item.project_name + "</a>\n" +
-            "</li>\n";
+
+    last_status = "?";
+    if (item.last_status === "passed")
+        last_status = "✔";
+    else if (item.last_status === "failed")
+        last_status = "✘";
+    else if (item.last_status === "started")
+        last_status = "⚫";
+
+    html =  "<div id=\"" + item.project_name + "\" class=\"table_item " +
+            item.last_status + "\">\n" +
+                "<li class=\"last_status\" title=\"" +
+                    $("#" + item.last_status).text() + "\">\n" + last_status +
+                "</li>\n" +
+                "<li class=\"project_name\">\n" +
+                    "<a class=\"" + item.last_status + "\" " + "href=\"" +
+                    $("#projects_page").find("a").attr("href") +
+                    "/" + item.project_name + "\">" + item.project_name + "</a>\n" +
+                "</li>\n" +
+                "<li class=\"builds_number\">\n" + item.builds_number + "</li>\n" +
+                "<li class=\"last_version\">\n" +
+                    "<a class=\"" + item.last_status + "\" " + "href=\"" +
+                    $("#projects_page").find("a").attr("href") +
+                    "/" + item.project_name + "/" + item.last_version + "\">" +
+                    item.last_version + "</a>\n" +
+                "</li>\n" +
+                "<li class=\"last_timestamp\">\n" + item.last_timestamp + "</li>\n" +
+                "<li class=\"role\">\n" + $("#" + item.role).text() + "</li>\n" +
+            "</div>\n";
     $("#projects_table").append(html);
 
     if (item.hasOwnProperty("last_project")) {
