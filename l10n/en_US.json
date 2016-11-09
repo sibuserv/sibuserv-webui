@@ -26,6 +26,7 @@
     "last_timestamp": "Last update",
     "role": "Role",
     "show_more": "Show more",
+    "none": "None",
     "guest": "Guest",
     "tester": "Tester",
     "developer": "Developer",

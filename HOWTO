@@ -45,7 +45,7 @@
 |             | projects |  build  |  builds  | build |   code   | users  |
 |             |   list   | history |          | logs  | analysis |        |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-| Anonymous   |   -/+    |    -    |    -     |   -   |    -     |   -    |
+| None        |   -/+    |    -    |    -     |   -   |    -     |   -    |
 | Guest       |    +     |    +    |    -     |   -   |    -     |   -    |
 | Tester      |    +     |    +    |    +     |   -   |    -     |   -    |
 | Developer   |    +     |    +    |    +     |   +   |    +     |   -    |

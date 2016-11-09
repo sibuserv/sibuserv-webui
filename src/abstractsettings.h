@@ -35,6 +35,7 @@ class AbstractSettings
     friend class CommandLineDialogs;
     friend class ApplicationSettings;
     friend class Localization;
+    friend class ProjectsTableItem;
 
 public:
     explicit AbstractSettings(const QString &path, const QString &fileName);
@@ -60,9 +61,10 @@ protected:
     void clear();
     void set(const QString &key, const QString &value);
     void setBool(const QString &key, const bool &value);
-    void setSettings(QJsonObject &object);
+    void setSettings(const QJsonObject &object);
     bool readSettings(const QByteArray &data,
                       QJsonObject &settings);
+    QJsonObject& getSettings() const;
 
 private:
     struct AbstractSettingsPrivate;

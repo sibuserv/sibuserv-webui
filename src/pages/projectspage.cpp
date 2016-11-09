@@ -34,6 +34,7 @@
 #include "applicationsettings.h"
 #include "resourcemanager.h"
 #include "usersettings.h"
+#include "projectstableitem.h"
 #include "projectspage.h"
 
 ProjectsPage::ProjectsPage(const Request &request) :
@@ -55,8 +56,9 @@ void ProjectsPage::generateHtmlTemplate()
 {
     const ResourceManager res;
     if (isAutorizedUser()) {
-        if (getBool("anonymous_may_view_the_list_of_projects") ||
-                getBool("logged_in_user_may_view_the_full_list_of_projects")) {
+        if (!allProjects().isEmpty() &&
+                (getBool("anonymous_may_view_the_list_of_projects") ||
+                 getBool("logged_in_user_may_view_the_full_list_of_projects"))) {
             setContent(res.read("/html/projects-template.html"));
         }
         else if (allowedProjectsExist()) {
@@ -76,15 +78,13 @@ void ProjectsPage::generateHtmlTemplate()
 
 void ProjectsPage::generateAjaxResponse(const Request &request)
 {
-    const QDir dir(APP_S().buildServerBinDir());
-    const auto &&all = dir.entryList(QDir::AllDirs |
-                                     QDir::NoDotAndDotDot);
+    const auto &&all = allProjects();
     const auto &&allowed = allowedProjects();
 
     QStringList projects;
     if (isAutorizedUser()) {
         if (getBool("anonymous_may_view_the_list_of_projects") ||
-                getBool("logged_in_user_may_view_the_full_list_of_projects")) {
+                 getBool("logged_in_user_may_view_the_full_list_of_projects")) {
             projects = all;
         }
         else if (!allowed.isEmpty()) {
@@ -119,16 +119,11 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
         QJsonArray out;
         QJsonObject tmp;
         for (int k = first; k < end; ++k) {
-            // Debug mode!
-            // TODO: make ProjectsTableItem() class.
-            tmp = {
-                { "project_name", projects[k] },
-                { "builds_number", rand()%10000 },
-                { "last_status", "passed" }, // passed, failed, started
-                { "last_version", QString("20160829-133941__b306f3d").mid(0, rand()%24) },
-                { "last_timestamp", "2016-11-08 15:01:20" },
-                { "role", "developer" } // guest, tester, developer, owner
-            };
+            tmp = ProjectsTableItem(projects[k]).getJsonObject();
+            tmp["role"] = QString("none");
+            if (allowed.contains(projects[k])) {
+                tmp["role"] = userSettings().getProjectRole(projects[k]);
+            }
             if (k == fullSize -1) {
                 tmp["last_project"] = true;
             }
@@ -139,17 +134,13 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
     else if (request.get("ajax") == "project") {
         QJsonObject out;
         if (!request.post("pos").isEmpty()) {
-            if (projects.contains(request.post("project_name"))) {
-                // Debug mode!
-                // TODO: make ProjectsTableItem() class.
-                out = {
-                    { "project_name", request.post("project_name") },
-                    { "builds_number", "121" },
-                    { "last_status", "passed" }, // passed, failed, started
-                    { "last_version", "20160829-133941__b306f3d" },
-                    { "last_timestamp", "2016-11-08 15:01:20" },
-                    { "role", "guest" } // guest, tester, developer, owner
-                };
+            const QString &&projectName = request.post("project_name");
+            if (projects.contains(projectName)) {
+                out = ProjectsTableItem(projectName).getJsonObject();
+                out["role"] = QString("none");
+                if (allowed.contains(projectName)) {
+                    out["role"] = userSettings().getProjectRole(projectName);
+                }
             }
         }
         setData(QJsonDocument(out).toJson());
@@ -177,5 +168,11 @@ QStringList ProjectsPage::allowedProjects()
     UserSettings &us = userSettings();
     QJsonObject &&obj = us.getObject("projects");
     return obj.keys();
+}
+
+QStringList ProjectsPage::allProjects()
+{
+    const QDir dir(APP_S().buildServerBinDir());
+    return dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
 }
 

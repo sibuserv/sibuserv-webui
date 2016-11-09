@@ -44,5 +44,6 @@ protected:
     void generateAjaxResponse(const Request &request);
     bool allowedProjectsExist();
     QStringList allowedProjects();
+    QStringList allProjects();
 };
 

@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: content-box;
+    box-sizing: border-box;
 }
 
 body {
@@ -253,6 +253,7 @@ h1 {
     list-style-type: none;
     vertical-align: middle;
     white-space: nowrap;
+    box-sizing: content-box;
 }
 
 #projects_table_container .table_item {
@@ -286,7 +287,7 @@ h1 {
 #projects_table_container .builds_number {
     color: #686868;
     white-space: nowrap;
-    min-width: 70px;
+    padding-right: 20px;
 }
 
 #projects_table_container .last_version {
@@ -297,7 +298,7 @@ h1 {
 
 #projects_table_container .last_timestamp {
     white-space: nowrap;
-    min-width: 150px;
+    padding-right: 20px;
 }
 
 #projects_table_container .role {
@@ -305,7 +306,6 @@ h1 {
     color: #686868;
     white-space: nowrap;
     padding-right: 20px;
-    min-width: 100px;
 }
 
 #show_more {

@@ -26,28 +26,24 @@
 #pragma once
 
 #include <QString>
-#include <QByteArray>
+#include <QJsonObject>
 
 #include "abstractsettings.h"
-#include "request.h"
 
-class UserSettings : public AbstractSettings
+class ProjectsTableItem : public AbstractSettings
 {
-    friend class CommandLineDialogs;
-
 public:
-    explicit UserSettings();
-    explicit UserSettings(const QString &fileName);
-    UserSettings(const UserSettings &in) = delete;
-    UserSettings(UserSettings &&in) = delete;
-    UserSettings& operator=(const UserSettings &in) = delete;
-    virtual ~UserSettings() = default;
+    explicit ProjectsTableItem(const QString &projectName);
+    ProjectsTableItem(const ProjectsTableItem &in) = delete;
+    ProjectsTableItem(ProjectsTableItem &&in) = delete;
+    ProjectsTableItem& operator=(const ProjectsTableItem &in) = delete;
+    virtual ~ProjectsTableItem() = default;
 
-    bool isValidAutorizationRequest(const Request &request);
-    QByteArray gravatarIconUrl() const;
-    QString getProjectRole(const QString &projectName);
+    QJsonObject& getJsonObject() const;
 
-    static QByteArray calcEmailHash(const QString &email);
-    static QString calcPasswordHash(const QString &password);
+private:
+    void generate(const QString &projectName);
+    inline QString getLastTimestampFromLogFile(const QString &projectName,
+                                               const QString lastVersion) const;
 };
 

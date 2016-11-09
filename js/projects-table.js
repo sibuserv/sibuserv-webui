@@ -1,5 +1,7 @@
 // License: MIT (Expat)
 
+"use strict";
+
 function update_cells_width() {
     var list = [".role", ".last_version", ".last_timestamp", ".builds_number"];
     for (var k in list) {

@@ -54,6 +54,11 @@ QByteArray UserSettings::gravatarIconUrl() const
             "?s=52&amp;d=blank";
 }
 
+QString UserSettings::getProjectRole(const QString &projectName)
+{
+    return (getObject("projects")[projectName]).toString();
+}
+
 QByteArray UserSettings::calcEmailHash(const QString &email)
 {
     QByteArray data = email.toUtf8();

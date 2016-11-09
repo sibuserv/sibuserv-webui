@@ -120,7 +120,7 @@ void AbstractSettings::setBool(const QString &key, const bool &value)
     d->settings[key] = value;
 }
 
-void AbstractSettings::setSettings(QJsonObject &object)
+void AbstractSettings::setSettings(const QJsonObject &object)
 {
     d->settings = object;
 }
@@ -152,6 +152,11 @@ bool AbstractSettings::readSettings(const QByteArray &data,
     }
 
     return false;
+}
+
+QJsonObject &AbstractSettings::getSettings() const
+{
+    return d->settings;
 }
 
 QStringList AbstractSettings::keys() const

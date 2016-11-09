@@ -1,5 +1,7 @@
 // License: MIT (Expat)
 
+"use strict";
+
 function begin_authorization() {
     document.getElementById("sign_in").style.display = "none";
     document.getElementById("content").style.display = "none";
