@@ -69,7 +69,12 @@ void ProjectsPage::generateHtmlTemplate()
         }
     }
     else if (getBool("anonymous_may_view_the_list_of_projects")) {
-        setContent(res.read("/html/projects-template.html"));
+        if (!allProjects().isEmpty()) {
+            setContent(res.read("/html/projects-template.html"));
+        }
+        else {
+            setContent(res.read("/html/no-projects-template.html"));
+        }
     }
     else {
         forbidAccess();

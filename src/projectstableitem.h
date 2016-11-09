@@ -42,8 +42,10 @@ public:
     QJsonObject& getJsonObject() const;
 
 private:
-    void generate(const QString &projectName);
+    inline bool requiresUpdate() const;
+    inline void generate(const QString &projectName);
+    inline QString getLastVersion(const QString &projectName) const;
     inline QString getLastTimestampFromLogFile(const QString &projectName,
-                                               const QString lastVersion) const;
+                                               const QString &lastVersion) const;
 };
 

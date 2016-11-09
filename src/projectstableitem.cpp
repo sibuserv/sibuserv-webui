@@ -26,8 +26,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QFileInfoList>
 #include <QDateTime>
+#include <QCollator>
 
 #include "logmanager.h"
 #include "applicationsettings.h"
@@ -38,7 +38,7 @@ static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
 ProjectsTableItem::ProjectsTableItem(const QString &projectName) :
     AbstractSettings(APP_S().cacheDirectory(), projectName + ".json")
 {
-    if (getSettings().isEmpty()) {
+    if (getSettings().isEmpty() || requiresUpdate()) {
         generate(projectName);
         writeSettings();
     }
@@ -49,27 +49,35 @@ QJsonObject &ProjectsTableItem::getJsonObject() const
     return AbstractSettings::getSettings();
 }
 
+bool ProjectsTableItem::requiresUpdate() const
+{
+    // Debug mode!
+    ;
+
+    return true;
+}
+
 void ProjectsTableItem::generate(const QString &projectName)
 {
-    const QDir projectBinDir(APP_S().buildServerBinDir() + "/" + projectName);
-    const auto &builds = projectBinDir.entryInfoList(QDir::AllDirs |
-                                                     QDir::NoDotAndDotDot,
-                                                     QDir::Name);
-    const int buildsNumber = builds.size();
-
+    const QString &&lastVersion = getLastVersion(projectName);
     QString lastStatus = "?"; // passed, failed, started
-    QString lastVersion;
     QString lastTimestamp;
+    int buildsNumber = 0;
 
-    if (!builds.isEmpty()) {
-        lastVersion = builds.last().fileName();
-        lastTimestamp = builds.last().lastModified().toString(dateTimeFormat);
+    if (!lastVersion.isEmpty()) {
+        const QDir projectBinDir(APP_S().buildServerBinDir() + "/" + projectName);
+        buildsNumber = projectBinDir.entryList(QDir::AllDirs |
+                                                QDir::NoDotAndDotDot).size();
 
         if (QFile(APP_S().buildServerLogFile()).exists()) {
-            QString lt = getLastTimestampFromLogFile(projectName, lastVersion);
+            const QString lt = getLastTimestampFromLogFile(projectName, lastVersion);
             if (!lt.isEmpty()) {
                 lastTimestamp = lt;
             }
+        }
+        else {
+            const QFileInfo fileInfo(projectBinDir.absolutePath() + "/" + lastVersion);
+            lastTimestamp = fileInfo.lastModified().toString(dateTimeFormat);
         }
 
         // Debug mode!
@@ -86,8 +94,24 @@ void ProjectsTableItem::generate(const QString &projectName)
     setSettings(tmp);
 }
 
+QString ProjectsTableItem::getLastVersion(const QString &projectName) const
+{
+    const QDir projectBinDir(APP_S().buildServerBinDir() + "/" + projectName);
+    auto builds = projectBinDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+    if (!builds.isEmpty()) {
+        QCollator coll;
+        coll.setNumericMode(true);
+        const auto comp = [&coll](const QString &s1, const QString &s2) -> bool {
+            return coll.compare(s1, s2) < 0;
+        };
+        std::sort(builds.begin(), builds.end(), comp);
+        return builds.last();
+    }
+    return "";
+}
+
 QString ProjectsTableItem::getLastTimestampFromLogFile(const QString &projectName,
-                                                       const QString lastVersion) const
+                                                       const QString &lastVersion) const
 {
     QString out;
 
@@ -107,8 +131,6 @@ QString ProjectsTableItem::getLastTimestampFromLogFile(const QString &projectNam
                 ch = f.read(1);
             }
             line = QString::fromUtf8(f.readLine());
-
-            LOG("ProjectsTableItem.log", line.toUtf8());
 
             if (line.contains(testString)) {
                 out = line.mid(1, 19);
