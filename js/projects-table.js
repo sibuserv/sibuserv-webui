@@ -1,5 +1,22 @@
 // License: MIT (Expat)
 
+function update_cells_width() {
+    list = [".role", ".last_version", ".last_timestamp", ".builds_number"];
+    for (var k in list) {
+        width = 0;
+        $.each($("#projects_table_container").find(list[k]), function(i, item) {
+            width = Math.max(width, $(item).width());
+        });
+        $.each($("#projects_table_container").find(list[k]), function(i, item) {
+            // TODO: fix "min-width for table-cell" problem for Chromium!
+            $(item).css("min-width", width + "px");
+            $(item).css("min-width", width + "px");
+            $(item).css("max-width", width + "px");
+            $(item).css("max-width", width + "px");
+        });
+    }
+}
+
 function add_item_into_projects_table(i, item) {
     num = +localStorage.projects_number;
     localStorage.projects_number = num + 1;
@@ -31,6 +48,7 @@ function add_item_into_projects_table(i, item) {
                 "<li class=\"role\">\n" + $("#" + item.role).text() + "</li>\n" +
             "</div>\n";
     $("#projects_table").append(html);
+    update_cells_width($("#" + item.project_name));
 
     if (item.hasOwnProperty("last_project")) {
         if (item.last_project) {
@@ -42,6 +60,7 @@ function add_item_into_projects_table(i, item) {
 function fill_in_projects_table(data) {
     array = $.parseJSON(data);
     $.each(array, add_item_into_projects_table);
+    update_cells_width();
 }
 
 function show_more_projects() {

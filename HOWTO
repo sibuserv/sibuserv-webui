@@ -37,12 +37,28 @@
 /settings/users/<user-name>
 
 
---- Other notes ---
-To become website administrator edit your user configuration file:
-/home/sibuserv/.config/sibuserv-webui/users/<user-name>.json
-where set "admin" to true. Or add new user with admin privileges:
+--- User roles in project ---
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|             |                       Access features                     |
+|             |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|    Role     |   View   |  View   | Download | View  |   View   | Manage |
+|             | projects |  build  |  builds  | build |   code   | users  |
+|             |   list   | history |          | logs  | analysis |        |
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| Anonymous   |   -/+    |    -    |    -     |   -   |    -     |   -    |
+| Guest       |    +     |    +    |    -     |   -   |    -     |   -    |
+| Tester      |    +     |    +    |    +     |   -   |    -     |   -    |
+| Developer   |    +     |    +    |    +     |   +   |    +     |   -    |
+| Owner       |    +     |    +    |    +     |   +   |    +     |   +    |
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-su sibuserv --command 'sibuserv-webui --add-user'
-or
-sudo --user sibuserv sibuserv-webui --add-user
+
+--- How to become website administrator ---
+1) Add new user with admin privileges:
+   su sibuserv --command 'sibuserv-webui --add-user'
+   or
+   sudo --user sibuserv sibuserv-webui --add-user
+2) Or edit your user configuration file:
+   /home/sibuserv/.config/sibuserv-webui/users/<user-name>.json
+   where set "admin" to true.
 

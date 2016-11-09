@@ -125,7 +125,7 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
                 { "project_name", projects[k] },
                 { "builds_number", rand()%10000 },
                 { "last_status", "passed" }, // passed, failed, started
-                { "last_version", "1.2.3" },
+                { "last_version", QString("20160829-133941__b306f3d").mid(0, rand()%24) },
                 { "last_timestamp", "2016-11-08 15:01:20" },
                 { "role", "developer" } // guest, tester, developer, owner
             };
@@ -146,9 +146,9 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
                     { "project_name", request.post("project_name") },
                     { "builds_number", "121" },
                     { "last_status", "passed" }, // passed, failed, started
-                    { "last_version", "1.2.3" },
+                    { "last_version", "20160829-133941__b306f3d" },
                     { "last_timestamp", "2016-11-08 15:01:20" },
-                    { "role", "guest" } // guest, developer, owner
+                    { "role", "guest" } // guest, tester, developer, owner
                 };
             }
         }

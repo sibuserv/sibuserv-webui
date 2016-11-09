@@ -20,6 +20,11 @@
             <p>Looks like you have JavaScript disabled.</p>
             <p>Sibuserv Web UI needs JavaScript to work properly.</p>
             <p>Please enable JavaScript and reload this page.</p>",
+    "project_name": "Name",
+    "builds": "Builds",
+    "last_build": "Last build",
+    "last_timestamp": "Last update",
+    "role": "Role",
     "show_more": "Show more",
     "guest": "Guest",
     "tester": "Tester",
