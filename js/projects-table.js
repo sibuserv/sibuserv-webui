@@ -8,11 +8,8 @@ function update_cells_width() {
             width = Math.max(width, $(item).width());
         });
         $.each($("#projects_table_container").find(list[k]), function(i, item) {
-            // TODO: fix "min-width for table-cell" problem for Chromium!
             $(item).css("min-width", width + "px");
             $(item).css("min-width", width + "px");
-            $(item).css("max-width", width + "px");
-            $(item).css("max-width", width + "px");
         });
     }
 }

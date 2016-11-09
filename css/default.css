@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: content-box;
 }
 
 body {
@@ -277,7 +277,6 @@ h1 {
 #projects_table_container .last_status {
     padding-left: 20px;
     min-width: 20px;
-    max-width: 20px;
 }
 
 #projects_table_container .project_name {
