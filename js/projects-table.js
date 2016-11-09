@@ -14,9 +14,7 @@ function add_item_into_projects_table(i, item) {
 
     html =  "<div id=\"" + item.project_name + "\" class=\"table_item " +
             item.last_status + "\">\n" +
-                "<li class=\"last_status\" title=\"" +
-                    $("#" + item.last_status).text() + "\">\n" + last_status +
-                "</li>\n" +
+                "<li class=\"last_status\">\n" + last_status + "</li>\n" +
                 "<li class=\"project_name\">\n" +
                     "<a class=\"" + item.last_status + "\" " + "href=\"" +
                     $("#projects_page").find("a").attr("href") +

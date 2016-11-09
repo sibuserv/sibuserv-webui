@@ -20,5 +20,9 @@
             <p>Looks like you have JavaScript disabled.</p>
             <p>Sibuserv Web UI needs JavaScript to work properly.</p>
             <p>Please enable JavaScript and reload this page.</p>",
-    "show_more": "Show more"
+    "show_more": "Show more",
+    "guest": "Guest",
+    "tester": "Tester",
+    "developer": "Developer",
+    "owner": "Owner"
 }

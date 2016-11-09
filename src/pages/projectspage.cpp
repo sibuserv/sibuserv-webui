@@ -127,7 +127,7 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
                 { "last_status", "passed" }, // passed, failed, started
                 { "last_version", "1.2.3" },
                 { "last_timestamp", "2016-11-08 15:01:20" },
-                { "role", "guest" } // guest, tester, developer, owner
+                { "role", "developer" } // guest, tester, developer, owner
             };
             if (k == fullSize -1) {
                 tmp["last_project"] = true;
