@@ -132,6 +132,9 @@ void BuildHistoryPage::generateAjaxResponse(const Request &request,
 
 bool BuildHistoryPage::isAllowedAccess(const QString &projectName) const
 {
+    if (isAdmin())
+        return true;
+
     const UserSettings &us = userSettings();
     const QJsonObject &&obj = us.getObject("projects");
     return obj.contains(projectName);
