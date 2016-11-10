@@ -25,25 +25,31 @@
 
 #pragma once
 
+#include <QPair>
 #include <QString>
 #include <QJsonObject>
+#include <QFileInfoList>
 
 #include "abstractsettings.h"
 
-class ProjectsTableItem : public AbstractSettings
+class BuildHistoryItem : public AbstractSettings
 {
 public:
-    explicit ProjectsTableItem(const QString &projectName);
-    ProjectsTableItem(const ProjectsTableItem &in) = delete;
-    ProjectsTableItem(ProjectsTableItem &&in) = delete;
-    ProjectsTableItem& operator=(const ProjectsTableItem &in) = delete;
-    virtual ~ProjectsTableItem() = default;
+    explicit BuildHistoryItem(const QString &projectName,
+                              const QString &version);
+    BuildHistoryItem(const BuildHistoryItem &in) = delete;
+    BuildHistoryItem(BuildHistoryItem &&in) = delete;
+    BuildHistoryItem& operator=(const BuildHistoryItem &in) = delete;
+    virtual ~BuildHistoryItem() = default;
 
     QJsonObject& getJsonObject() const;
 
 private:
-    inline void generate(const QString &projectName);
-    inline bool requiresUpdate(const QString &projectName) const;
-    inline QString getLastVersion(const QString &projectName) const;
+    inline void generate(const QString &projectName, const QString &version);
+    inline QPair<QString&&, QString&&> getTimestampsFromLogFile(const QString &projectName,
+                                                              const QString &version) const;
+    inline qint64 calcDuration(const QString &started, const QString &finished) const;
+    inline QString detectBuildStatus(const QFileInfoList &subdirs) const;
+    inline bool isStaticCodeAnalysisFailed(const QString &dir) const;
 };
 

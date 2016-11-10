@@ -31,16 +31,22 @@
 
 #include "logmanager.h"
 #include "applicationsettings.h"
+#include "buildhistoryitem.h"
 #include "projectstableitem.h"
 
 static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
 
 ProjectsTableItem::ProjectsTableItem(const QString &projectName) :
-    AbstractSettings(APP_S().cacheDirectory(), projectName + ".json")
+    AbstractSettings(APP_S().cacheDirectory() + "/projects",
+                     projectName + ".json")
 {
-    if (getSettings().isEmpty() || requiresUpdate()) {
+    if (getSettings().isEmpty() || requiresUpdate(projectName)) {
         generate(projectName);
-        writeSettings();
+
+        const QString &&lastStatus = get("last_status");
+        if (lastStatus == "passed" || lastStatus == "failed") {
+            writeSettings();
+        }
     }
 }
 
@@ -49,39 +55,30 @@ QJsonObject &ProjectsTableItem::getJsonObject() const
     return AbstractSettings::getSettings();
 }
 
-bool ProjectsTableItem::requiresUpdate() const
-{
-    // Debug mode!
-    ;
-
-    return true;
-}
-
 void ProjectsTableItem::generate(const QString &projectName)
 {
     const QString &&lastVersion = getLastVersion(projectName);
-    QString lastStatus = "?"; // passed, failed, started
+    QString lastStatus = "?";
     QString lastTimestamp;
     int buildsNumber = 0;
 
     if (!lastVersion.isEmpty()) {
         const QDir projectBinDir(APP_S().buildServerBinDir() + "/" + projectName);
         buildsNumber = projectBinDir.entryList(QDir::AllDirs |
-                                                QDir::NoDotAndDotDot).size();
+                                               QDir::NoDotAndDotDot).size();
 
-        if (QFile(APP_S().buildServerLogFile()).exists()) {
-            const QString lt = getLastTimestampFromLogFile(projectName, lastVersion);
-            if (!lt.isEmpty()) {
-                lastTimestamp = lt;
+        BuildHistoryItem buildHistoryItem(projectName, lastVersion);
+        if (!buildHistoryItem.getJsonObject().isEmpty()) {
+            lastStatus = buildHistoryItem.get("status");
+
+            const QString &&finished = buildHistoryItem.get("finished");
+            if (!finished.isEmpty()) {
+                lastTimestamp = finished;
+            }
+            else {
+                lastTimestamp = buildHistoryItem.get("started");
             }
         }
-        else {
-            const QFileInfo fileInfo(projectBinDir.absolutePath() + "/" + lastVersion);
-            lastTimestamp = fileInfo.lastModified().toString(dateTimeFormat);
-        }
-
-        // Debug mode!
-        lastStatus = "passed";
     }
 
     const QJsonObject tmp = {
@@ -92,6 +89,11 @@ void ProjectsTableItem::generate(const QString &projectName)
         { "last_timestamp", lastTimestamp }
     };
     setSettings(tmp);
+}
+
+bool ProjectsTableItem::requiresUpdate(const QString &projectName) const
+{
+    return (get("last_version") == getLastVersion(projectName));
 }
 
 QString ProjectsTableItem::getLastVersion(const QString &projectName) const
@@ -108,42 +110,5 @@ QString ProjectsTableItem::getLastVersion(const QString &projectName) const
         return builds.last();
     }
     return "";
-}
-
-QString ProjectsTableItem::getLastTimestampFromLogFile(const QString &projectName,
-                                                       const QString &lastVersion) const
-{
-    QString out;
-
-    QFile f(APP_S().buildServerLogFile());
-    if (f.size() == 0)
-        return out;
-
-    const QString &&testString = projectName + ": " + lastVersion;
-
-    QString line;
-    QByteArray ch;
-    if (f.open(QIODevice::ReadOnly)) {
-        f.seek(f.size());
-        while (f.pos() > 21) {
-            while ((f.pos() > 2) && (ch != "\n")) {
-                f.seek(f.pos() - 2);
-                ch = f.read(1);
-            }
-            line = QString::fromUtf8(f.readLine());
-
-            if (line.contains(testString)) {
-                out = line.mid(1, 19);
-                break;
-            }
-            else {
-                f.seek(f.pos() - line.size());
-                ch.clear();
-            }
-        }
-        f.close();
-    }
-
-    return out;
 }
 
