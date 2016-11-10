@@ -51,6 +51,9 @@ public:
     void addToTitle(const QByteArray &title);
     void addToContent(const QByteArray &content);
 
+    void addStyleSheetToHead(const QByteArray &styleSheet);
+    void addScriptToHead(const QByteArray &script);
+
     bool isAutorizedUser() const;
     bool isAdmin() const;
 

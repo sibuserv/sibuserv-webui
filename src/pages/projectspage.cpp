@@ -59,9 +59,13 @@ void ProjectsPage::generateHtmlTemplate()
         if (!allProjects().isEmpty() &&
                 (getBool("anonymous_may_view_the_list_of_projects") ||
                  getBool("logged_in_user_may_view_the_full_list_of_projects"))) {
+            addScriptToHead("%prefix%js/projects-table.js");
+            addStyleSheetToHead("%prefix%css/projects/%page_style%");
             setContent(res.read("/html/projects-template.html"));
         }
         else if (allowedProjectsExist()) {
+            addScriptToHead("%prefix%js/projects-table.js");
+            addStyleSheetToHead("%prefix%css/projects/%page_style%");
             setContent(res.read("/html/projects-template.html"));
         }
         else {
@@ -70,6 +74,8 @@ void ProjectsPage::generateHtmlTemplate()
     }
     else if (getBool("anonymous_may_view_the_list_of_projects")) {
         if (!allProjects().isEmpty()) {
+            addScriptToHead("%prefix%js/projects-table.js");
+            addStyleSheetToHead("%prefix%css/projects/%page_style%");
             setContent(res.read("/html/projects-template.html"));
         }
         else {

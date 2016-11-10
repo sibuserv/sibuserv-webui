@@ -7,6 +7,7 @@
 /home/sibuserv/.config/sibuserv-webui/l10n/<locale>.json
 /home/sibuserv/.config/sibuserv-webui/users/<user-name>.json
 /home/sibuserv/.local/share/sibuserv-webui/cache/css/<style-name>.css
+/home/sibuserv/.local/share/sibuserv-webui/cache/css/<feature-name>/<style-name>.css
 /home/sibuserv/.local/share/sibuserv-webui/cache/projects/<project-name>.json
 /home/sibuserv/.local/share/sibuserv-webui/cache/projects/<project-name>/<version>.json
 /home/sibuserv/.local/share/sibuserv-webui/logs/<error-type>.log

@@ -5,6 +5,7 @@
         <file alias="/user-settings.json">../config/user-settings.json</file>
         <file alias="/webui-settings.json">../config/webui-settings.json</file>
         <file alias="/css/default.css">../css/default.css</file>
+        <file alias="/css/projects/default.css">../css/projects/default.css</file>
         <file alias="/js/main.js">../js/main.js</file>
         <file alias="/l10n/en_US.json">../l10n/en_US.json</file>
         <file alias="/l10n/ru_RU.json">../l10n/ru_RU.json</file>

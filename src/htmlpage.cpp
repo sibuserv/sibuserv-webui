@@ -122,6 +122,17 @@ void HtmlPage::addToContent(const QByteArray &content)
     setContent(d->content + "\n" + content);
 }
 
+void HtmlPage::addStyleSheetToHead(const QByteArray &styleSheet)
+{
+    addToHead("        <link rel=\"stylesheet\" type=\"text/css\" href=\"" +
+              styleSheet + "\">\n");
+}
+
+void HtmlPage::addScriptToHead(const QByteArray &script)
+{
+    addToHead("        <script src=\"" + script + "\"></script>");
+}
+
 bool HtmlPage::isAutorizedUser() const
 {
     return d->autorized;
