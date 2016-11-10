@@ -49,8 +49,8 @@ function add_item_into_projects_table(i, item) {
     $("#projects_table").append(html);
     update_cells_width($("#" + item.project_name));
 
-    if (item.hasOwnProperty("last_project")) {
-        if (item.last_project) {
+    if (item.hasOwnProperty("last_item")) {
+        if (item.last_item) {
             $("#show_more").remove();
         }
     }
@@ -66,12 +66,12 @@ function show_more_projects() {
     var len = +localStorage.projects_per_page;
     var pos = +localStorage.projects_number;
     var data = "pos=" + pos + "&len=" + len;
-    $.post("./?ajax=projects_list", data, fill_in_projects_table);
+    $.post("?ajax=projects_list", data, fill_in_projects_table);
     return false;
 }
 
 function load_projects_table() {
-    localStorage.projects_per_page = 7;
+    localStorage.projects_per_page = 10;
     localStorage.projects_number = 0;
     show_more_projects();
 }

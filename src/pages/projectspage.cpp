@@ -136,7 +136,7 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
                 tmp["role"] = userSettings().getProjectRole(projects[k]);
             }
             if (k == fullSize -1) {
-                tmp["last_project"] = true;
+                tmp["last_item"] = true;
             }
             out += tmp;
         }
@@ -158,7 +158,7 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
     }
 }
 
-bool ProjectsPage::allowedProjectsExist()
+bool ProjectsPage::allowedProjectsExist() const
 {
     QStringList &&projects = allowedProjects();
     if (projects.isEmpty())
@@ -174,16 +174,16 @@ bool ProjectsPage::allowedProjectsExist()
     return false;
 }
 
-QStringList ProjectsPage::allowedProjects()
+QStringList ProjectsPage::allowedProjects() const
 {
-    UserSettings &us = userSettings();
-    QJsonObject &&obj = us.getObject("projects");
+    const UserSettings &us = userSettings();
+    const QJsonObject &&obj = us.getObject("projects");
     return obj.keys();
 }
 
-QStringList ProjectsPage::allProjects()
+QStringList ProjectsPage::allProjects() const
 {
     const QDir dir(APP_S().buildServerBinDir());
-    return dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+    return dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name);
 }
 

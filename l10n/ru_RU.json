@@ -20,6 +20,7 @@
             <p>Похоже, у вас отключен JavaScript.</p>
             <p>JavaScript необходим для правильной работы Sibuserv Web UI.</p>
             <p>Пожалуйста, включите JavaScript и перезагрузите страницу.</p>",
+    "no_build_history": "<h1>Еще нет доступных сборок.</h1>",
     "project_name": "Название",
     "builds": "Сборки",
     "last_build": "Последняя сборка",
@@ -30,5 +31,9 @@
     "guest": "Гость",
     "tester": "Тестировщик",
     "developer": "Разработчик",
-    "owner": "Владелец"
+    "owner": "Владелец",
+    "status": "Статус",
+    "version": "Версия",
+    "started_at": "Начало",
+    "finished_at": "Конец"
 }

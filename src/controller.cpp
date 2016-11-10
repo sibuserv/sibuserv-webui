@@ -32,6 +32,7 @@
 #include "datafile.h"
 #include "javascriptredirect.h"
 #include "projectspage.h"
+#include "buildhistorypage.h"
 #include "profilesettingspage.h"
 #include "settingspage.h"
 #include "debugpage.h"
@@ -82,7 +83,15 @@ void Controller::start()
             ProjectsPage(d->request);
         }
         else if (pageName.startsWith("projects/")) {
-            DebugPage(d->request);
+            const int count = pageName.count("/");
+            const QString &&projectName =
+                    pageName.mid(pageName.lastIndexOf("/") + 1);
+            if (count == 1) {
+                BuildHistoryPage(d->request, projectName);
+            }
+            else {
+                DebugPage(d->request);
+            }
         }
         else if (pageName == "profile/settings") {
             ProfileSettingsPage(d->request);

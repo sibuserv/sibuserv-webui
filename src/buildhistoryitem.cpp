@@ -69,9 +69,7 @@ void BuildHistoryItem::generate(const QString &projectName,
     QString started  = subdirs.first().lastModified().toString(dateTimeFormat);
     QString finished = subdirs.last() .lastModified().toString(dateTimeFormat);
 
-    // Debug mode!
-    // if (QFile(APP_S().buildServerLogFile()).exists()) {
-    if (false) {
+    if (QFile(APP_S().buildServerLogFile()).exists()) {
         QString t1;
         QString t2;
         QPair<QString&, QString&> (t1, t2) = getTimestampsFromLogFile(projectName,
@@ -97,17 +95,15 @@ void BuildHistoryItem::generate(const QString &projectName,
     setSettings(tmp);
 }
 
-QPair<QString&&, QString&&> BuildHistoryItem::getTimestampsFromLogFile(const QString &projectName,
-                                                                       const QString &version) const
+QPair<QString, QString> BuildHistoryItem::getTimestampsFromLogFile(const QString &projectName,
+                                                                   const QString &version) const
 {
-    auto out = qMakePair(QString(), QString());
-
     if (projectName.isEmpty() || version.isEmpty())
-        return out;
+        return qMakePair(QString(), QString());
 
     QFile f(APP_S().buildServerLogFile());
     if (f.size() <= 0)
-        return out;
+        return qMakePair(QString(), QString());
 
     const QString &&testStarted  = "build: " + projectName + ": " + version;
     const QString &&testFinished = "done:  " + projectName + ": " + version;
@@ -117,7 +113,7 @@ QPair<QString&&, QString&&> BuildHistoryItem::getTimestampsFromLogFile(const QSt
     if (f.open(QIODevice::ReadOnly)) {
         f.seek(f.size());
         while (f.pos() > 21) {
-            while ((f.pos() > 2) && (ch != "\n")) {
+            while ((f.pos() > 21) && (ch != "\n")) {
                 f.seek(f.pos() - 2);
                 ch = f.read(1);
             }
@@ -131,7 +127,6 @@ QPair<QString&&, QString&&> BuildHistoryItem::getTimestampsFromLogFile(const QSt
             }
 
             if (!finished.isEmpty() && !started.isEmpty()) {
-                out = qMakePair(started, finished);
                 break;
             }
 
@@ -141,7 +136,7 @@ QPair<QString&&, QString&&> BuildHistoryItem::getTimestampsFromLogFile(const QSt
         f.close();
     }
 
-    return out;
+    return qMakePair(started, finished);
 }
 
 qint64 BuildHistoryItem::calcDuration(const QString &started,

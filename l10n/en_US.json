@@ -20,6 +20,7 @@
             <p>Looks like you have JavaScript disabled.</p>
             <p>Sibuserv Web UI needs JavaScript to work properly.</p>
             <p>Please enable JavaScript and reload this page.</p>",
+    "no_build_history": "<h1>There are no available builds yet.</h1>",
     "project_name": "Name",
     "builds": "Builds",
     "last_build": "Last build",
@@ -30,5 +31,9 @@
     "guest": "Guest",
     "tester": "Tester",
     "developer": "Developer",
-    "owner": "Owner"
+    "owner": "Owner",
+    "status": "Status",
+    "version": "Version",
+    "started_at": "Started at",
+    "finished_at": "Finished at"
 }

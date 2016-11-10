@@ -5,8 +5,11 @@
         <file alias="/user-settings.json">../config/user-settings.json</file>
         <file alias="/webui-settings.json">../config/webui-settings.json</file>
         <file alias="/css/default.css">../css/default.css</file>
+        <file alias="/css/build-history/default.css">../css/build-history/default.css</file>
         <file alias="/css/projects/default.css">../css/projects/default.css</file>
         <file alias="/js/main.js">../js/main.js</file>
+        <file alias="/js/build-history.js">../js/build-history.js</file>
+        <file alias="/js/projects-table.js">../js/projects-table.js</file>
         <file alias="/l10n/en_US.json">../l10n/en_US.json</file>
         <file alias="/l10n/ru_RU.json">../l10n/ru_RU.json</file>
         <file alias="/html/page-template.html">../html/page-template.html</file>
@@ -17,6 +20,8 @@
         <file alias="/html/404-template.html">../html/404-template.html</file>
         <file alias="/html/projects-template.html">../html/projects-template.html</file>
         <file alias="/html/no-projects-template.html">../html/no-projects-template.html</file>
+        <file alias="/html/build-history-template.html">../html/build-history-template.html</file>
+        <file alias="/html/no-build-history-template.html">../html/no-build-history-template.html</file>
         <file alias="/robots.txt">../html/robots.txt</file>
     </qresource>
 </RCC>

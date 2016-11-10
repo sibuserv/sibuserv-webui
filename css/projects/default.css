@@ -63,13 +63,13 @@
     padding-right: 20px;
 }
 
-#show_more {
+#projects_table_container #show_more {
     display: block;
     text-align: center;
     background-color: #f1f1f1;
 }
 
-#show_more:hover {
+#projects_table_container #show_more:hover {
     text-decoration: none;
     background-color: #e1e1e1;
 }

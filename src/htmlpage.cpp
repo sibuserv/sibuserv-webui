@@ -122,6 +122,11 @@ void HtmlPage::addToContent(const QByteArray &content)
     setContent(d->content + "\n" + content);
 }
 
+void HtmlPage::updateContent(const QByteArray &from, const QByteArray &to)
+{
+    d->content.replace(from, to);
+}
+
 void HtmlPage::addStyleSheetToHead(const QByteArray &styleSheet)
 {
     addToHead("        <link rel=\"stylesheet\" type=\"text/css\" href=\"" +
@@ -250,12 +255,12 @@ void HtmlPage::update()
     setData(out);
 }
 
-CommonSettings& HtmlPage::commonSettings()
+CommonSettings& HtmlPage::commonSettings() const
 {
     return d->commonSettings;
 }
 
-UserSettings &HtmlPage::userSettings()
+UserSettings &HtmlPage::userSettings() const
 {
     return d->userSettings;
 }

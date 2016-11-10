@@ -25,25 +25,31 @@
 
 #pragma once
 
+#include <QString>
 #include <QStringList>
 
 #include "htmlpage.h"
 #include "request.h"
 
-class ProjectsPage : public HtmlPage
+class BuildHistoryPage : public HtmlPage
 {
 public:
-    explicit ProjectsPage(const Request &request);
-    ProjectsPage(const ProjectsPage &in) = delete;
-    ProjectsPage(ProjectsPage &&in) = delete;
-    ProjectsPage& operator=(const ProjectsPage &in) = delete;
-    virtual ~ProjectsPage() = default;
+    explicit BuildHistoryPage(const Request &request, const QString &projectName);
+    BuildHistoryPage(const BuildHistoryPage &in) = delete;
+    BuildHistoryPage(BuildHistoryPage &&in) = delete;
+    BuildHistoryPage& operator=(const BuildHistoryPage &in) = delete;
+    virtual ~BuildHistoryPage() = default;
 
 protected:
-    void generateHtmlTemplate();
-    void generateAjaxResponse(const Request &request);
-    inline bool allowedProjectsExist() const;
-    inline QStringList allowedProjects() const;
-    inline QStringList allProjects() const;
+    inline void generateHtmlTemplate(const QString &projectName);
+    inline void generateAjaxResponse(const Request &request,
+                                     const QString &projectName);
+    inline bool isAllowedAccess(const QString &projectName) const;
+
+    /// \brief Unsorted list of builds.
+    inline QStringList allBuilds(const QString &projectName) const;
+
+    /// \brief Natural sort of string list in reverse order.
+    inline void sortBuilds(QStringList &builds) const;
 };
 

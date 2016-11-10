@@ -1,0 +1,82 @@
+#builds_table_container a {
+    display: block;
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#builds_table_container li {
+    display: table-cell;
+    list-style-type: none;
+    vertical-align: middle;
+    white-space: nowrap;
+    box-sizing: content-box;
+}
+
+#builds_table_container .table_item {
+    margin: 5px 0;
+    padding: 10px 0;
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+}
+
+#builds_table_container .passed {
+    color: #2ba260;
+}
+
+#builds_table_container .passed:hover {
+    background-color: #deecdc;
+}
+
+#builds_table_container .failed {
+    color: #dd5252;
+}
+
+#builds_table_container .failed:hover {
+    background-color: #fce8e2;
+}
+
+#builds_table_container .started {
+    color: #cc8800;
+}
+
+#builds_table_container .started:hover {
+    background-color: #fff7e6;
+}
+
+#builds_table_container .status {
+    padding-left: 20px;
+    min-width: 20px;
+}
+
+#builds_table_container .version {
+    white-space: nowrap;
+    width: 100%;
+}
+
+#builds_table_container .started_at {
+    color: #686868;
+    white-space: nowrap;
+    padding-right: 20px;
+}
+
+#builds_table_container .finished_at {
+    color: #686868;
+    white-space: nowrap;
+    padding-right: 20px;
+}
+
+#builds_table_container .duration {
+    white-space: nowrap;
+    padding-right: 20px;
+}
+
+#builds_table_container #show_more {
+    text-align: center;
+    background-color: #f1f1f1;
+}
+
+#builds_table_container #show_more:hover {
+    background-color: #e1e1e1;
+}
+

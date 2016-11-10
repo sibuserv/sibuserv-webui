@@ -50,6 +50,7 @@ public:
     void addToBody(const QByteArray &body);
     void addToTitle(const QByteArray &title);
     void addToContent(const QByteArray &content);
+    void updateContent(const QByteArray &from, const QByteArray &to);
 
     void addStyleSheetToHead(const QByteArray &styleSheet);
     void addScriptToHead(const QByteArray &script);
@@ -64,8 +65,8 @@ protected:
     void forbidAccess();
     void update();
 
-    CommonSettings& commonSettings();
-    UserSettings&   userSettings();
+    CommonSettings& commonSettings() const;
+    UserSettings&   userSettings() const;
 
     /// \brief Get string value from common settings.
     QString get(const QString &key) const;
