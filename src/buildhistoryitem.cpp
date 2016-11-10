@@ -152,8 +152,6 @@ qint64 BuildHistoryItem::calcDuration(const QString &started,
     return t1.secsTo(t2);
 }
 
-// Debug mode!
-// TODO: move all checks to new class BuildItem().
 QString BuildHistoryItem::detectBuildStatus(const QFileInfoList &subdirs) const
 {
     if (subdirs.isEmpty())
@@ -173,7 +171,6 @@ QString BuildHistoryItem::detectBuildStatus(const QFileInfoList &subdirs) const
                 const QDir dir(it.absoluteFilePath());
                 for (const auto &k : dir.entryList(QDir::AllEntries |
                                                    QDir::NoDotAndDotDot)) {
-                    LOG("BuildHistoryItem.log", k.toUtf8());
                     if (k.endsWith("Makefile")) {
                         return "started";
                     }
