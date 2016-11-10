@@ -93,7 +93,7 @@ void ProjectsTableItem::generate(const QString &projectName)
 
 bool ProjectsTableItem::requiresUpdate(const QString &projectName) const
 {
-    return (get("last_version") == getLastVersion(projectName));
+    return (get("last_version") != getLastVersion(projectName));
 }
 
 QString ProjectsTableItem::getLastVersion(const QString &projectName) const
