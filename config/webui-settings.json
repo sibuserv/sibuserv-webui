@@ -5,7 +5,6 @@
     "log_directory":         "/home/sibuserv/.local/share/sibuserv-webui/logs",
     "sessions_directory":    "/home/sibuserv/.local/share/sibuserv-webui/sessions",
     "build_server_bin_dir":  "/home/sibuserv/BuildServer/Binaries",
-    "build_server_log_file": "/home/sibuserv/BuildServer/Binaries/build-server-daemon.log",
     "static_code_analysis_logs_subdir": "StaticCodeAnalysis",
     "jquery_url": "https://code.jquery.com/jquery-latest.min.js"
 }

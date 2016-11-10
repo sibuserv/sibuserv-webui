@@ -42,7 +42,6 @@ public:
     QString logDirectory() const;
     QString sessionsDirectory() const;
     QString buildServerBinDir() const;
-    QString buildServerLogFile() const;
     QString staticCodeAnalysisLogsSubdir() const;
     QString jqueryUrl() const;
 
