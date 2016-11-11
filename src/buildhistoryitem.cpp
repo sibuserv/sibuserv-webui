@@ -41,7 +41,8 @@ BuildHistoryItem::BuildHistoryItem(const QString &projectName,
     AbstractSettings(APP_S().cacheDirectory() + "/projects/" + projectName,
                      version + ".json")
 {
-    if (getSettings().isEmpty()) {
+    // if (getSettings().isEmpty()) {
+    if (true) { // Debug mode!
         generate(projectName, version);
 
         const QString &&status = get("status");
@@ -62,27 +63,44 @@ void BuildHistoryItem::generate(const QString &projectName,
     if (projectName.isEmpty() || version.isEmpty())
         return;
 
-    const auto getTimestamp = [](const QFileInfo &fileInfo) -> QString {
-        return fileInfo.lastModified().toString(dateTimeFormat);
-    };
+    const QDir dir(APP_S().buildServerBinDir() + "/" + projectName + "/" + version);
+    const auto &&subdirs = dir.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot,
+                                             QDir::Time | QDir::Reversed);
 
-    QDir dir(APP_S().buildServerBinDir() + "/" + projectName + "/" + version);
-    dir.setSorting(QDir::Time | QDir::Reversed);
+    QString started  = subdirs.first().lastModified().toString(dateTimeFormat);
+    QString finished = subdirs.last() .lastModified().toString(dateTimeFormat);
 
-    const auto &&targets = dir.entryInfoList(QDir::AllDirs |
-                                             QDir::NoDotAndDotDot);
-    const QString started = getTimestamp(targets.first());
 
-    // The most accurate detection of ending time: last modified file or
-    // subdirectory in last target (by default it should be subdirectory
-    // "StaticCodeAnalysis/cppcheck.html").
-    dir.setPath(targets.last().absoluteFilePath());
-    const QString finished = getTimestamp(dir.entryInfoList(QDir::AllEntries |
-                                                            QDir::NoDotAndDotDot)
-                                          .last());
+    QByteArray out = "\n"; // Debug mode!
+    out += projectName.toUtf8() + "\n"; // Debug mode!
+    out += finished.toUtf8() + "\n"; // Debug mode!
+
+    if (QFile(APP_S().buildServerLogFile()).exists()) {
+        QString t1;
+        QString t2;
+        QPair<QString&, QString&> (t1, t2) = getTimestampsFromLogFile(projectName,
+                                                                      version);
+        if (!t1.isEmpty())
+            started = t1;
+        if (!t2.isEmpty())
+            finished = t2;
+
+        out += finished.toUtf8() + "\n"; // Debug mode!
+    }
+    // else { // Debug mode!
+    // More accurate detection of ending time.
+    finished = QDir(subdirs.last().absoluteFilePath())
+            .entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot,
+                           QDir::Time | QDir::Reversed)
+            .last().lastModified().toString(dateTimeFormat);
+
+    out += finished.toUtf8() + "\n"; // Debug mode!
+    LOG("BuildHistoryItem.log", out); // Debug mode!
+    // } // Debug mode!
 
     const qint64  &&duration = calcDuration(started, finished);
-    const QString &&status   = detectBuildStatus(targets);
+    const QString &&status   = detectBuildStatus(subdirs);
+
 
     const QJsonObject tmp = {
         { "project_name",   projectName },
@@ -93,6 +111,50 @@ void BuildHistoryItem::generate(const QString &projectName,
         { "duration",       duration }
     };
     setSettings(tmp);
+}
+
+QPair<QString, QString> BuildHistoryItem::getTimestampsFromLogFile(const QString &projectName,
+                                                                   const QString &version) const
+{
+    if (projectName.isEmpty() || version.isEmpty())
+        return qMakePair(QString(), QString());
+
+    QFile f(APP_S().buildServerLogFile());
+    if (f.size() <= 0)
+        return qMakePair(QString(), QString());
+
+    const QString &&testStarted  = "build: " + projectName + ": " + version;
+    const QString &&testFinished = "done:  " + projectName + ": " + version;
+
+    QByteArray ch;
+    QString started, finished, line;
+    if (f.open(QIODevice::ReadOnly)) {
+        f.seek(f.size());
+        while (f.pos() > 21) {
+            while ((f.pos() > 21) && (ch != "\n")) {
+                f.seek(f.pos() - 2);
+                ch = f.read(1);
+            }
+            line = QString::fromUtf8(f.readLine());
+
+            if (line.contains(testFinished)) {
+                finished = line.mid(1, 19);
+            }
+            else if (line.contains(testStarted)) {
+                started = line.mid(1, 19);
+            }
+
+            if (!finished.isEmpty() && !started.isEmpty()) {
+                break;
+            }
+
+            f.seek(f.pos() - line.size());
+            ch.clear();
+        }
+        f.close();
+    }
+
+    return qMakePair(started, finished);
 }
 
 qint64 BuildHistoryItem::calcDuration(const QString &started,
