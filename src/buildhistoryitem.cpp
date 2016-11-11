@@ -41,8 +41,7 @@ BuildHistoryItem::BuildHistoryItem(const QString &projectName,
     AbstractSettings(APP_S().cacheDirectory() + "/projects/" + projectName,
                      version + ".json")
 {
-    // if (getSettings().isEmpty()) {
-    if (true) { // Debug mode!
+    if (getSettings().isEmpty()) {
         generate(projectName, version);
 
         const QString &&status = get("status");
@@ -63,17 +62,22 @@ void BuildHistoryItem::generate(const QString &projectName,
     if (projectName.isEmpty() || version.isEmpty())
         return;
 
-    const QDir dir(APP_S().buildServerBinDir() + "/" + projectName + "/" + version);
-    const auto &&subdirs = dir.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot,
-                                             QDir::Time | QDir::Reversed);
+    const auto getTimestamp = [](const QFileInfo &fileInfo) -> QString {
+        return fileInfo.lastModified().toString(dateTimeFormat);
+    };
 
-    QString started  = subdirs.first().lastModified().toString(dateTimeFormat);
-    QString finished = subdirs.last() .lastModified().toString(dateTimeFormat);
+    QDir dir(APP_S().buildServerBinDir() + "/" + projectName + "/" + version);
+    dir.setSorting(QDir::Time | QDir::Reversed);
+    const auto &&targets = dir.entryInfoList(QDir::AllDirs |
+                                             QDir::NoDotAndDotDot);
 
-
-    QByteArray out = "\n"; // Debug mode!
-    out += projectName.toUtf8() + "\n"; // Debug mode!
-    out += finished.toUtf8() + "\n"; // Debug mode!
+    QString &&started = getTimestamp(targets.first());
+    // The most accurate detection of ending time: last modified file or
+    // subdirectory in last target (by default it should be subdirectory
+    // "StaticCodeAnalysis/cppcheck.html").
+    dir.setPath(targets.last().absoluteFilePath());
+    QString &&finished = getTimestamp(dir.entryInfoList(QDir::AllEntries |
+                                                        QDir::NoDotAndDotDot).last());
 
     if (QFile(APP_S().buildServerLogFile()).exists()) {
         QString t1;
@@ -84,23 +88,10 @@ void BuildHistoryItem::generate(const QString &projectName,
             started = t1;
         if (!t2.isEmpty())
             finished = t2;
-
-        out += finished.toUtf8() + "\n"; // Debug mode!
     }
-    // else { // Debug mode!
-    // More accurate detection of ending time.
-    finished = QDir(subdirs.last().absoluteFilePath())
-            .entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot,
-                           QDir::Time | QDir::Reversed)
-            .last().lastModified().toString(dateTimeFormat);
-
-    out += finished.toUtf8() + "\n"; // Debug mode!
-    LOG("BuildHistoryItem.log", out); // Debug mode!
-    // } // Debug mode!
 
     const qint64  &&duration = calcDuration(started, finished);
-    const QString &&status   = detectBuildStatus(subdirs);
-
+    const QString &&status   = detectBuildStatus(targets);
 
     const QJsonObject tmp = {
         { "project_name",   projectName },
