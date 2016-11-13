@@ -34,34 +34,38 @@
 #include "resourcemanager.h"
 #include "usersettings.h"
 #include "applicationsettings.h"
-#include "buildhistoryitem.h"
-#include "buildhistorypage.h"
+#include "buildresultsitem.h"
+#include "buildresultspage.h"
 
-BuildHistoryPage::BuildHistoryPage(const Request &request, const QString &projectName) :
+BuildResultsPage::BuildResultsPage(const Request &request,
+                                   const QString &projectName,
+                                   const QString &version) :
     HtmlPage(request)
 {
     if (request.get("ajax").isEmpty()) {
-        addToTitle(" - %projects% - %current_project_name%");
-        generateHtmlTemplate(projectName);
+        addToTitle(" - %projects% - %current_project_name% - %current_build%");
+        generateHtmlTemplate(projectName, version);
         addExtraReplacements("current_project_name", projectName.toUtf8());
+        addExtraReplacements("current_build", version.toUtf8());
         update();
         show();
     }
     else {
-        generateAjaxResponse(request, projectName);
+        generateAjaxResponse(request, projectName, version);
         show();
     }
 }
 
-void BuildHistoryPage::generateHtmlTemplate(const QString &projectName)
+void BuildResultsPage::generateHtmlTemplate(const QString &projectName,
+                                            const QString &version)
 {
     const ResourceManager res;
     if (isAutorizedUser()) {
         if (isAllowedAccess(projectName)) {
-            if (!allBuilds(projectName).isEmpty()) {
-                addScriptToHead("%prefix%js/build-history.js");
-                addStyleSheetToHead("%prefix%css/build-history/%page_style%");
-                setContent(res.read("/html/build-history-template.html"));
+            if (!allTargets(projectName, version).isEmpty()) {
+                addScriptToHead("%prefix%js/build-results.js");
+                addStyleSheetToHead("%prefix%css/build-results/%page_style%");
+                setContent(res.read("/html/build-results-template.html"));
             }
             else {
                 setContent(res.read("/html/no-build-history-template.html"));
@@ -77,24 +81,25 @@ void BuildHistoryPage::generateHtmlTemplate(const QString &projectName)
     }
 }
 
-void BuildHistoryPage::generateAjaxResponse(const Request &request,
-                                            const QString &projectName)
+void BuildResultsPage::generateAjaxResponse(const Request &request,
+                                            const QString &projectName,
+                                            const QString &version)
 {
     if (!isAutorizedUser() || !isAllowedAccess(projectName))
         return;
 
-    if (projectName.isEmpty())
+    if (projectName.isEmpty() || version.isEmpty())
         return;
 
-    auto &&builds = allBuilds(projectName);
+    auto &&targets = allTargets(projectName, version);
 
-    if (builds.isEmpty())
+    if (targets.isEmpty())
         return;
 
-    sortBuilds(builds);
+    sortTargets(targets);
 
-    if (request.get("ajax") == "builds_list") {
-        const int &&fullSize = builds.size();
+    if (request.get("ajax") == "results_list") {
+        const int &&fullSize = targets.size();
         int first = 0;
         int end = fullSize;
 
@@ -110,7 +115,7 @@ void BuildHistoryPage::generateAjaxResponse(const Request &request,
         QJsonArray out;
         QJsonObject tmp;
         for (int k = first; k < end; ++k) {
-            tmp = BuildHistoryItem(projectName, builds[k]).getJsonObject();
+            tmp = BuildResultsItem(projectName, version, targets[k]).getJsonObject();
             if (k == fullSize -1) {
                 tmp["last_item"] = true;
             }
@@ -118,19 +123,19 @@ void BuildHistoryPage::generateAjaxResponse(const Request &request,
         }
         setData(QJsonDocument(out).toJson());
     }
-    else if (request.get("ajax") == "build") {
+    else if (request.get("ajax") == "target") {
         QJsonObject out;
         if (!request.post("pos").isEmpty()) {
-            const QString &&version = request.post("version");
-            if (builds.contains(version)) {
-                out = BuildHistoryItem(projectName, version).getJsonObject();
+            const QString &&target = request.post("target");
+            if (targets.contains(version)) {
+                out = BuildResultsItem(projectName, version, target).getJsonObject();
             }
         }
         setData(QJsonDocument(out).toJson());
     }
 }
 
-bool BuildHistoryPage::isAllowedAccess(const QString &projectName) const
+bool BuildResultsPage::isAllowedAccess(const QString &projectName) const
 {
     if (isAdmin())
         return true;
@@ -140,19 +145,20 @@ bool BuildHistoryPage::isAllowedAccess(const QString &projectName) const
     return obj.contains(projectName);
 }
 
-QStringList BuildHistoryPage::allBuilds(const QString &projectName) const
+QStringList BuildResultsPage::allTargets(const QString &projectName,
+                                         const QString &version) const
 {
-    const QDir dir(APP_S().buildServerBinDir() + "/" + projectName);
+    const QDir dir(APP_S().buildServerBinDir() + "/" + projectName + "/" + version);
     return dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot, QDir::NoSort);
 }
 
-void BuildHistoryPage::sortBuilds(QStringList &builds) const
+void BuildResultsPage::sortTargets(QStringList &targets) const
 {
     QCollator coll;
     coll.setNumericMode(true);
     const auto comp = [&coll](const QString &s1, const QString &s2) -> bool {
         return coll.compare(s2, s1) < 0;
     };
-    std::sort(builds.begin(), builds.end(), comp);
+    std::sort(targets.begin(), targets.end(), comp);
 }
 

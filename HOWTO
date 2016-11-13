@@ -11,6 +11,7 @@
 /home/sibuserv/.local/share/sibuserv-webui/cache/js/<script-name>.js
 /home/sibuserv/.local/share/sibuserv-webui/cache/projects/<project-name>.json
 /home/sibuserv/.local/share/sibuserv-webui/cache/projects/<project-name>/<version>.json
+/home/sibuserv/.local/share/sibuserv-webui/cache/projects/<project-name>/<version>/<target>.json
 /home/sibuserv/.local/share/sibuserv-webui/logs/<error-type>.log
 /home/sibuserv/.local/share/sibuserv-webui/sessions/<user-id>.json
 /lib/systemd/system/sibuserv-webui.service
@@ -23,6 +24,7 @@
 /
 /counter
 /debug
+/help
 /profile/settings
 /projects
 /projects/<project-name>
@@ -47,7 +49,8 @@
 │             │ projects │  build  │  builds  │ build │   code   │ project │
 │             │   list   │ history │          │ logs  │ analysis │ members │
 │~~~~~~~~~~~~~│~~~~~~~~~~│~~~~~~~~~│~~~~~~~~~~│~~~~~~~│~~~~~~~~~~│~~~~~~~~~│
-│ None        │   -/+    │    -    │    -     │   -   │    -     │    -    │
+│ None        │   +/-    │    -    │    -     │   -   │    -     │    -    │
+│~~~~~~~~~~~~~│~~~~~~~~~~│~~~~~~~~~│~~~~~~~~~~│~~~~~~~│~~~~~~~~~~│~~~~~~~~~│
 │ Guest       │    +     │    +    │    -     │   -   │    -     │    -    │
 │ Tester      │    +     │    +    │    +     │   -   │    -     │    -    │
 │ Developer   │    +     │    +    │    +     │   +   │    +     │    -    │

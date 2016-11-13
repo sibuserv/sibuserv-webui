@@ -23,6 +23,7 @@
  *                                                                           *
  *****************************************************************************/
 
+#include <QMap>
 #include <QStringList>
 
 #include "applicationsettings.h"
@@ -48,6 +49,8 @@ struct HtmlPage::HtmlPagePrivate
     CommonSettings commonSettings;
     UserSettings   userSettings;
     Localization   localization;
+
+    QMap<QByteArray, QByteArray> extraReplacements;
 };
 
 HtmlPage::HtmlPage(const Request &request) :
@@ -122,9 +125,13 @@ void HtmlPage::addToContent(const QByteArray &content)
     setContent(d->content + "\n" + content);
 }
 
-void HtmlPage::updateContent(const QByteArray &from, const QByteArray &to)
+void HtmlPage::addExtraReplacements(const QByteArray &from,
+                                    const QByteArray &to)
 {
-    d->content.replace(from, to);
+    if (from.isEmpty())
+        return;
+
+    d->extraReplacements[from] = to;
 }
 
 void HtmlPage::addStyleSheetToHead(const QByteArray &styleSheet)
@@ -181,6 +188,7 @@ void HtmlPage::checkAutorization(const Request &request)
                 if (!request.post("user_name").isEmpty() &&
                         !request.post("password").isEmpty()) {
                     out += "            show_auth_error();\n";
+                    out += "            begin_authorization();\n";
                 }
             }
         }
@@ -247,6 +255,9 @@ void HtmlPage::update()
     for (const auto &key : d->localization.keys()) {
         out.replace("%" + key.toUtf8() + "%",
                     d->localization.get(key).toUtf8());
+    }
+    for (const auto &key : d->extraReplacements.keys()) {
+        out.replace("%" + key + "%", d->extraReplacements[key]);
     }
     out.replace("%redirect%",   d->redirect);
     out.replace("%prefix%",     d->prefix);

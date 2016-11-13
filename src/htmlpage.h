@@ -50,7 +50,8 @@ public:
     void addToBody(const QByteArray &body);
     void addToTitle(const QByteArray &title);
     void addToContent(const QByteArray &content);
-    void updateContent(const QByteArray &from, const QByteArray &to);
+    void addExtraReplacements(const QByteArray &from,
+                              const QByteArray &to);
 
     void addStyleSheetToHead(const QByteArray &styleSheet);
     void addScriptToHead(const QByteArray &script);

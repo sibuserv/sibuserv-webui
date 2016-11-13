@@ -33,6 +33,7 @@
 #include "javascriptredirect.h"
 #include "projectspage.h"
 #include "buildhistorypage.h"
+#include "buildresultspage.h"
 #include "profilesettingspage.h"
 #include "settingspage.h"
 #include "debugpage.h"
@@ -84,13 +85,25 @@ void Controller::start()
         }
         else if (pageName.startsWith("projects/")) {
             const int count = pageName.count("/");
-            const QString &&projectName =
-                    pageName.mid(pageName.lastIndexOf("/") + 1);
             if (count == 1) {
+                const int idx = pageName.lastIndexOf("/");
+                const QString &&projectName = pageName.mid(idx + 1);
                 BuildHistoryPage(d->request, projectName);
             }
-            else {
-                DebugPage(d->request);
+            else if (count == 2) {
+                const int m = pageName.indexOf("/", 0);
+                const int n = pageName.indexOf("/", m + 1);
+                const QString &&projectName = pageName.mid(m + 1, n - m - 1);
+                const QString &&version = pageName.mid(n + 1);
+                BuildResultsPage(d->request, projectName, version);
+            }
+            else if (count > 2) {
+                const int m = pageName.indexOf("/", 0);
+                const int n = pageName.indexOf("/", m + 1);
+                const int o = pageName.indexOf("/", m + 1);
+                const QString &&projectName = pageName.mid(m + 1, n - m - 1);
+                const QString &&version = pageName.mid(o + 1, o - n - 1);
+                BuildResultsPage(d->request, projectName, version);
             }
         }
         else if (pageName == "profile/settings") {

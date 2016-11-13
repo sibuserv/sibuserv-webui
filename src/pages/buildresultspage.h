@@ -26,23 +26,35 @@
 #pragma once
 
 #include <QString>
-#include <QByteArray>
+#include <QStringList>
 
-#include "resourcemanager.h"
+#include "htmlpage.h"
+#include "request.h"
 
-class Cache : public ResourceManager
+class BuildResultsPage : public HtmlPage
 {
 public:
-    static Cache &instance();
-    bool save(const QString &fileName, const QByteArray &data) const;
+    explicit BuildResultsPage(const Request &request,
+                              const QString &projectName,
+                              const QString &version);
+    BuildResultsPage(const BuildResultsPage &in) = delete;
+    BuildResultsPage(BuildResultsPage &&in) = delete;
+    BuildResultsPage& operator=(const BuildResultsPage &in) = delete;
+    virtual ~BuildResultsPage() = default;
 
-private:
-    Cache();
-    Cache(const Cache &in) = delete;
-    Cache(Cache &&in) = delete;
-    Cache& operator=(const Cache &in) = delete;
-    void* operator new(std::size_t) = delete;
-    void* operator new[](std::size_t) = delete;
-    virtual ~Cache() = default;
+protected:
+    inline void generateHtmlTemplate(const QString &projectName,
+                                     const QString &version);
+    inline void generateAjaxResponse(const Request &request,
+                                     const QString &projectName,
+                                     const QString &version);
+    inline bool isAllowedAccess(const QString &projectName) const;
+
+    /// \brief Unsorted list of builds.
+    inline QStringList allTargets(const QString &projectName,
+                                  const QString &version) const;
+
+    /// \brief Natural sort of string list in reverse order.
+    inline void sortTargets(QStringList &targets) const;
 };
 

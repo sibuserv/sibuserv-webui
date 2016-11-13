@@ -35,12 +35,13 @@
 #include "projectstableitem.h"
 
 static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
+static const int pkgVer = 1;  // Current version of json structure
 
 ProjectsTableItem::ProjectsTableItem(const QString &projectName) :
     AbstractSettings(APP_S().cacheDirectory() + "/projects",
                      projectName + ".json")
 {
-    if (getSettings().isEmpty() || requiresUpdate(projectName)) {
+    if (requiresUpdate(projectName)) {
         generate(projectName);
 
         const QString &&lastStatus = get("last_status");
@@ -93,6 +94,12 @@ void ProjectsTableItem::generate(const QString &projectName)
 
 bool ProjectsTableItem::requiresUpdate(const QString &projectName) const
 {
+    if (getSettings().isEmpty())
+        return true;
+
+    if (getInt("pkg_ver") < pkgVer)
+        return true;
+
     return (get("last_version") != getLastVersion(projectName));
 }
 

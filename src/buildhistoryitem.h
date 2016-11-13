@@ -51,5 +51,6 @@ private:
     inline qint64 calcDuration(const QString &started, const QString &finished) const;
     inline QString detectBuildStatus(const QFileInfoList &subdirs) const;
     inline bool isStaticCodeAnalysisFailed(const QString &dir) const;
+    inline bool requiresUpdate();
 };
 

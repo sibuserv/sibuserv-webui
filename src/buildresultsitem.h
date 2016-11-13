@@ -23,24 +23,33 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "applicationsettings.h"
-#include "cache.h"
+#pragma once
 
-Cache::Cache() :
-    ResourceManager(APP_S().cacheDirectory())
-{
-    ;
-}
+#include <QPair>
+#include <QString>
+#include <QJsonObject>
+#include <QFileInfoList>
 
-Cache &Cache::instance()
-{
-    static Cache inst;
-    return inst;
-}
+#include "abstractsettings.h"
 
-bool Cache::save(const QString &fileName, const QByteArray &data) const
+class BuildResultsItem : public AbstractSettings
 {
-    const QString &&logDirectory = APP_S().logDirectory();
-    return ResourceManager::write(logDirectory + "/" + fileName, data);
-}
+public:
+    explicit BuildResultsItem(const QString &projectName,
+                              const QString &version,
+                              const QString &target);
+    BuildResultsItem(const BuildResultsItem &in) = delete;
+    BuildResultsItem(BuildResultsItem &&in) = delete;
+    BuildResultsItem& operator=(const BuildResultsItem &in) = delete;
+    virtual ~BuildResultsItem() = default;
+
+    QJsonObject& getJsonObject() const;
+
+private:
+    inline void generate(const QString &projectName,
+                         const QString &version,
+                         const QString &target);
+    inline bool isStaticCodeAnalysisFailed(const QString &dir) const;
+    inline bool requiresUpdate();
+};
 

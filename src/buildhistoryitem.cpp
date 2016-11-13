@@ -35,13 +35,14 @@
 #include "buildhistoryitem.h"
 
 static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
+static const int pkgVer = 1;  // Current version of json structure
 
 BuildHistoryItem::BuildHistoryItem(const QString &projectName,
                                    const QString &version) :
     AbstractSettings(APP_S().cacheDirectory() + "/projects/" + projectName,
                      version + ".json")
 {
-    if (getSettings().isEmpty()) {
+    if (requiresUpdate()) {
         generate(projectName, version);
 
         const QString &&status = get("status");
@@ -51,7 +52,7 @@ BuildHistoryItem::BuildHistoryItem(const QString &projectName,
     }
 }
 
-QJsonObject &BuildHistoryItem::getJsonObject() const
+QJsonObject& BuildHistoryItem::getJsonObject() const
 {
     return AbstractSettings::getSettings();
 }
@@ -62,22 +63,23 @@ void BuildHistoryItem::generate(const QString &projectName,
     if (projectName.isEmpty() || version.isEmpty())
         return;
 
-    const auto getTimestamp = [](const QFileInfo &fileInfo) -> QString {
-        return fileInfo.lastModified().toString(dateTimeFormat);
-    };
-
     QDir dir(APP_S().buildServerBinDir() + "/" + projectName + "/" + version);
     dir.setSorting(QDir::Time | QDir::Reversed);
     const auto &&targets = dir.entryInfoList(QDir::AllDirs |
                                              QDir::NoDotAndDotDot);
 
-    QString &&started = getTimestamp(targets.first());
+    // The most accurate detection of beginning time: time when top
+    // subdirectory was created.
+    QString &&started = QFileInfo(dir.absolutePath())
+            .created().toString(dateTimeFormat);
+
     // The most accurate detection of ending time: last modified file or
     // subdirectory in last target (by default it should be subdirectory
     // "StaticCodeAnalysis/cppcheck.html").
     dir.setPath(targets.last().absoluteFilePath());
-    QString &&finished = getTimestamp(dir.entryInfoList(QDir::AllEntries |
-                                                        QDir::NoDotAndDotDot).last());
+    QString &&finished = dir.entryInfoList(QDir::AllEntries |
+                                           QDir::NoDotAndDotDot).last()
+            .lastModified().toString(dateTimeFormat);
 
     if (QFile(APP_S().buildServerLogFile()).exists()) {
         QString t1;
@@ -99,7 +101,8 @@ void BuildHistoryItem::generate(const QString &projectName,
         { "status",         status },
         { "started",        started },
         { "finished",       finished },
-        { "duration",       duration }
+        { "duration",       duration },
+        { "pkg_ver",        pkgVer }
     };
     setSettings(tmp);
 }
@@ -200,5 +203,13 @@ bool BuildHistoryItem::isStaticCodeAnalysisFailed(const QString &dir) const
         return true;
     }
     return false;
+}
+
+bool BuildHistoryItem::requiresUpdate()
+{
+    if (getSettings().isEmpty())
+        return true;
+
+    return (getInt("pkg_ver") < pkgVer);
 }
 
