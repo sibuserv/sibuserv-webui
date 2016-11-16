@@ -37,8 +37,8 @@
     "status": "Статус",
     "version": "Версия",
     "results": "Результаты",
-    "started_at": "Начало",
-    "finished_at": "Конец",
+    "started_at": "Начато",
+    "finished_at": "Завершено",
     "bin_file": "Файлы",
     "log_files": "Логи"
 }

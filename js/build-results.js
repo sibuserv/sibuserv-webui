@@ -1,17 +1,21 @@
 // License: MIT (Expat)
 
-// "use strict";
+"use strict";
 
 function update_cells_width() {
     var list = [".finished_at", ".started_at", ".log_files"];
     for (var k in list) {
         var width = 0;
+        var hidden = false;
         $.each($("#results_table_container").find(list[k]), function(i, item) {
             width = Math.max(width, $(item).width());
+            if (!$(item).text().trim())
+                hidden = true;
         });
         $.each($("#results_table_container").find(list[k]), function(i, item) {
             $(item).css("min-width", width + "px");
-            $(item).css("min-width", width + "px");
+            if (hidden)
+                $(item).hide();
         });
     }
 }
@@ -46,7 +50,6 @@ function add_item_into_results_table(i, item) {
                     "<li class=\"finished_at\">\n" + item.finished + "</li>\n" +
                 "</div>\n";
     $("#results_table").append(html);
-    update_cells_width($("#" + item.project_name));
 
     if (item.hasOwnProperty("last_item")) {
         if (item.last_item) {

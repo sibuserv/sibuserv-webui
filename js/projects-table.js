@@ -47,7 +47,6 @@ function add_item_into_projects_table(i, item) {
                     "<li class=\"role\">\n" + $("#" + item.role).text() + "</li>\n" +
                 "</div>\n";
     $("#projects_table").append(html);
-    update_cells_width($("#" + item.project_name));
 
     if (item.hasOwnProperty("last_item")) {
         if (item.last_item) {
