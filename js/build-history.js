@@ -3,7 +3,7 @@
 "use strict";
 
 function update_cells_width() {
-    var list = [".started_at", ".finished_at"];
+    var list = [".finished_at", ".started_at"];
     for (var k in list) {
         var width = 0;
         $.each($("#builds_table_container").find(list[k]), function(i, item) {

@@ -34,7 +34,8 @@
 #include "applicationsettings.h"
 #include "buildresultsitem.h"
 
-static const int pkgVer = 1;  // Current version of json structure
+static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
+static const int pkgVer = 2;  // Current version of json structure
 
 BuildResultsItem::BuildResultsItem(const QString &projectName,
                                    const QString &version,
@@ -78,19 +79,23 @@ void BuildResultsItem::generate(const QString &projectName,
 
     const QString &&codeAnalysis = APP_S().staticCodeAnalysisLogsSubdir();
     if (target == codeAnalysis) {
+        logFile = "cppcheck.log";
+
         if (isStaticCodeAnalysisFailed(dir.absolutePath())) {
             status = "failed";
         }
         if (entries.contains("cppcheck.html")) {
             binFile = "cppcheck.html";
         }
-        logFile = "cppcheck.log";
     }
     else {
+        logFile = "build.log";
+
         int counter = 0;
         for (const auto &k : entries) {
             if (k.endsWith("Makefile")) {
                 status = "started";
+                binFile = logFile;
             }
             else if (!k.endsWith(".log")) {
                 binFile = k;
@@ -99,6 +104,7 @@ void BuildResultsItem::generate(const QString &projectName,
         }
         if (counter == 0) {
             status = "failed";
+            binFile = logFile;
         }
         else if (counter == 1) {
             ; // binFile is already defined above
@@ -106,19 +112,56 @@ void BuildResultsItem::generate(const QString &projectName,
         else {
             binFile = projectName + "-" + version + "_" + target + ".tar.gz";
         }
-        logFile = "build.log";
     }
+
+    QFileInfo fileInfo(dir.absolutePath() + "/" + logFile);
+    QString &&started  = getStartTimeFromLogFile(fileInfo.absoluteFilePath());
+    QString &&finished = fileInfo.lastModified().toString(dateTimeFormat);
+    if (started.isEmpty()) {
+        started = fileInfo.created().toString(dateTimeFormat);
+    }
+    const qint64  &&duration = calcDuration(started, finished);
 
     const QJsonObject tmp = {
         { "project_name",   projectName },
         { "version",        version },
         { "target",         target },
         { "status",         status },
+        { "started",        started },
+        { "finished",       finished },
+        { "duration",       duration },
         { "log_file",       logFile },
         { "bin_file",       binFile },
         { "pkg_ver",        pkgVer }
     };
     setSettings(tmp);
+}
+
+QString BuildResultsItem::getStartTimeFromLogFile(const QString &absoluteFilePath) const
+{
+    QString out;
+
+    static const QByteArray testString = "] start of ";
+
+    QByteArray line;
+    QFile f(absoluteFilePath);
+    if (f.open(QIODevice::ReadOnly)) {
+        line = f.readLine();
+        f.close();
+
+        if (line.contains(testString)) {
+            out = QString::fromUtf8(line.mid(1, 19));
+        }
+    }
+
+    return out;
+}
+
+qint64 BuildResultsItem::calcDuration(const QString &started, const QString &finished) const
+{
+    const QDateTime t1 = QDateTime::fromString(started,  dateTimeFormat);
+    const QDateTime t2 = QDateTime::fromString(finished, dateTimeFormat);
+    return t1.secsTo(t2);
 }
 
 bool BuildResultsItem::isStaticCodeAnalysisFailed(const QString &dir) const

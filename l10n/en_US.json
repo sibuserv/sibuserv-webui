@@ -36,9 +36,8 @@
     "admin": "Administrator",
     "status": "Status",
     "version": "Version",
-    "target": "Target",
+    "results": "Results",
     "started_at": "Started at",
     "finished_at": "Finished at",
-    "bin_file": "Files",
-    "log_file": "Logs"
+    "log_files": "Logs"
 }

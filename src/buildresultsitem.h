@@ -25,7 +25,6 @@
 
 #pragma once
 
-#include <QPair>
 #include <QString>
 #include <QJsonObject>
 #include <QFileInfoList>
@@ -49,6 +48,8 @@ private:
     inline void generate(const QString &projectName,
                          const QString &version,
                          const QString &target);
+    inline QString getStartTimeFromLogFile(const QString &absoluteFilePath) const;
+    inline qint64 calcDuration(const QString &started, const QString &finished) const;
     inline bool isStaticCodeAnalysisFailed(const QString &dir) const;
     inline bool requiresUpdate();
 };

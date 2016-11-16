@@ -36,9 +36,9 @@
     "admin": "Администратор",
     "status": "Статус",
     "version": "Версия",
-    "target": "Цель",
+    "results": "Результаты",
     "started_at": "Начало",
     "finished_at": "Конец",
     "bin_file": "Файлы",
-    "log_file": "Логи"
+    "log_files": "Логи"
 }

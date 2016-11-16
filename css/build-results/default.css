@@ -48,18 +48,24 @@
     min-width: 20px;
 }
 
-#results_table_container .target {
+#results_table_container .results {
     white-space: nowrap;
     width: 100%;
 }
 
-#results_table_container .log_file {
+#results_table_container .log_files {
     color: #686868;
     white-space: nowrap;
     padding-right: 20px;
 }
 
-#results_table_container .bin_file {
+#results_table_container .started_at {
+    color: #686868;
+    white-space: nowrap;
+    padding-right: 20px;
+}
+
+#results_table_container .finished_at {
     color: #686868;
     white-space: nowrap;
     padding-right: 20px;

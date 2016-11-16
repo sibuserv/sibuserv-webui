@@ -3,7 +3,7 @@
 // "use strict";
 
 function update_cells_width() {
-    var list = [".log_file", ".bin_file"];
+    var list = [".finished_at", ".started_at", ".log_files"];
     for (var k in list) {
         var width = 0;
         $.each($("#results_table_container").find(list[k]), function(i, item) {
@@ -33,15 +33,17 @@ function add_item_into_results_table(i, item) {
     var html =  "<div id=\"" + item.project_name + "\" class=\"table_item " +
                 item.status + "\">\n" +
                     "<li class=\"status\">\n" + status + "</li>\n" +
-                    "<li class=\"target\">\n" + item.target + "</li>\n" +
-                    "<li class=\"bin_file\">\n" +
-                        "<a href=\"" + path + "/" + item.bin_file + "\">" +
-                        item.bin_file + "</a>" +
+                    "<li class=\"results\">\n" +
+                        "<a href=\"" + path + "/" + item.bin_file + 
+                        "\" class=\"" + item.status + "\">" +
+                        item.target + "</a>" +
                     "</li>\n" +
-                    "<li class=\"log_file\">\n" +
+                    "<li class=\"log_files\">\n" +
                         "<a href=\"" + path + "/" + item.log_file + "\">" +
                         item.log_file + "</a>" +
                     "</li>\n" +
+                    "<li class=\"started_at\">\n" + item.started + "</li>\n" +
+                    "<li class=\"finished_at\">\n" + item.finished + "</li>\n" +
                 "</div>\n";
     $("#results_table").append(html);
     update_cells_width($("#" + item.project_name));
