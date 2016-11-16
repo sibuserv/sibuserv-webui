@@ -114,12 +114,9 @@ void BuildResultsItem::generate(const QString &projectName,
         }
     }
 
-    QFileInfo fileInfo(dir.absolutePath() + "/" + logFile);
-    QString &&started  = getStartTimeFromLogFile(fileInfo.absoluteFilePath());
-    QString &&finished = fileInfo.lastModified().toString(dateTimeFormat);
-    if (started.isEmpty()) {
-        started = fileInfo.created().toString(dateTimeFormat);
-    }
+    const QFileInfo fileInfo(dir.absolutePath() + "/" + logFile);
+    const QString &&started  = getStartTimeFromLogFile(fileInfo.absoluteFilePath());
+    const QString &&finished = fileInfo.lastModified().toString(dateTimeFormat);
     const qint64  &&duration = calcDuration(started, finished);
 
     const QJsonObject tmp = {
@@ -159,6 +156,9 @@ QString BuildResultsItem::getStartTimeFromLogFile(const QString &absoluteFilePat
 
 qint64 BuildResultsItem::calcDuration(const QString &started, const QString &finished) const
 {
+    if (started.isEmpty() || finished.isEmpty())
+        return 0;
+
     const QDateTime t1 = QDateTime::fromString(started,  dateTimeFormat);
     const QDateTime t2 = QDateTime::fromString(finished, dateTimeFormat);
     return t1.secsTo(t2);

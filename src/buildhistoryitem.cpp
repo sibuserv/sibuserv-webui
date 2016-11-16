@@ -35,7 +35,7 @@
 #include "buildhistoryitem.h"
 
 static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
-static const int pkgVer = 1;  // Current version of json structure
+static const int pkgVer = 2;  // Current version of json structure
 
 BuildHistoryItem::BuildHistoryItem(const QString &projectName,
                                    const QString &version) :
@@ -69,9 +69,9 @@ void BuildHistoryItem::generate(const QString &projectName,
                                              QDir::NoDotAndDotDot);
 
     // The most accurate detection of beginning time: time when top
-    // subdirectory was created.
-    QString &&started = QFileInfo(dir.absolutePath())
-            .created().toString(dateTimeFormat);
+    // subdirectory was created. Unfortunately created() method returns wrong
+    // result, so an empty string is used here.
+    QString started;
 
     // The most accurate detection of ending time: last modified file or
     // subdirectory in last target (by default it should be subdirectory
@@ -154,6 +154,9 @@ QPair<QString, QString> BuildHistoryItem::getTimestampsFromLogFile(const QString
 qint64 BuildHistoryItem::calcDuration(const QString &started,
                                       const QString &finished) const
 {
+    if (started.isEmpty() || finished.isEmpty())
+        return 0;
+
     const QDateTime t1 = QDateTime::fromString(started,  dateTimeFormat);
     const QDateTime t2 = QDateTime::fromString(finished, dateTimeFormat);
     return t1.secsTo(t2);
