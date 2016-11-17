@@ -184,6 +184,7 @@ QStringList ProjectsPage::allowedProjects() const
 QStringList ProjectsPage::allProjects() const
 {
     const QDir dir(APP_S().buildServerBinDir());
-    return dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name);
+    return dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot,
+                         QDir::Name | QDir::IgnoreCase);
 }
 
