@@ -27,6 +27,7 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDateTime>
 
 #include "logmanager.h"
 #include "applicationsettings.h"
@@ -54,7 +55,7 @@ QByteArray UserSettings::gravatarIconUrl() const
             "?s=52&amp;d=blank";
 }
 
-QString UserSettings::getProjectRole(const QString &projectName)
+QString UserSettings::getProjectRole(const QString &projectName) const
 {
     return (getObject("projects")[projectName]).toString();
 }
@@ -67,10 +68,31 @@ QByteArray UserSettings::calcEmailHash(const QString &email)
                                     QCryptographicHash::Md5).toHex();
 }
 
-QString UserSettings::calcPasswordHash(const QString &password)
+QString UserSettings::generatePasswordHash(const QString &password)
 {
-    return QCryptographicHash::hash(password.toUtf8(),
-                                    QCryptographicHash::Sha256).toHex();
+    const int randomValue = QTime::currentTime().msecsSinceStartOfDay();
+    const QByteArray &&salt = hash(QByteArray::number(randomValue));
+    const QByteArray &&out = hash(password.toUtf8() + salt) + salt;
+
+    return QString::fromUtf8(out);
+}
+
+bool UserSettings::checkPasswordHash(const QString &password) const
+{
+    const QByteArray &&passwordHash = get("password_hash").toUtf8();
+
+    if (passwordHash.size() != (256/8)*2*2)
+        return false;
+
+    const QByteArray &&salt = passwordHash.mid(64);
+    const QByteArray &&test = hash(password.toUtf8() + salt) + salt;
+
+    return (test == passwordHash);
+}
+
+QByteArray UserSettings::hash(const QByteArray &in)
+{
+    return QCryptographicHash::hash(in, QCryptographicHash::Sha256).toHex();
 }
 
 bool UserSettings::isValidAutorizationRequest(const Request &request)
@@ -90,7 +112,7 @@ bool UserSettings::isValidAutorizationRequest(const Request &request)
 
     UserSettings us("users/" + userName + ".json");
     if (!us.get("password_hash").isEmpty()) {
-        if (us.get("password_hash") == calcPasswordHash(password)) {
+        if (us.checkPasswordHash(password)) {
             setFileName("users/" + userName + ".json");
             if (readSettings()) {
                 return true;

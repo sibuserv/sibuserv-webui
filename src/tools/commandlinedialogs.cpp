@@ -149,7 +149,7 @@ void CommandLineDialogs::addUser() const
         cout << "Passwords do not match!" << endl;
         return;
     }
-    const QString passwordHash = UserSettings::calcPasswordHash(password);
+    const QString passwordHash = UserSettings::generatePasswordHash(password);
 
     UserSettings us;
     us.setFileName(fileName);
