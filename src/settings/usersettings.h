@@ -55,5 +55,6 @@ protected:
 
 private:
     static QByteArray hash(const QByteArray &in);
+    static QByteArray randomSalt();
 };
 

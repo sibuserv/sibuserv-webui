@@ -23,11 +23,11 @@
  *                                                                           *
  *****************************************************************************/
 
+#include <random>
 #include <QCryptographicHash>
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QDateTime>
 
 #include "logmanager.h"
 #include "applicationsettings.h"
@@ -64,17 +64,13 @@ QByteArray UserSettings::calcEmailHash(const QString &email)
 {
     QByteArray data = email.toUtf8();
     data.replace(" ","");
-    return QCryptographicHash::hash(data,
-                                    QCryptographicHash::Md5).toHex();
+    return QCryptographicHash::hash(data, QCryptographicHash::Md5).toHex();
 }
 
 QString UserSettings::generatePasswordHash(const QString &password)
 {
-    const int randomValue = QTime::currentTime().msecsSinceStartOfDay();
-    const QByteArray &&salt = hash(QByteArray::number(randomValue));
-    const QByteArray &&out = hash(password.toUtf8() + salt) + salt;
-
-    return QString::fromUtf8(out);
+    const QByteArray &&salt = randomSalt();
+    return hash(password.toUtf8() + salt) + salt.toHex();
 }
 
 bool UserSettings::checkPasswordHash(const QString &password) const
@@ -84,10 +80,23 @@ bool UserSettings::checkPasswordHash(const QString &password) const
     if (passwordHash.size() != (256/8)*2*2)
         return false;
 
-    const QByteArray &&salt = passwordHash.mid(64);
-    const QByteArray &&test = hash(password.toUtf8() + salt) + salt;
+    const QByteArray &&salt = QByteArray::fromHex(passwordHash.mid(64));
+    const QByteArray &&test = hash(password.toUtf8() + salt) + salt.toHex();
 
     return (test == passwordHash);
+}
+
+QByteArray UserSettings::randomSalt()
+{
+    std::random_device seed;
+    std::mt19937 generator(seed());
+    std::uniform_int_distribution<int> distribution(0, 255);
+
+    QByteArray out(32, '?');
+    for (int k = 0; k < out.size(); ++k) {
+        out[k] = static_cast<unsigned char> (distribution(generator));
+    }
+    return out;
 }
 
 QByteArray UserSettings::hash(const QByteArray &in)
