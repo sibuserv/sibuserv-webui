@@ -27,9 +27,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDateTime>
-#include <QCollator>
 
-#include "logmanager.h"
 #include "resourcemanager.h"
 #include "applicationsettings.h"
 #include "buildresultsitem.h"
@@ -40,22 +38,13 @@ static const int pkgVer = 2;  // Current version of json structure
 BuildResultsItem::BuildResultsItem(const QString &projectName,
                                    const QString &version,
                                    const QString &target) :
-    AbstractSettings(APP_S().cacheDirectory() + "/projects/" + projectName +
-                     "/" + version, target + ".json")
+    AbstractTableItem(APP_S().cacheDirectory() + "/projects/" + projectName +
+                      "/" + version, target + ".json")
 {
-    if (requiresUpdate()) {
+    if (requiresUpdate(pkgVer)) {
         generate(projectName, version, target);
-
-        const QString &&status = get("status");
-        if (status == "passed" || status == "failed") {
-            writeSettings();
-        }
+        saveJsonObjectToCache();
     }
-}
-
-QJsonObject& BuildResultsItem::getJsonObject() const
-{
-    return AbstractSettings::getSettings();
 }
 
 void BuildResultsItem::generate(const QString &projectName,
@@ -154,16 +143,6 @@ QString BuildResultsItem::getStartTimeFromLogFile(const QString &absoluteFilePat
     return out;
 }
 
-qint64 BuildResultsItem::calcDuration(const QString &started, const QString &finished) const
-{
-    if (started.isEmpty() || finished.isEmpty())
-        return 0;
-
-    const QDateTime t1 = QDateTime::fromString(started,  dateTimeFormat);
-    const QDateTime t2 = QDateTime::fromString(finished, dateTimeFormat);
-    return t1.secsTo(t2);
-}
-
 bool BuildResultsItem::isStaticCodeAnalysisFailed(const QString &dir) const
 {
     const ResourceManager rm(dir);
@@ -172,13 +151,5 @@ bool BuildResultsItem::isStaticCodeAnalysisFailed(const QString &dir) const
         return true;
     }
     return false;
-}
-
-bool BuildResultsItem::requiresUpdate()
-{
-    if (getSettings().isEmpty())
-        return true;
-
-    return (getInt("pkg_ver") < pkgVer);
 }
 

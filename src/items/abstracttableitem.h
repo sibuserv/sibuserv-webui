@@ -26,25 +26,24 @@
 #pragma once
 
 #include <QString>
+#include <QJsonObject>
 
-#include "abstracttableitem.h"
+#include "abstractsettings.h"
 
-class BuildResultsItem : public AbstractTableItem
+class AbstractTableItem : public AbstractSettings
 {
 public:
-    explicit BuildResultsItem(const QString &projectName,
-                              const QString &version,
-                              const QString &target);
-    BuildResultsItem(const BuildResultsItem &in) = delete;
-    BuildResultsItem(BuildResultsItem &&in) = delete;
-    BuildResultsItem& operator=(const BuildResultsItem &in) = delete;
-    virtual ~BuildResultsItem() = default;
+    explicit AbstractTableItem(const QString &path, const QString &fileName);
+    AbstractTableItem(const AbstractTableItem &in) = delete;
+    AbstractTableItem(AbstractTableItem &&in) = delete;
+    AbstractTableItem& operator=(const AbstractTableItem &in) = delete;
+    virtual ~AbstractTableItem() = default;
 
-private:
-    inline void generate(const QString &projectName,
-                         const QString &version,
-                         const QString &target);
-    inline QString getStartTimeFromLogFile(const QString &absoluteFilePath) const;
-    inline bool isStaticCodeAnalysisFailed(const QString &dir) const;
+    QJsonObject& getJsonObject() const;
+    bool saveJsonObjectToCache() const;
+
+protected:
+    bool requiresUpdate(const int pkgVer) const;
+    qint64 calcDuration(const QString &started, const QString &finished) const;
 };
 

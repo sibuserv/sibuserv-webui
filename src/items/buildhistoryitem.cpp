@@ -25,11 +25,8 @@
 
 #include <QDir>
 #include <QFile>
-#include <QFileInfo>
 #include <QDateTime>
-#include <QCollator>
 
-#include "logmanager.h"
 #include "resourcemanager.h"
 #include "applicationsettings.h"
 #include "buildhistoryitem.h"
@@ -39,22 +36,13 @@ static const int pkgVer = 2;  // Current version of json structure
 
 BuildHistoryItem::BuildHistoryItem(const QString &projectName,
                                    const QString &version) :
-    AbstractSettings(APP_S().cacheDirectory() + "/projects/" + projectName,
-                     version + ".json")
+    AbstractTableItem(APP_S().cacheDirectory() + "/projects/" + projectName,
+                      version + ".json")
 {
-    if (requiresUpdate()) {
+    if (requiresUpdate(pkgVer)) {
         generate(projectName, version);
-
-        const QString &&status = get("status");
-        if (status == "passed" || status == "failed") {
-            writeSettings();
-        }
+        saveJsonObjectToCache();
     }
-}
-
-QJsonObject& BuildHistoryItem::getJsonObject() const
-{
-    return AbstractSettings::getSettings();
 }
 
 void BuildHistoryItem::generate(const QString &projectName,
@@ -151,17 +139,6 @@ QPair<QString, QString> BuildHistoryItem::getTimestampsFromLogFile(const QString
     return qMakePair(started, finished);
 }
 
-qint64 BuildHistoryItem::calcDuration(const QString &started,
-                                      const QString &finished) const
-{
-    if (started.isEmpty() || finished.isEmpty())
-        return 0;
-
-    const QDateTime t1 = QDateTime::fromString(started,  dateTimeFormat);
-    const QDateTime t2 = QDateTime::fromString(finished, dateTimeFormat);
-    return t1.secsTo(t2);
-}
-
 QString BuildHistoryItem::detectBuildStatus(const QFileInfoList &subdirs) const
 {
     if (subdirs.isEmpty())
@@ -206,13 +183,5 @@ bool BuildHistoryItem::isStaticCodeAnalysisFailed(const QString &dir) const
         return true;
     }
     return false;
-}
-
-bool BuildHistoryItem::requiresUpdate()
-{
-    if (getSettings().isEmpty())
-        return true;
-
-    return (getInt("pkg_ver") < pkgVer);
 }
 

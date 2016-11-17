@@ -23,28 +23,49 @@
  *                                                                           *
  *****************************************************************************/
 
-#pragma once
-
-#include <QString>
+#include <QDateTime>
 
 #include "abstracttableitem.h"
 
-class BuildResultsItem : public AbstractTableItem
-{
-public:
-    explicit BuildResultsItem(const QString &projectName,
-                              const QString &version,
-                              const QString &target);
-    BuildResultsItem(const BuildResultsItem &in) = delete;
-    BuildResultsItem(BuildResultsItem &&in) = delete;
-    BuildResultsItem& operator=(const BuildResultsItem &in) = delete;
-    virtual ~BuildResultsItem() = default;
+static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
 
-private:
-    inline void generate(const QString &projectName,
-                         const QString &version,
-                         const QString &target);
-    inline QString getStartTimeFromLogFile(const QString &absoluteFilePath) const;
-    inline bool isStaticCodeAnalysisFailed(const QString &dir) const;
-};
+AbstractTableItem::AbstractTableItem(const QString &path,
+                                     const QString &fileName) :
+    AbstractSettings(path, fileName)
+{
+    ;
+}
+
+QJsonObject& AbstractTableItem::getJsonObject() const
+{
+    return AbstractSettings::getSettings();
+}
+
+bool AbstractTableItem::saveJsonObjectToCache() const
+{
+    const QString &&status = get("status");
+    if (status == "passed" || status == "failed") {
+        return writeSettings();
+    }
+    return false;
+}
+
+qint64 AbstractTableItem::calcDuration(const QString &started,
+                                       const QString &finished) const
+{
+    if (started.isEmpty() || finished.isEmpty())
+        return 0;
+
+    const QDateTime t1 = QDateTime::fromString(started,  dateTimeFormat);
+    const QDateTime t2 = QDateTime::fromString(finished, dateTimeFormat);
+    return t1.secsTo(t2);
+}
+
+bool AbstractTableItem::requiresUpdate(const int pkgVer) const
+{
+    if (getSettings().isEmpty())
+        return true;
+
+    return (getInt("pkg_ver") < pkgVer);
+}
 

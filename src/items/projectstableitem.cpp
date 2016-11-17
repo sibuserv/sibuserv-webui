@@ -25,11 +25,9 @@
 
 #include <QDir>
 #include <QFile>
-#include <QFileInfo>
 #include <QDateTime>
 #include <QCollator>
 
-#include "logmanager.h"
 #include "applicationsettings.h"
 #include "buildhistoryitem.h"
 #include "projectstableitem.h"
@@ -38,8 +36,8 @@ static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
 static const int pkgVer = 1;  // Current version of json structure
 
 ProjectsTableItem::ProjectsTableItem(const QString &projectName) :
-    AbstractSettings(APP_S().cacheDirectory() + "/projects",
-                     projectName + ".json")
+    AbstractTableItem(APP_S().cacheDirectory() + "/projects",
+                      projectName + ".json")
 {
     if (requiresUpdate(projectName)) {
         generate(projectName);
@@ -49,11 +47,6 @@ ProjectsTableItem::ProjectsTableItem(const QString &projectName) :
             writeSettings();
         }
     }
-}
-
-QJsonObject &ProjectsTableItem::getJsonObject() const
-{
-    return AbstractSettings::getSettings();
 }
 
 void ProjectsTableItem::generate(const QString &projectName)
@@ -87,10 +80,7 @@ void ProjectsTableItem::generate(const QString &projectName)
 
 bool ProjectsTableItem::requiresUpdate(const QString &projectName) const
 {
-    if (getSettings().isEmpty())
-        return true;
-
-    if (getInt("pkg_ver") < pkgVer)
+    if (AbstractTableItem::requiresUpdate(pkgVer))
         return true;
 
     return (get("last_version") != getLastVersion(projectName));

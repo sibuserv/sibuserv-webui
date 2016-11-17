@@ -26,11 +26,10 @@
 #pragma once
 
 #include <QString>
-#include <QJsonObject>
 
-#include "abstractsettings.h"
+#include "abstracttableitem.h"
 
-class ProjectsTableItem : public AbstractSettings
+class ProjectsTableItem : public AbstractTableItem
 {
 public:
     explicit ProjectsTableItem(const QString &projectName);
@@ -38,8 +37,6 @@ public:
     ProjectsTableItem(ProjectsTableItem &&in) = delete;
     ProjectsTableItem& operator=(const ProjectsTableItem &in) = delete;
     virtual ~ProjectsTableItem() = default;
-
-    QJsonObject& getJsonObject() const;
 
 private:
     inline void generate(const QString &projectName);

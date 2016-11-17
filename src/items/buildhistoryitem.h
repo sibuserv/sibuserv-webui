@@ -27,12 +27,11 @@
 
 #include <QPair>
 #include <QString>
-#include <QJsonObject>
 #include <QFileInfoList>
 
-#include "abstractsettings.h"
+#include "abstracttableitem.h"
 
-class BuildHistoryItem : public AbstractSettings
+class BuildHistoryItem : public AbstractTableItem
 {
 public:
     explicit BuildHistoryItem(const QString &projectName,
@@ -42,15 +41,11 @@ public:
     BuildHistoryItem& operator=(const BuildHistoryItem &in) = delete;
     virtual ~BuildHistoryItem() = default;
 
-    QJsonObject& getJsonObject() const;
-
 private:
     inline void generate(const QString &projectName, const QString &version);
     inline QPair<QString, QString> getTimestampsFromLogFile(const QString &projectName,
                                                             const QString &version) const;
-    inline qint64 calcDuration(const QString &started, const QString &finished) const;
     inline QString detectBuildStatus(const QFileInfoList &subdirs) const;
     inline bool isStaticCodeAnalysisFailed(const QString &dir) const;
-    inline bool requiresUpdate();
 };
 
