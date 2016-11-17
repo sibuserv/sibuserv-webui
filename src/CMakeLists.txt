@@ -4,15 +4,20 @@ cmake_minimum_required (VERSION 3.4)
 find_package (Qt5Core 5.6 REQUIRED)
 
 aux_source_directory (${PROJECT_SOURCE_DIR} SRC_FILES)
+aux_source_directory (${PROJECT_SOURCE_DIR}/items TABLE_ITEMS)
 aux_source_directory (${PROJECT_SOURCE_DIR}/pages WEB_PAGES)
 
 list (APPEND QRC_FILES ${PROJECT_SOURCE_DIR}/resources.qrc)
 qt5_add_resources(RESOURCES ${QRC_FILES})
 
-add_executable (${PROJECT_NAME} ${SRC_FILES} ${WEB_PAGES} ${RESOURCES})
+add_executable (${PROJECT_NAME} ${SRC_FILES}
+                                ${TABLE_ITEMS}
+                                ${WEB_PAGES}
+                                ${RESOURCES})
 
 include_directories (${CMAKE_BINARY_DIR}
                      ${PROJECT_SOURCE_DIR}
+                     ${PROJECT_SOURCE_DIR}/items
                      ${PROJECT_SOURCE_DIR}/pages
                      ${Qt5Core_INCLUDE_DIRS})
 
@@ -28,13 +33,16 @@ install (TARGETS ${PROJECT_NAME}
          RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin/")
 install (FILES webui_launcher
          DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/sibuserv/"
-         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+                     GROUP_READ GROUP_EXECUTE
+                     WORLD_READ WORLD_EXECUTE)
 install (FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.1.gz
          DESTINATION "${CMAKE_INSTALL_PREFIX}/share/man/man1")
 
 if (WITH_SYSTEMD_SUPPORT)
     install (FILES sibuserv-webui.service
              DESTINATION "${SYSTEMD_UNIT_FILES_DIR}"
-             PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+             PERMISSIONS OWNER_READ OWNER_WRITE
+                         GROUP_READ WORLD_READ)
 endif (WITH_SYSTEMD_SUPPORT)
 
