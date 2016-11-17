@@ -71,14 +71,7 @@ void ProjectsTableItem::generate(const QString &projectName)
         BuildHistoryItem buildHistoryItem(projectName, lastVersion);
         if (!buildHistoryItem.getJsonObject().isEmpty()) {
             lastStatus = buildHistoryItem.get("status");
-
-            const QString &&finished = buildHistoryItem.get("finished");
-            if (!finished.isEmpty()) {
-                lastTimestamp = finished;
-            }
-            else {
-                lastTimestamp = buildHistoryItem.get("started");
-            }
+            lastTimestamp = buildHistoryItem.get("finished");
         }
     }
 
