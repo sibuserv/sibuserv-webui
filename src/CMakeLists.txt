@@ -3,22 +3,25 @@ cmake_minimum_required (VERSION 3.4)
 
 find_package (Qt5Core 5.6 REQUIRED)
 
-aux_source_directory (${PROJECT_SOURCE_DIR} SRC_FILES)
-aux_source_directory (${PROJECT_SOURCE_DIR}/items TABLE_ITEMS)
-aux_source_directory (${PROJECT_SOURCE_DIR}/pages WEB_PAGES)
+list (APPEND PROJECT_DIRS ${PROJECT_SOURCE_DIR}
+                          ${PROJECT_SOURCE_DIR}/basic
+                          ${PROJECT_SOURCE_DIR}/items
+                          ${PROJECT_SOURCE_DIR}/pages
+                          ${PROJECT_SOURCE_DIR}/settings
+                          ${PROJECT_SOURCE_DIR}/tools)
+
+foreach (DIR ${PROJECT_DIRS})
+    aux_source_directory (${DIR} FILES)
+    list (APPEND SRC_FILES ${FILES})
+endforeach(DIR)
 
 list (APPEND QRC_FILES ${PROJECT_SOURCE_DIR}/resources.qrc)
 qt5_add_resources(RESOURCES ${QRC_FILES})
 
-add_executable (${PROJECT_NAME} ${SRC_FILES}
-                                ${TABLE_ITEMS}
-                                ${WEB_PAGES}
-                                ${RESOURCES})
+add_executable (${PROJECT_NAME} ${SRC_FILES} ${RESOURCES})
 
-include_directories (${CMAKE_BINARY_DIR}
-                     ${PROJECT_SOURCE_DIR}
-                     ${PROJECT_SOURCE_DIR}/items
-                     ${PROJECT_SOURCE_DIR}/pages
+include_directories (${PROJECT_DIRS}
+                     ${CMAKE_BINARY_DIR}
                      ${Qt5Core_INCLUDE_DIRS})
 
 list (APPEND LIBS Qt5::Core fcgi)
