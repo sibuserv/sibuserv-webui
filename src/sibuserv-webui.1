@@ -1,4 +1,4 @@
-.TH "sibuserv-webui" 1 "04 Nov 2016"
+.TH "sibuserv-webui" 1 "18 Nov 2016"
 .SH "NAME"
 sibuserv-webui \- FastCGI program which passively listens for incoming connections and generates list of hosts in your IPv6 network. This daemon prepares data which may be put directly into /etc/hosts.
 .SH "SYNOPSIS"
@@ -26,6 +26,9 @@ Add new local user. His(her) json config will be stored in <config directory>/us
 .TP
 .BR "\-d,  \-\-del-user"
 Delete local user. His(her) json config will be removed from <config directory>/users/ subdirectory.
+.TP
+.BR "\-s,  \-\-set-pass"
+Set new password for specified user. Have in mind that user will not be notified about this automatically. You will need to do it yourself.
 .TP
 .BR "\-c <file>,  \-\-conf-file <file>"
 Set config file (default: /etc/sibuserv/sibuserv-webui.conf).

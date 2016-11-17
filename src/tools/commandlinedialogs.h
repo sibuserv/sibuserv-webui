@@ -32,6 +32,7 @@ class CommandLineDialogs
 public:
     void addUser() const;
     void delUser() const;
+    void setPassword() const;
 
 private:
     QString getPassword() const;

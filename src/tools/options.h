@@ -36,11 +36,14 @@ public:
     Options& operator=(const Options &in);
     ~Options();
 
+    bool isInfoRequest() const;
     bool isHelpRequest() const;
     bool isVersionRequest() const;
     bool isAddUserRequest() const;
     bool isDelUserRequest() const;
+    bool isSetPassRequest() const;
     bool isConfigFileDefine() const;
+    bool isUserSettingsRequest() const;
 
     QString configFile() const;
 

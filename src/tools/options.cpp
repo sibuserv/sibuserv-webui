@@ -31,6 +31,7 @@ struct Options::OptionsPrivate
     bool versionRequest = false;
     bool addUserRequest = false;
     bool delUserRequest = false;
+    bool setPassRequest = false;
     QString confFile;
 };
 
@@ -51,6 +52,9 @@ Options::Options(int argc, char **argv) :
         }
         else if (arg == "-d" || arg == "--del-user") {
             d->delUserRequest = true;
+        }
+        else if (arg == "-s" || arg == "--set-pass") {
+            d->setPassRequest = true;
         }
         else if (arg == "-c" || arg == "--conf-file") {
             if (idx < argc - 1) {
@@ -77,6 +81,11 @@ Options::~Options()
     delete d;
 }
 
+bool Options::isInfoRequest() const
+{
+    return (d->helpRequest || d->versionRequest);
+}
+
 bool Options::isHelpRequest() const
 {
     return d->helpRequest;
@@ -97,9 +106,19 @@ bool Options::isDelUserRequest() const
     return d->delUserRequest;
 }
 
+bool Options::isSetPassRequest() const
+{
+    return d->setPassRequest;
+}
+
 bool Options::isConfigFileDefine() const
 {
     return d->confFile.isEmpty();
+}
+
+bool Options::isUserSettingsRequest() const
+{
+    return (d->addUserRequest || d->delUserRequest || d->setPassRequest);
 }
 
 QString Options::configFile() const

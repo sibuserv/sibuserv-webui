@@ -234,6 +234,70 @@ void CommandLineDialogs::delUser() const
     }
 }
 
+void CommandLineDialogs::setPassword() const
+{
+    string line;
+    cout << "User name: ";
+    std::getline(cin, line);
+    const QString userName = QString::fromStdString(line);
+    const QString fileName = "users/" + userName + ".json";
+
+    UserSettings us(fileName);
+    if (us.get("user_id").isEmpty()) {
+        cout << "User not found!" << endl;
+        return;
+    }
+
+    const QString fullUserName = us.get("full_user_name");
+    if (!fullUserName.isEmpty()) {
+        cout << "Are you sure that you want to set new password for user \""
+             << fullUserName.toStdString()
+             << "\"? [y/N]"
+             << endl;
+    }
+    else {
+        cout << "Are you sure that you want to set new password for user \""
+             << userName.toStdString()
+             << "\"? [y/N]"
+             << endl;
+    }
+
+    std::getline(cin, line);
+    if (line != "y" && line != "Y") {
+        cout << "Bye bye!" << endl;
+        return;
+    }
+
+    cout << "Password: ";
+    const QString password = getPassword();
+    if (password.isEmpty()) {
+        cout << "Password is empty!" << endl;
+        return;
+    }
+    cout << "Confirm password: ";
+    const QString confirmPassword = getPassword();
+    if (confirmPassword != password) {
+        cout << "Passwords do not match!" << endl;
+        return;
+    }
+    us.set("password_hash",  UserSettings::generatePasswordHash(password));
+
+    QFile f(APP_S().configDirectory() + "/" + fileName);
+    if (us.writeSettings()) {
+        cout << "User config \""
+             << QFileInfo(f).absoluteFilePath().toStdString()
+             << "\" is successfully updated!"
+             << endl;
+        return;
+    }
+    else {
+        cout << "Failed to save user config:\n"
+             << f.errorString().toStdString()
+             << endl;
+        return;
+    }
+}
+
 QString CommandLineDialogs::getPassword() const
 {
     struct termios _old, _new;

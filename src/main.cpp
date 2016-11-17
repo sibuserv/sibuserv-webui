@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 {
     {
         Options options(argc, argv);
-        if (options.isHelpRequest() || options.isVersionRequest()) {
+        if (options.isInfoRequest()) {
             Help help;
 
             if (options.isHelpRequest())
@@ -48,13 +48,15 @@ int main(int argc, char **argv)
         ApplicationSettings::instance().update(options);
         ApplicationSettings::instance().finalize();
 
-        if (options.isAddUserRequest() || options.isDelUserRequest()) {
+        if (options.isUserSettingsRequest()) {
             CommandLineDialogs dialog;
 
             if (options.isAddUserRequest())
                 dialog.addUser();
             else if (options.isDelUserRequest())
                 dialog.delUser();
+            else if (options.isSetPassRequest())
+                dialog.setPassword();
 
             return 0;
         }
