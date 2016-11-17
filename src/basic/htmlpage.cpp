@@ -196,7 +196,10 @@ void HtmlPage::checkAutorization(const Request &request)
     if (d->autorized) {
         out += "            authorized_user();\n";
         d->admin = d->userSettings.getBool("admin");
-        if (!d->admin) {
+        if (d->admin) {
+            out += "            admin();\n";
+        }
+        else {
             out += "            not_admin();\n";
         }
         if (d->userSettings.get("user_email").isEmpty()) {

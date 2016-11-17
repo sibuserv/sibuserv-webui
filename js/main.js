@@ -25,6 +25,10 @@ function unauthorized_user() {
     not_admin();
 }
 
+function admin() {
+    document.getElementById("settings_page").style.display = "inline-block";
+}
+
 function not_admin() {
     document.getElementById("settings_page").remove();
 }
