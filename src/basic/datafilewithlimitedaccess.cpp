@@ -33,7 +33,7 @@ DataFileWithLimitedAccess::DataFileWithLimitedAccess(const Request &request,
     HtmlPage(request)
 {
     if (isAutorizedUser()) {
-        if (isAllowedAccess(projectName)) {
+        if (isAllowedAccess(projectName, fileName)) {
             ResourceManager res(APP_S().cacheDirectory() + "projects");
             res.addPath(APP_S().buildServerBinDir());
             if (res.contains(fileName)) {
@@ -54,7 +54,8 @@ DataFileWithLimitedAccess::DataFileWithLimitedAccess(const Request &request,
     show();
 }
 
-bool DataFileWithLimitedAccess::isAllowedAccess(const QString &projectName) const
+bool DataFileWithLimitedAccess::isAllowedAccess(const QString &projectName,
+                                                const QString &fileName) const
 {
     if (isAdmin())
         return true;
@@ -67,6 +68,20 @@ bool DataFileWithLimitedAccess::isAllowedAccess(const QString &projectName) cons
 
     const QString &&role = obj[projectName].toString();
 
-    return (role == "tester" || role == "developer" || role == "owner");
+    if (role == "tester") {
+        static const QStringList logFiles = {
+            "build.log",
+            "cppcheck.log",
+            "cppcheck.html"
+        };
+        for (const auto &f : logFiles) {
+            if (fileName.contains(f)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    return (role == "developer" || role == "owner");
 }
 

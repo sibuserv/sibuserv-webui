@@ -40,7 +40,8 @@ public:
     virtual ~DataFileWithLimitedAccess() = default;
 
 private:
-    inline bool isAllowedAccess(const QString &projectName) const;
+    inline bool isAllowedAccess(const QString &projectName,
+                                const QString &fileName) const;
 };
 
 
