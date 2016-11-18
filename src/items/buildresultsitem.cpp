@@ -74,7 +74,7 @@ void BuildResultsItem::generate(const QString &projectName,
             status = "failed";
         }
         if (entries.contains("cppcheck.html")) {
-            binFile = "cppcheck.html";
+            binFile = "cppcheck.html/";
         }
     }
     else {

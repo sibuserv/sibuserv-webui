@@ -102,7 +102,20 @@ void Controller::start()
                 const int m = pageName.indexOf("/", 0);
                 const int n = pageName.indexOf("/", m + 1);
                 const QString &&projectName = pageName.mid(m + 1, n - m - 1);
-                DataFileWithLimitedAccess(d->request, projectName);
+                const QString &&fileName = pageName.mid(m + 1);
+
+                if (d->request.scriptName().endsWith("cppcheck.html")) {
+                    JavaScriptRedirect(d->request,
+                                       d->request.scriptName() + "/");
+                }
+                else if (d->request.scriptName().endsWith("cppcheck.html/")) {
+                    DataFileWithLimitedAccess(d->request, projectName,
+                                              fileName + "/index.html");
+                }
+                else {
+                    DataFileWithLimitedAccess(d->request, projectName,
+                                              fileName);
+                }
             }
         }
         else if (pageName == "profile/settings") {

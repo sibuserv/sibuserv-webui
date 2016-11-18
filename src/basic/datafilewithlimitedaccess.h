@@ -32,7 +32,8 @@ class DataFileWithLimitedAccess : public HtmlPage
 {
 public:
     explicit DataFileWithLimitedAccess(const Request &request,
-                                       const QString &projectName);
+                                       const QString &projectName,
+                                       const QString &fileName);
     DataFileWithLimitedAccess(const DataFileWithLimitedAccess &in) = delete;
     DataFileWithLimitedAccess(DataFileWithLimitedAccess &&in) = delete;
     DataFileWithLimitedAccess& operator=(const DataFileWithLimitedAccess &in) = delete;

@@ -28,17 +28,14 @@
 #include "datafilewithlimitedaccess.h"
 
 DataFileWithLimitedAccess::DataFileWithLimitedAccess(const Request &request,
-                                                     const QString &projectName) :
+                                                     const QString &projectName,
+                                                     const QString &fileName) :
     HtmlPage(request)
 {
     if (isAutorizedUser()) {
         if (isAllowedAccess(projectName)) {
             ResourceManager res(APP_S().cacheDirectory() + "projects");
             res.addPath(APP_S().buildServerBinDir());
-
-            QString fileName = request.scriptName();
-            fileName.remove(0, APP_S().prefixString().size());
-            fileName.remove(0, QString("projects").size());
             if (res.contains(fileName)) {
                 setData(res.read(fileName));
                 autodetectContentType(fileName);
