@@ -23,22 +23,23 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "applicationsettings.h"
-#include "resourcemanager.h"
-#include "datafile.h"
+#pragma once
 
-DataFile::DataFile(const Request &request) :
-    HtmlPage(request)
+#include "htmlpage.h"
+#include "request.h"
+
+class DataFileWithLimitedAccess : public HtmlPage
 {
-    ResourceManager res(":");
-    res.addPath(APP_S().cacheDirectory());
+public:
+    explicit DataFileWithLimitedAccess(const Request &request,
+                                       const QString &projectName);
+    DataFileWithLimitedAccess(const DataFileWithLimitedAccess &in) = delete;
+    DataFileWithLimitedAccess(DataFileWithLimitedAccess &&in) = delete;
+    DataFileWithLimitedAccess& operator=(const DataFileWithLimitedAccess &in) = delete;
+    virtual ~DataFileWithLimitedAccess() = default;
 
-    QString fileName = request.scriptName();
-    fileName.remove(0, APP_S().prefixString().size());
-    if (res.contains(fileName)) {
-        setData(res.read(fileName));
-        autodetectContentType(fileName);
-    }
-    show();
-}
+private:
+    inline bool isAllowedAccess(const QString &projectName) const;
+};
+
 

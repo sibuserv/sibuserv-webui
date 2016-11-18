@@ -30,6 +30,7 @@
 #include "request.h"
 #include "logmanager.h"
 #include "datafile.h"
+#include "datafilewithlimitedaccess.h"
 #include "javascriptredirect.h"
 #include "projectspage.h"
 #include "buildhistorypage.h"
@@ -100,10 +101,8 @@ void Controller::start()
             else if (count > 2) {
                 const int m = pageName.indexOf("/", 0);
                 const int n = pageName.indexOf("/", m + 1);
-                const int o = pageName.indexOf("/", m + 1);
                 const QString &&projectName = pageName.mid(m + 1, n - m - 1);
-                const QString &&version = pageName.mid(o + 1, o - n - 1);
-                BuildResultsPage(d->request, projectName, version);
+                DataFileWithLimitedAccess(d->request, projectName);
             }
         }
         else if (pageName == "profile/settings") {

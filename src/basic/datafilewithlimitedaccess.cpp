@@ -25,20 +25,51 @@
 
 #include "applicationsettings.h"
 #include "resourcemanager.h"
-#include "datafile.h"
+#include "datafilewithlimitedaccess.h"
 
-DataFile::DataFile(const Request &request) :
+DataFileWithLimitedAccess::DataFileWithLimitedAccess(const Request &request,
+                                                     const QString &projectName) :
     HtmlPage(request)
 {
-    ResourceManager res(":");
-    res.addPath(APP_S().cacheDirectory());
+    if (isAutorizedUser()) {
+        if (isAllowedAccess(projectName)) {
+            ResourceManager res(APP_S().cacheDirectory() + "projects");
+            res.addPath(APP_S().buildServerBinDir());
 
-    QString fileName = request.scriptName();
-    fileName.remove(0, APP_S().prefixString().size());
-    if (res.contains(fileName)) {
-        setData(res.read(fileName));
-        autodetectContentType(fileName);
+            QString fileName = request.scriptName();
+            fileName.remove(0, APP_S().prefixString().size());
+            fileName.remove(0, QString("projects").size());
+            if (res.contains(fileName)) {
+                setData(res.read(fileName));
+                autodetectContentType(fileName);
+            }
+        }
+        else {
+            forbidAccess();
+            update();
+        }
+    }
+    else {
+        forbidAccess();
+        forceAuthorization();
+        update();
     }
     show();
+}
+
+bool DataFileWithLimitedAccess::isAllowedAccess(const QString &projectName) const
+{
+    if (isAdmin())
+        return true;
+
+    const UserSettings &us = userSettings();
+    const QJsonObject &&obj = us.getObject("projects");
+
+    if (!obj.contains(projectName))
+        return false;
+
+    const QString &&role = obj[projectName].toString();
+
+    return (role == "tester" || role == "developer" || role == "owner");
 }
 

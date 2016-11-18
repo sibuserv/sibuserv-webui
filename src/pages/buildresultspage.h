@@ -42,7 +42,7 @@ public:
     BuildResultsPage& operator=(const BuildResultsPage &in) = delete;
     virtual ~BuildResultsPage() = default;
 
-protected:
+private:
     inline void generateHtmlTemplate(const QString &projectName,
                                      const QString &version);
     inline void generateAjaxResponse(const Request &request,
