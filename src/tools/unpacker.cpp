@@ -57,11 +57,17 @@ EmbeddedResourcesUnpacker::EmbeddedResourcesUnpacker()
             else if (fileName.endsWith(".js")) {
                 rm.unpack(fileName, as.cacheDirectory());
             }
+            else if (fileName.endsWith(".gif")) {
+                rm.unpack(fileName, as.cacheDirectory());
+            }
             else if (fileName.endsWith("robots.txt")) {
                 rm.unpack(fileName, as.cacheDirectory());
             }
             else if (QFileInfo(":" + fileName).isDir()) {
                 unpackFilesFromDir(":" + fileName);
+            }
+            else {
+                // Do nothing. Because not everything should be unpacked.
             }
         }
     };
