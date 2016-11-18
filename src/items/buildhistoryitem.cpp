@@ -29,6 +29,7 @@
 
 #include "resourcemanager.h"
 #include "applicationsettings.h"
+#include "buildresultsitem.h"
 #include "buildhistoryitem.h"
 
 static const QString dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
@@ -81,7 +82,7 @@ void BuildHistoryItem::generate(const QString &projectName,
     }
 
     const qint64  &&duration = calcDuration(started, finished);
-    const QString &&status   = detectBuildStatus(targets);
+    const QString &&status   = detectBuildStatus(projectName, version, targets);
 
     const QJsonObject tmp = {
         { "project_name",   projectName },
@@ -139,39 +140,26 @@ QPair<QString, QString> BuildHistoryItem::getTimestampsFromLogFile(const QString
     return qMakePair(started, finished);
 }
 
-QString BuildHistoryItem::detectBuildStatus(const QFileInfoList &subdirs) const
+QString BuildHistoryItem::detectBuildStatus(const QString &projectName,
+                                            const QString &version,
+                                            const QFileInfoList &subdirs) const
 {
-    if (subdirs.isEmpty())
-        return "";
+    if (projectName.isEmpty() || version.isEmpty() || subdirs.isEmpty())
+        return "?";
 
-    const QString &&codeAnalysis = APP_S().staticCodeAnalysisLogsSubdir();
-
+    QString status;
     for (const auto &it : subdirs) {
         if (it.isDir()) {
-            if ( it.fileName() == codeAnalysis) {
-                if (isStaticCodeAnalysisFailed(it.absoluteFilePath())) {
-                    return "failed";
-                }
+            BuildResultsItem bri(projectName, version, it.fileName());
+            status = bri.get("status");
+            if (status == "failed") {
+                return status;
             }
-            else {
-                int counter = 0;
-                const QDir dir(it.absoluteFilePath());
-                for (const auto &k : dir.entryList(QDir::AllEntries |
-                                                   QDir::NoDotAndDotDot)) {
-                    if (k.endsWith("Makefile")) {
-                        return "started";
-                    }
-                    else if (!k.endsWith(".log")) {
-                        ++counter;
-                    }
-                }
-                if (counter == 0) {
-                    return "failed";
-                }
+            else if (status == "started") {
+                return status;
             }
         }
     }
-
     return "passed";
 }
 

@@ -69,12 +69,10 @@ void BuildResultsItem::generate(const QString &projectName,
     const QString &&codeAnalysis = APP_S().staticCodeAnalysisLogsSubdir();
     if (target == codeAnalysis) {
         logFile = "cppcheck.log";
+        binFile = "cppcheck.html/";
 
         if (isStaticCodeAnalysisFailed(dir.absolutePath())) {
             status = "failed";
-        }
-        if (entries.contains("cppcheck.html")) {
-            binFile = "cppcheck.html/";
         }
     }
     else {
@@ -85,6 +83,8 @@ void BuildResultsItem::generate(const QString &projectName,
             if (k.endsWith("Makefile")) {
                 status = "started";
                 binFile = logFile;
+                ++counter;
+                break;
             }
             else if (!k.endsWith(".log")) {
                 binFile = k;
@@ -95,11 +95,8 @@ void BuildResultsItem::generate(const QString &projectName,
             status = "failed";
             binFile = logFile;
         }
-        else if (counter == 1) {
-            ; // binFile is already defined above
-        }
-        else {
-            binFile = projectName + "-" + version + "_" + target + ".tar.gz";
+        else if (binFile.isEmpty()) {
+            binFile = projectName + "-" + version + ".tar.gz";
         }
     }
 
