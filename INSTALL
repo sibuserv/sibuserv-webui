@@ -2,7 +2,7 @@
 * gcc (>= 6.1) or clang (>= 3.8)
 * cmake (>= 3.4)
 * libfcgi (>= 2.4)
-* qtbase (>= 5.6)
+* qtbase (>= 5.4)
 * gzip
 
 

@@ -1,7 +1,7 @@
 project (sibuserv-webui)
 cmake_minimum_required (VERSION 3.4)
 
-find_package (Qt5Core 5.6 REQUIRED)
+find_package (Qt5Core 5.4 REQUIRED)
 
 list (APPEND PROJECT_DIRS ${PROJECT_SOURCE_DIR}
                           ${PROJECT_SOURCE_DIR}/basic
