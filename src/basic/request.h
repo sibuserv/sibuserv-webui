@@ -35,6 +35,9 @@ class Request
 {
 public:
     Request();
+    Request(const Request &in) = delete;
+    Request(Request &&in) = delete;
+    Request& operator=(const Request &in) = delete;
     ~Request();
 
     bool next() const;
