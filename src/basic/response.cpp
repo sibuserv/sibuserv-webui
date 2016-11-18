@@ -112,7 +112,8 @@ void Response::autodetectContentType(const QString &fileName)
     if (fileName.isEmpty())
         d->contentType = mimeDatabase.mimeTypeForData(d->data).name();
     else
-        d->contentType = mimeDatabase.mimeTypeForName(fileName).name();
+        d->contentType = mimeDatabase
+                .mimeTypeForFileNameAndData(fileName, d->data).name();
 }
 
 void Response::showHeaders() const
@@ -129,6 +130,7 @@ void Response::showCookies() const
 
 void Response::showData() const
 {
-    FCGI_printf("\n%s", d->data.data());
+    FCGI_printf("\n");
+    FCGI_fwrite(d->data.data(), d->data.size(), 1, FCGI_stdout);
 }
 
