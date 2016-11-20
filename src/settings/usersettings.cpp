@@ -83,7 +83,17 @@ bool UserSettings::checkPasswordHash(const QString &password) const
     const QByteArray &&salt = QByteArray::fromHex(passwordHash.mid(64));
     const QByteArray &&test = hash(password.toUtf8() + salt) + salt.toHex();
 
-    return (test == passwordHash);
+    return slowEquals(test, passwordHash);
+}
+
+bool UserSettings::slowEquals(const QByteArray &a, const QByteArray &b)
+{
+    const int len = qMin(a.size(), b.size());
+    int diff = a.size() ^ b.size();
+    for (int i = 0; i < len; ++i) {
+        diff |= a[i] ^ b[i];
+    }
+    return (diff == 0);
 }
 
 QByteArray UserSettings::randomSalt()

@@ -2,3 +2,6 @@
 * LDAP support.
 * Support of manually uploaded avatars.
 * Make Sibuserv plugin for GitLab.
+? Use QCA::PBKDF2() or PKCS5_PBKDF2_HMAC_SHA1() from OpenSSL instead of
+  QCryptographicHash::Sha256 in UserSettings::hash(). Or find another compact
+  implementation.

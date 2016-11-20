@@ -54,6 +54,7 @@ protected:
     bool checkPasswordHash(const QString &password) const;
 
 private:
+    static bool slowEquals(const QByteArray &a, const QByteArray &b);
     static QByteArray hash(const QByteArray &in);
     static QByteArray randomSalt();
 };
