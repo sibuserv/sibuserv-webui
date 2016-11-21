@@ -25,6 +25,7 @@
 
 #include <QMap>
 #include <QStringList>
+#include <QByteArrayList>
 
 #include "applicationsettings.h"
 #include "resourcemanager.h"
@@ -136,8 +137,27 @@ void HtmlPage::addExtraReplacements(const QByteArray &from,
 
 void HtmlPage::addStyleSheetToHead(const QByteArray &styleSheet)
 {
-    addToHead("        <link rel=\"stylesheet\" type=\"text/css\" href=\"" +
-              styleSheet + "\">\n");
+    if (d->head.isEmpty()) {
+        setHead(styleSheet);
+        return;
+    }
+
+    if (!d->head.contains("link rel=\"stylesheet\"")) {
+        addToHead(styleSheet);
+        return;
+    }
+
+    const QByteArray &&html =
+            "        <link rel=\"stylesheet\" type=\"text/css\" href=\"" +
+            styleSheet + "\">";
+
+    QByteArrayList list = d->head.split('\n');
+    for (int k = list.size()-1; k > 0; --k) {
+        if (list[k].contains("link rel=\"stylesheet\"")) {
+            list.insert(k, html);
+        }
+    }
+    setHead(list.join('\n'));
 }
 
 void HtmlPage::addScriptToHead(const QByteArray &script)
