@@ -37,7 +37,5 @@ public:
     CommonSettings(CommonSettings &&in) = delete;
     CommonSettings& operator=(const CommonSettings &in) = delete;
     virtual ~CommonSettings() = default;
-
-    QString l10nFile() const;
 };
 

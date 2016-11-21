@@ -32,8 +32,3 @@ CommonSettings::CommonSettings() :
     ;
 }
 
-QString CommonSettings::l10nFile() const
-{
-    return get("l10n_file");
-}
-

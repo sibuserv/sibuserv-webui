@@ -43,13 +43,9 @@ struct HtmlPage::HtmlPagePrivate
     QByteArray body;
     QByteArray title;
     QByteArray content;
-    QByteArray redirect;
-    QByteArray prefix;
-    QByteArray jquery;
 
     CommonSettings commonSettings;
     UserSettings   userSettings;
-    Localization   localization;
 
     QMap<QByteArray, QByteArray> extraReplacements;
 };
@@ -57,10 +53,6 @@ struct HtmlPage::HtmlPagePrivate
 HtmlPage::HtmlPage(const Request &request) :
     d(new HtmlPagePrivate)
 {
-    d->prefix = APP_S().prefixString().toUtf8();
-    d->jquery = APP_S().jqueryUrl().toUtf8();
-    d->redirect = request.scriptName().toUtf8();
-
     if (request.get("ajax").isEmpty()) {
         const ResourceManager res;
         setPage(res.read("/html/page-template.html"));
@@ -68,17 +60,10 @@ HtmlPage::HtmlPage(const Request &request) :
         setHead(res.read("/html/head-template.html"));
         setBody(res.read("/html/body-template.html"));
         setContent(res.read("/html/404-template.html"));
+        setContentType("text/html");
     }
 
     checkAutorization(request);
-
-    if (request.get("ajax").isEmpty()) {
-        d->localization.setFileName(d->commonSettings.l10nFile());
-        d->localization.readSettings();
-
-        setContentType("text/html");
-        update();
-    }
 }
 
 HtmlPage::~HtmlPage()
@@ -258,6 +243,7 @@ void HtmlPage::update()
     out.replace("%page_style%", d->userSettings.get("page_style").toUtf8());
     out.replace("%user_email%", d->userSettings.get("user_email").toUtf8());
     out.replace("%gravatar_icon_url%", d->userSettings.gravatarIconUrl());
+
     if (!d->autorized) {
         const ResourceManager res;
         out.replace("%auth_form%", res.read("/html/auth-template.html"));
@@ -273,18 +259,25 @@ void HtmlPage::update()
     for (const QString &name : names) {
         if (!name.isEmpty()) {
             out.replace("%user_name%", name.toUtf8());
+            break;
         }
     }
-    for (const auto &key : d->localization.keys()) {
+
+    Localization localization(d->commonSettings.get("l10n_file"));
+    if (!d->userSettings.get("l10n_file").isEmpty()) {
+        localization.setFileName(d->userSettings.get("l10n_file"));
+        localization.readSettings();
+    }
+    for (const auto &key : localization.keys()) {
         out.replace("%" + key.toUtf8() + "%",
-                    d->localization.get(key).toUtf8());
+                    localization.get(key).toUtf8());
     }
     for (const auto &key : d->extraReplacements.keys()) {
         out.replace("%" + key + "%", d->extraReplacements[key]);
     }
-    out.replace("%redirect%",   d->redirect);
-    out.replace("%prefix%",     d->prefix);
-    out.replace("%jquery_url%", d->jquery);
+
+    out.replace("%jquery_url%", APP_S().jqueryUrl().toUtf8());
+    out.replace("%prefix%",     APP_S().prefixString().toUtf8());
 
     setData(out);
 }
