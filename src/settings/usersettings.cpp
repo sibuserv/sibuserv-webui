@@ -24,7 +24,7 @@
  *****************************************************************************/
 
 #include <random>
-#include <QCryptographicHash>
+#include <QMessageAuthenticationCode>
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -69,25 +69,75 @@ QByteArray UserSettings::calcEmailHash(const QString &email)
 
 QString UserSettings::generatePasswordHash(const QString &password)
 {
+    // http://security.stackexchange.com/questions/3959/recommended-of-iterations-when-using-pkbdf2-sha256
+    static const quint32 rounds = 400004; // 400 004
+
     const QByteArray &&salt = randomSalt();
-    return hash(password.toUtf8() + salt) + salt.toHex();
+    return hash(password.toUtf8(), salt, rounds).toHex();
 }
 
 bool UserSettings::checkPasswordHash(const QString &password) const
 {
     const QByteArray &&passwordHash = get("password_hash").toUtf8();
 
-    if (passwordHash.size() != (256/8)*2*2)
+    if (passwordHash.size() < (256/8)*2*2 + 2)
         return false;
 
-    const QByteArray &&salt = QByteArray::fromHex(passwordHash.mid(64));
-    const QByteArray &&test = hash(password.toUtf8() + salt) + salt.toHex();
+    const int rounds        = QByteArray::fromHex(passwordHash.mid(128)).toInt();
+    const QByteArray &&salt = QByteArray::fromHex(passwordHash.mid(64, 64));
+    const QByteArray &&test = hash(password.toUtf8(), salt, rounds).toHex();
 
     return slowEquals(test, passwordHash);
 }
 
+QByteArray UserSettings::pbkdf2(const QCryptographicHash::Algorithm method,
+                                const QByteArray &password,
+                                const QByteArray &salt,
+                                const int rounds,
+                                const int keyLength)
+{
+    // https://codereview.qt-project.org/#/c/53976/
+
+    QByteArray key;
+
+    if (rounds < 1 || keyLength < 1)
+        return key;
+
+    if (salt.size() == 0 || salt.size() > std::numeric_limits<int>::max() - 4)
+        return key;
+
+    QByteArray asalt = salt;
+    asalt.resize(salt.size() + 4);
+
+    for (int count = 1, remainingBytes = keyLength; remainingBytes > 0; ++count) {
+        asalt[salt.size() + 0] = static_cast<char>((count >> 24) & 0xff);
+        asalt[salt.size() + 1] = static_cast<char>((count >> 16) & 0xff);
+        asalt[salt.size() + 2] = static_cast<char>((count >> 8) & 0xff);
+        asalt[salt.size() + 3] = static_cast<char>(count & 0xff);
+        QByteArray d1 = QMessageAuthenticationCode::hash(asalt, password, method);
+        QByteArray obuf = d1;
+
+        for (int i = 1; i < rounds; ++i) {
+            d1 = QMessageAuthenticationCode::hash(d1, password, method);
+            for (int j = 0; j < obuf.size(); ++j)
+                obuf[j] = obuf[j] ^ d1[j];
+        }
+
+        key = key.append(obuf);
+        remainingBytes -= obuf.size();
+
+        d1.fill('\0');
+        obuf.fill('\0');
+    }
+    asalt.fill('\0');
+
+    return key.mid(0, keyLength);
+}
+
 bool UserSettings::slowEquals(const QByteArray &a, const QByteArray &b)
 {
+    // https://crackstation.net/hashing-security.htm
+
     const int len = qMin(a.size(), b.size());
     int diff = a.size() ^ b.size();
     for (int i = 0; i < len; ++i) {
@@ -109,9 +159,14 @@ QByteArray UserSettings::randomSalt()
     return out;
 }
 
-QByteArray UserSettings::hash(const QByteArray &in)
+QByteArray UserSettings::hash(const QByteArray &password,
+                              const QByteArray &salt,
+                              const int rounds)
 {
-    return QCryptographicHash::hash(in, QCryptographicHash::Sha256).toHex();
+    static const QCryptographicHash::Algorithm method = QCryptographicHash::Sha256;
+    return  pbkdf2(method, password, salt, rounds, salt.size()) +
+            salt +
+            QByteArray::number(rounds);
 }
 
 bool UserSettings::isValidAutorizationRequest(const Request &request)

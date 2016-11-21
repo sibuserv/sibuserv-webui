@@ -27,6 +27,7 @@
 
 #include <QString>
 #include <QByteArray>
+#include <QCryptographicHash>
 
 #include "abstractsettings.h"
 #include "request.h"
@@ -55,7 +56,14 @@ protected:
 
 private:
     static bool slowEquals(const QByteArray &a, const QByteArray &b);
-    static QByteArray hash(const QByteArray &in);
+    static QByteArray pbkdf2(const QCryptographicHash::Algorithm method,
+                             const QByteArray &password,
+                             const QByteArray &salt,
+                             const int rounds,
+                             const int keyLength);
+    static QByteArray hash(const QByteArray &password,
+                           const QByteArray &salt,
+                           const int rounds);
     static QByteArray randomSalt();
 };
 
