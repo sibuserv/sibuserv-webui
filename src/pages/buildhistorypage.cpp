@@ -45,12 +45,11 @@ BuildHistoryPage::BuildHistoryPage(const Request &request, const QString &projec
         generateHtmlTemplate(projectName);
         addExtraReplacements("current_project_name", projectName.toUtf8());
         update();
-        show();
     }
     else {
         generateAjaxResponse(request, projectName);
-        show();
     }
+    show();
 }
 
 void BuildHistoryPage::generateHtmlTemplate(const QString &projectName)

@@ -44,12 +44,11 @@ ProjectsPage::ProjectsPage(const Request &request) :
         addToTitle(" - %projects%");
         generateHtmlTemplate();
         update();
-        show();
     }
     else {
         generateAjaxResponse(request);
-        show();
     }
+    show();
 }
 
 void ProjectsPage::generateHtmlTemplate()

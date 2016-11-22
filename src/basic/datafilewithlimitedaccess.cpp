@@ -32,24 +32,12 @@ DataFileWithLimitedAccess::DataFileWithLimitedAccess(const Request &request,
                                                      const QString &fileName) :
     HtmlPage(request)
 {
-    if (isAutorizedUser()) {
-        if (isAllowedAccess(projectName, fileName)) {
-            ResourceManager res(APP_S().cacheDirectory() + "projects");
-            res.addPath(APP_S().buildServerBinDir());
-            if (res.contains(fileName)) {
-                setData(res.read(fileName));
-                autodetectContentType(fileName);
-            }
-        }
-        else {
-            forbidAccess();
-            update();
-        }
+    if (request.get("ajax").isEmpty()) {
+        generateHtmlTemplate(projectName, fileName);
+        update();
     }
     else {
-        forbidAccess();
-        forceAuthorization();
-        update();
+        generateAjaxResponse(projectName, fileName);
     }
     show();
 }
@@ -83,5 +71,35 @@ bool DataFileWithLimitedAccess::isAllowedAccess(const QString &projectName,
     }
 
     return (role == "developer" || role == "owner");
+}
+
+void DataFileWithLimitedAccess::generateHtmlTemplate(const QString &projectName, const QString &fileName)
+{
+    if (isAutorizedUser()) {
+        if (isAllowedAccess(projectName, fileName)) {
+            ResourceManager res(APP_S().cacheDirectory() + "projects");
+            res.addPath(APP_S().buildServerBinDir());
+            if (res.contains(fileName)) {
+                setData(res.read(fileName));
+                autodetectContentType(fileName);
+            }
+            else if (fileName.endsWith(".tar.gz")) {
+                ;
+            }
+        }
+        else {
+            forbidAccess();
+        }
+    }
+    else {
+        forbidAccess();
+        forceAuthorization();
+    }
+}
+
+void DataFileWithLimitedAccess::generateAjaxResponse(const QString &projectName,
+                                                     const QString &fileName)
+{
+    ;
 }
 

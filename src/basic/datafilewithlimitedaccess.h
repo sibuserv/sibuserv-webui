@@ -42,6 +42,10 @@ public:
 private:
     inline bool isAllowedAccess(const QString &projectName,
                                 const QString &fileName) const;
+    inline void generateHtmlTemplate(const QString &projectName,
+                                     const QString &fileName);
+    inline void generateAjaxResponse(const QString &projectName,
+                                     const QString &fileName);
 };
 
 

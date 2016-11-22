@@ -48,12 +48,11 @@ BuildResultsPage::BuildResultsPage(const Request &request,
         addExtraReplacements("current_project_name", projectName.toUtf8());
         addExtraReplacements("current_build", version.toUtf8());
         update();
-        show();
     }
     else {
         generateAjaxResponse(request, projectName, version);
-        show();
     }
+    show();
 }
 
 void BuildResultsPage::generateHtmlTemplate(const QString &projectName,
