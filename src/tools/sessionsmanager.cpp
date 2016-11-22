@@ -23,6 +23,7 @@
  *                                                                           *
  *****************************************************************************/
 
+#include <QFile>
 #include <QDateTime>
 #include <QJsonObject>
 #include <QCryptographicHash>
@@ -59,9 +60,11 @@ bool SessionsManager::isAutorized() const
         return false;
     if (d->session_id.isEmpty())
         return false;
-    if (get("session_id") != d->session_id)
+    if (get("expires").isEmpty())
         return false;
-    if (!contains("expires"))
+    if (get("user_name").isEmpty())
+        return false;
+    if (get("session_id") != d->session_id)
         return false;
 
     const QDateTime expires = QDateTime::fromString(get("expires"),
@@ -101,5 +104,11 @@ bool SessionsManager::beginNewSession(const QString &userName)
         return true;
 
     return false;
+}
+
+bool SessionsManager::closeSession(const QString &userId)
+{
+    QFile f(APP_S().sessionsDirectory() + "/" + userId + ".json");
+    return f.remove();
 }
 

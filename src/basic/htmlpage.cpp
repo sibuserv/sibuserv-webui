@@ -61,9 +61,16 @@ HtmlPage::HtmlPage(const Request &request) :
         setBody(res.read("/html/body-template.html"));
         setContent(res.read("/html/404-template.html"));
         setContentType("text/html");
+        addExtraReplacements("script_name", request.scriptName().toUtf8());
     }
 
     checkAutorization(request);
+
+    if (request.get("ajax") == "sign_out") {
+        if (isAutorizedUser()) {
+            SessionsManager::closeSession(d->userSettings.get("user_id"));
+        }
+    }
 }
 
 HtmlPage::~HtmlPage()
@@ -182,9 +189,9 @@ void HtmlPage::checkAutorization(const Request &request)
         if (sm.beginNewSession(d->userSettings.get("user_name"))) {
             const bool httpsOnly = d->commonSettings.getBool("https_only");
             setCookie("user_id", d->userSettings.get("user_id"),
-                      "", "/", "", httpsOnly, false);
+                      "", "/", "", httpsOnly, true);
             setCookie("session_id", sm.get("session_id"),
-                      "", "/", "", httpsOnly, false);
+                      "", "/", "", httpsOnly, true);
         }
     }
     else {
@@ -196,6 +203,11 @@ void HtmlPage::checkAutorization(const Request &request)
                     out += "            begin_authorization();\n";
                 }
             }
+        }
+        else if (!request.cookie("user_id").isEmpty() &&
+                 !request.cookie("session_id").isEmpty()) {
+            setCookie("user_id", "", "Thu, 01 Jan 1970 00:00:00 UTC", "/");
+            setCookie("session_id", "", "Thu, 01 Jan 1970 00:00:00 UTC", "/");
         }
     }
     if (d->autorized) {

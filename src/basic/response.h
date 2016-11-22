@@ -45,7 +45,7 @@ public:
                    const QString &path = "/",
                    const QString &domain = "",
                    const bool secure = false,
-                   const bool httpOnly = false);
+                   const bool httpOnly = true);
     void show() const;
 
     void autodetectContentType(const QString &fileName = "");

@@ -41,6 +41,7 @@ public:
 
     bool isAutorized() const;
     bool beginNewSession(const QString &userName);
+    static bool closeSession(const QString &userId);
 
 private:
     struct SessionsManagerPrivate;

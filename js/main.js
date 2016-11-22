@@ -38,8 +38,7 @@ function email_is_unknown() {
 }
 
 function sign_out() {
-    document.cookie = "user_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie = "session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    $.post("?ajax=sign_out");
     return true;
 }
 
