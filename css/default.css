@@ -94,7 +94,7 @@ h1 {
 
 #content_container {
     padding: 1em 0 1em 0;
-    min-height: calc(100% - 56px - 56px - 2em);
+    min-height: calc(100% - 56px - 56px);
     background-color: #fefefe;
 }
 
