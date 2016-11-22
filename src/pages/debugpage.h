@@ -36,5 +36,9 @@ public:
     DebugPage(DebugPage &&in) = delete;
     DebugPage& operator=(const DebugPage &in) = delete;
     virtual ~DebugPage() = default;
+
+private:
+    inline void generateHtmlTemplate(const Request &request);
+    inline void generateAjaxResponse(const Request &request);
 };
 

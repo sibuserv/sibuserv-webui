@@ -24,11 +24,26 @@
  *****************************************************************************/
 
 #include <QByteArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include "debugpage.h"
 
 DebugPage::DebugPage(const Request &request) :
     HtmlPage(request)
+{
+    if (request.get("ajax").isEmpty()) {
+        addToTitle(" - %debug%");
+        generateHtmlTemplate(request);
+        update();
+    }
+    else {
+        generateAjaxResponse(request);
+    }
+    show();
+}
+
+void DebugPage::generateHtmlTemplate(const Request &request)
 {
     if (isAutorizedUser() && isAdmin()) {
         QByteArray content;
@@ -44,9 +59,21 @@ DebugPage::DebugPage(const Request &request) :
         forbidAccess();
         forceAuthorization();
     }
+}
 
-    addToTitle(" - %debug%");
-    update();
-    show();
+void DebugPage::generateAjaxResponse(const Request &request)
+{
+    if (isAutorizedUser() && isAdmin()) {
+        QJsonObject out;
+        int idx = -1;
+        for (const auto &k : request.environment()) {
+            idx = k.indexOf("=");
+            if (idx >= 0 && idx < k.size()-1) {
+                out[k.mid(0, idx)] = k.mid(idx + 1);
+            }
+        }
+        out["POST_DATA"] = QString::fromUtf8(request.post());
+        setData(QJsonDocument(out).toJson());
+    }
 }
 

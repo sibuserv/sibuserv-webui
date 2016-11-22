@@ -39,9 +39,9 @@ public:
     ProjectsPage& operator=(const ProjectsPage &in) = delete;
     virtual ~ProjectsPage() = default;
 
-protected:
-    void generateHtmlTemplate();
-    void generateAjaxResponse(const Request &request);
+private:
+    inline void generateHtmlTemplate();
+    inline void generateAjaxResponse(const Request &request);
     inline bool allowedProjectsExist() const;
     inline QStringList allowedProjects() const;
     inline QStringList allProjects() const;
