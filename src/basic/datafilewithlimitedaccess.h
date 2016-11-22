@@ -46,6 +46,8 @@ private:
                                      const QString &fileName);
     inline void generateAjaxResponse(const QString &projectName,
                                      const QString &fileName);
+    inline bool makeArchive(const QString &projectName,
+                            const QString &fileName) const;
 };
 
 

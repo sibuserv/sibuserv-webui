@@ -23,6 +23,12 @@
  *                                                                           *
  *****************************************************************************/
 
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QProcess>
+
+#include "logmanager.h"
 #include "applicationsettings.h"
 #include "resourcemanager.h"
 #include "datafilewithlimitedaccess.h"
@@ -34,7 +40,6 @@ DataFileWithLimitedAccess::DataFileWithLimitedAccess(const Request &request,
 {
     if (request.get("ajax").isEmpty()) {
         generateHtmlTemplate(projectName, fileName);
-        update();
     }
     else {
         generateAjaxResponse(projectName, fileName);
@@ -73,33 +78,102 @@ bool DataFileWithLimitedAccess::isAllowedAccess(const QString &projectName,
     return (role == "developer" || role == "owner");
 }
 
-void DataFileWithLimitedAccess::generateHtmlTemplate(const QString &projectName, const QString &fileName)
+void DataFileWithLimitedAccess::generateHtmlTemplate(const QString &projectName,
+                                                     const QString &fileName)
 {
     if (isAutorizedUser()) {
         if (isAllowedAccess(projectName, fileName)) {
-            ResourceManager res(APP_S().cacheDirectory() + "projects");
+            ResourceManager res(APP_S().cacheDirectory() + "/projects");
             res.addPath(APP_S().buildServerBinDir());
+            if (!res.contains(fileName) && fileName.endsWith(".zip")) {
+                makeArchive(projectName, fileName);
+            }
             if (res.contains(fileName)) {
                 setData(res.read(fileName));
                 autodetectContentType(fileName);
             }
-            else if (fileName.endsWith(".tar.gz")) {
-                ;
+            else {
+                update();
             }
         }
         else {
             forbidAccess();
+            update();
         }
     }
     else {
         forbidAccess();
         forceAuthorization();
+        update();
     }
 }
 
 void DataFileWithLimitedAccess::generateAjaxResponse(const QString &projectName,
                                                      const QString &fileName)
 {
-    ;
+    if (!isAutorizedUser())
+        return;
+
+    if (!isAllowedAccess(projectName, fileName))
+        return;
+
+    ResourceManager res(APP_S().cacheDirectory() + "/projects");
+    res.addPath(APP_S().buildServerBinDir());
+    if (!res.contains(fileName) && fileName.endsWith(".zip")) {
+        makeArchive(projectName, fileName);
+    }
+    if (res.contains(fileName)) {
+        setData(res.read(fileName));
+        autodetectContentType(fileName);
+    }
+}
+
+bool DataFileWithLimitedAccess::makeArchive(const QString &projectName,
+                                            const QString &fileName) const
+{
+    if (projectName.isEmpty() || fileName.isEmpty())
+        return false;
+
+    const int idx = fileName.lastIndexOf("/");
+    if (idx < 0)
+        return false;
+
+    // Directory with files for archiving:
+    const QString in = APP_S().buildServerBinDir() + "/" + fileName.mid(0, idx);
+
+    if (!QDir(in).exists())
+        return false;
+
+    // Archive file:
+    const QString out = APP_S().cacheDirectory() + "/projects/" + fileName;
+
+    QFile f(out + ".lock");
+    if (f.exists()) {
+        return false;
+    }
+    else {
+        QDir().mkpath(QFileInfo(f).absolutePath());
+        if (f.open(QIODevice::OpenModeFlag::WriteOnly)) {
+            f.close();
+        }
+        else {
+            return false;
+        }
+    }
+
+    const QString program = "zip";
+    const QStringList arguments = {
+        "-rq9",
+        QFileInfo(out).absoluteFilePath(),
+        QFileInfo(in).fileName(),
+        "-x '*.log'"
+    };
+    QProcess process;
+    process.setWorkingDirectory(QFileInfo(in).absolutePath());
+    process.start(program, arguments);
+    process.waitForFinished(300000); // limit by 5 minutes
+
+    f.remove();
+    return (process.exitStatus() == QProcess::NormalExit);
 }
 

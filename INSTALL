@@ -7,9 +7,12 @@
 
 
 ===== Runtime dependencies =====
-* libfcgi
-* libqt5core
-* spawn-fcgi
+* Libraries:
+  * libfcgi
+  * libqt5core
+* Command-line programs:
+  * spawn-fcgi
+  * zip
 
 
 ===== Some configuration options =====
@@ -76,7 +79,7 @@ server {
 * If you want to use Sibuserv Web UI as separate website on specific domain name:
   http://build-server.local/
   http://build-server.<your-domain-name>/
-
+  
   when edit Nginx config (for example, /etc/nginx/sites-available/default)
   where you need to paste something like this:
   
@@ -94,7 +97,7 @@ server {
   
   And do not forget to edit /etc/sibuserv/webui-settings.json
   where you need to change "prefix_string" variable:
-
+  
     "prefix_string": "/",
 
 * Attention! It is strongly recommended to use HTTPS for connecting to Web UI.
@@ -106,6 +109,19 @@ server {
   config in text editor or using "/settings" page at website:
   
     "https_only": true,
+
+* Also it is a good idea to enable gzip compression for your web site for
+  reducing a size of transferred files and for decreasing the time of pages
+  loading as a result of this.
+  
+  Edit Nginx config (for example, /etc/nginx/sites-available/default)
+  where you need to paste something like this:
+  
+    gzip on;
+    gzip_proxied any;
+    gzip_comp_level 9;
+    gzip_types text/plain text/css text/javascript \
+               application/javascript application/x-javascript application/json;
 
 
 ===== Adding website users =====

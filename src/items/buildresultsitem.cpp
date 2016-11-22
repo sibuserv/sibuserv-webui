@@ -28,6 +28,7 @@
 #include <QFileInfo>
 #include <QDateTime>
 
+#include "logmanager.h"
 #include "resourcemanager.h"
 #include "applicationsettings.h"
 #include "buildresultsitem.h"
@@ -95,8 +96,13 @@ void BuildResultsItem::generate(const QString &projectName,
             status = "failed";
             binFile = logFile;
         }
-        else if (binFile.isEmpty()) {
-            binFile = projectName + "-" + version + ".tar.gz";
+        else if (counter == 1) {
+            if (QFileInfo(dir.absoluteFilePath(binFile)).isDir()) {
+                binFile = projectName + "-" + version + ".zip";
+            }
+        }
+        else {
+            binFile = projectName + "-" + version + ".zip";
         }
     }
 
