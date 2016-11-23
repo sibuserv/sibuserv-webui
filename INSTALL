@@ -137,3 +137,8 @@ Since JSON format is used there you may edit user configs in any text editor.
 Once you add website user with admin privileges and signing in as this user you
 will be able to add and edit other user configs at "/settings/users" web page.
 
+User passwords are stored in a quite secure way: they are hashed using
+PBKDF2-SHA256 with more than 400 000 iterations. If you want to speed up an
+authorization process, just decrease this value in src/settings/usersettings.cpp
+and recompile the program.
+
