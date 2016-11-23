@@ -36,6 +36,7 @@
 #include "buildhistorypage.h"
 #include "buildresultspage.h"
 #include "profilesettingspage.h"
+#include "profilesettingssecuritypage.h"
 #include "settingspage.h"
 #include "debugpage.h"
 #include "counterpage.h"
@@ -123,6 +124,9 @@ void Controller::start()
         }
         else if (pageName == "profile") {
             JavaScriptRedirect(d->request, prefixString + "profile/settings");
+        }
+        else if (pageName == "profile/settings/security") {
+            ProfileSettingsSecurityPage(d->request);
         }
         else if (pageName == "settings") {
             SettingsPage(d->request);

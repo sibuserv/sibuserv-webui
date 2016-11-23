@@ -79,7 +79,6 @@ function redirect_with_post_request(url, data) {
 
 function force_password_update() {
     var currentUrl = $("#sign_out").find("a").attr("href");
-    // var redirectTo = $("#main_page").find("a").attr("href") + "debug"; // Debug mode!
     var redirectTo = $("#user_name").find("a").attr("href") + "/security";
     if (currentUrl === redirectTo) {
         return;
