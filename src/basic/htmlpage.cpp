@@ -146,7 +146,7 @@ void HtmlPage::addStyleSheetToHead(const QByteArray &styleSheet)
     QByteArrayList list = d->head.split('\n');
     for (int k = list.size()-1; k > 0; --k) {
         if (list[k].contains("link rel=\"stylesheet\"")) {
-            list.insert(k, html);
+            list.insert(k+1, html);
         }
     }
     setHead(list.join('\n'));
@@ -229,6 +229,7 @@ void HtmlPage::checkAutorization(const Request &request)
         }
     }
     else {
+        addStyleSheetToHead("%prefix%css/auth/%page_style%");
         out += "            unauthorized_user();\n";
     }
 
