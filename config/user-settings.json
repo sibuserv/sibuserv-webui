@@ -1,5 +1,6 @@
 {
     "admin": false,
+    "force_password_update": false,
     "user_name": "guest",
     "page_style": "default.css",
     "full_user_name": "",

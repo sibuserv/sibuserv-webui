@@ -33,6 +33,9 @@
 #include "applicationsettings.h"
 #include "usersettings.h"
 
+// http://security.stackexchange.com/questions/3959/recommended-of-iterations-when-using-pkbdf2-sha256
+static const int rounds = 400004; // 400 004
+
 UserSettings::UserSettings() :
     AbstractSettings(APP_S().configDirectory(), "user-settings.json")
 {
@@ -69,9 +72,6 @@ QByteArray UserSettings::calcEmailHash(const QString &email)
 
 QString UserSettings::generatePasswordHash(const QString &password)
 {
-    // http://security.stackexchange.com/questions/3959/recommended-of-iterations-when-using-pkbdf2-sha256
-    static const quint32 rounds = 400004; // 400 004
-
     const QByteArray &&salt = randomSalt();
     return hash(password.toUtf8(), salt, rounds).toHex();
 }

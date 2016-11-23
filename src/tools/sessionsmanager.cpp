@@ -92,9 +92,10 @@ bool SessionsManager::beginNewSession(const QString &userName)
                                      QCryptographicHash::Sha1).toHex();
 
     QJsonObject obj;
-    obj["user_name"]  = userName;
-    obj["session_id"] = QString::fromUtf8(sessionId);
-    obj["expires"]    = expires;
+    obj["user_name"]            = userName;
+    obj["session_id"]           = QString::fromUtf8(sessionId);
+    obj["expires"]              = expires;
+    obj["authorization_type"]   = "local";
     setSettings(obj);
 
     if (!writeSettings())

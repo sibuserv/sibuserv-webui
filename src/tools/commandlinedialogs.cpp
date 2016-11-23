@@ -161,6 +161,7 @@ void CommandLineDialogs::addUser() const
     us.set("user_id",        userId);
     us.set("password_hash",  passwordHash);
     us.setBool("admin",      admin);
+    us.setBool("force_password_update", true);
 
     if (us.writeSettings()) {
         cout << "User config is successfully written to:\n"
@@ -281,6 +282,7 @@ void CommandLineDialogs::setPassword() const
         return;
     }
     us.set("password_hash",  UserSettings::generatePasswordHash(password));
+    us.setBool("force_password_update", true);
 
     QFile f(APP_S().configDirectory() + "/" + fileName);
     if (us.writeSettings()) {

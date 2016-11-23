@@ -222,6 +222,11 @@ void HtmlPage::checkAutorization(const Request &request)
         if (d->userSettings.get("user_email").isEmpty()) {
             out += "            email_is_unknown();\n";
         }
+        if (d->userSettings.getBool("force_password_update")) {
+            if (sm.get("authorization_type") == "local") {
+                out += "            force_password_update();\n";
+            }
+        }
     }
     else {
         out += "            unauthorized_user();\n";
