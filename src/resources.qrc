@@ -5,6 +5,7 @@
         <file alias="/user-settings.json">../config/user-settings.json</file>
         <file alias="/webui-settings.json">../config/webui-settings.json</file>
         <file alias="/css/default.css">../css/default.css</file>
+        <file alias="/css/auth/default.css">../css/auth/default.css</file>
         <file alias="/css/build-history/default.css">../css/build-history/default.css</file>
         <file alias="/css/build-results/default.css">../css/build-results/default.css</file>
         <file alias="/css/password-update/default.css">../css/password-update/default.css</file>
