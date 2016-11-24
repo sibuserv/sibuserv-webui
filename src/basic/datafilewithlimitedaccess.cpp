@@ -27,6 +27,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QProcess>
+#include <QByteArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include "logmanager.h"
 #include "applicationsettings.h"
@@ -42,7 +45,7 @@ DataFileWithLimitedAccess::DataFileWithLimitedAccess(const Request &request,
         generateHtmlTemplate(projectName, fileName);
     }
     else {
-        generateAjaxResponse(projectName, fileName);
+        generateAjaxResponse(request, projectName, fileName);
     }
     show();
 }
@@ -108,7 +111,8 @@ void DataFileWithLimitedAccess::generateHtmlTemplate(const QString &projectName,
     }
 }
 
-void DataFileWithLimitedAccess::generateAjaxResponse(const QString &projectName,
+void DataFileWithLimitedAccess::generateAjaxResponse(const Request &request,
+                                                     const QString &projectName,
                                                      const QString &fileName)
 {
     if (!isAutorizedUser())
@@ -117,15 +121,40 @@ void DataFileWithLimitedAccess::generateAjaxResponse(const QString &projectName,
     if (!isAllowedAccess(projectName, fileName))
         return;
 
-    ResourceManager res(APP_S().cacheDirectory() + "/projects");
-    res.addPath(APP_S().buildServerBinDir());
+    if (!request.isPost())
+        return;
+
+    if (request.post("id").isEmpty())
+        return;
+
+    const QString &&cacheDirPath = APP_S().cacheDirectory() + "/projects";
+    const QString &&binDirPath   = APP_S().buildServerBinDir();
+
+    ResourceManager res(cacheDirPath);
+    res.addPath(binDirPath);
     if (!res.contains(fileName) && fileName.endsWith(".zip")) {
         makeArchive(projectName, fileName);
     }
-    if (res.contains(fileName)) {
-        setData(res.read(fileName));
-        autodetectContentType(fileName);
-    }
+
+    if (!res.contains(fileName))
+        return;
+
+    const QByteArray &&data = res.read(fileName);
+
+    const auto sha256sum = [&data]() {
+        const QByteArray &&out =
+                QCryptographicHash::hash(data, QCryptographicHash::Sha256)
+                .toHex();
+        return QString::fromLatin1(out);
+    };
+
+    const QJsonObject out = {
+        {"id",          request.post("id")},
+        {"file_name",   QFileInfo(fileName).fileName()},
+        {"size",        data.size()},
+        {"sha256sum",   sha256sum()}
+    };
+    setData(QJsonDocument(out).toJson());
 }
 
 bool DataFileWithLimitedAccess::makeArchive(const QString &projectName,

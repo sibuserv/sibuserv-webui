@@ -44,7 +44,8 @@ private:
                                 const QString &fileName) const;
     inline void generateHtmlTemplate(const QString &projectName,
                                      const QString &fileName);
-    inline void generateAjaxResponse(const QString &projectName,
+    inline void generateAjaxResponse(const Request &request,
+                                     const QString &projectName,
                                      const QString &fileName);
     inline bool makeArchive(const QString &projectName,
                             const QString &fileName) const;
