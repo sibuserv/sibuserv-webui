@@ -36,5 +36,9 @@ public:
     ProfileSettingsSecurityPage(ProfileSettingsSecurityPage &&in) = delete;
     ProfileSettingsSecurityPage& operator=(const ProfileSettingsSecurityPage &in) = delete;
     virtual ~ProfileSettingsSecurityPage() = default;
+
+private:
+    inline void generateHtmlTemplate(const Request &request);
+    inline void generateAjaxResponse(const Request &request);
 };
 

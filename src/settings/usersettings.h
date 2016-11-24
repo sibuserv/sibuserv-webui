@@ -35,6 +35,7 @@
 class UserSettings : public AbstractSettings
 {
     friend class CommandLineDialogs;
+    friend class ProfileSettingsSecurityPage;
 
 public:
     explicit UserSettings();

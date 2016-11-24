@@ -7,11 +7,13 @@
         <file alias="/css/default.css">../css/default.css</file>
         <file alias="/css/build-history/default.css">../css/build-history/default.css</file>
         <file alias="/css/build-results/default.css">../css/build-results/default.css</file>
+        <file alias="/css/password-update/default.css">../css/password-update/default.css</file>
         <file alias="/css/projects/default.css">../css/projects/default.css</file>
         <file alias="/js/main.js">../js/main.js</file>
         <file alias="/js/build-history.js">../js/build-history.js</file>
         <file alias="/js/build-results.js">../js/build-results.js</file>
         <file alias="/js/projects-table.js">../js/projects-table.js</file>
+        <file alias="/js/password-update.js">../js/password-update.js</file>
         <file alias="/l10n/en_US.json">../l10n/en_US.json</file>
         <file alias="/l10n/ru_RU.json">../l10n/ru_RU.json</file>
         <file alias="/html/page-template.html">../html/page-template.html</file>
@@ -20,6 +22,7 @@
         <file alias="/html/auth-template.html">../html/auth-template.html</file>
         <file alias="/html/403-template.html">../html/403-template.html</file>
         <file alias="/html/404-template.html">../html/404-template.html</file>
+        <file alias="/html/password-update-template.html">../html/password-update-template.html</file>
         <file alias="/html/projects-template.html">../html/projects-template.html</file>
         <file alias="/html/no-projects-template.html">../html/no-projects-template.html</file>
         <file alias="/html/build-history-template.html">../html/build-history-template.html</file>

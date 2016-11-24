@@ -62,32 +62,14 @@ function close_auth_error() {
     document.getElementById("input_user_name").scrollIntoView();
 }
 
-function redirect_with_post_request(url, data) {
-    var form = document.createElement("form");
-    form.method = "post";
-    form.action = url;
-    for (var name in data) {
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = name;
-        input.value = data[name];
-        form.appendChild(input);
-    }
-    document.body.appendChild(form);
-    form.submit();
-}
-
 function force_password_update() {
     var currentUrl = $("#sign_out").find("a").attr("href");
     var redirectTo = $("#user_name").find("a").attr("href") + "/security";
-    if (currentUrl === redirectTo) {
-        return;
+    if (currentUrl !== redirectTo) {
+        localStorage.redirect_to = currentUrl;
+        localStorage.force_pass_update = true;
+        location.href = redirectTo;
     }
-    var data = {
-        redirect_to: currentUrl,
-        force_pass_update: true
-    };
-    redirect_with_post_request(redirectTo, data);
 }
 
 $(document).on("click", "#close_auth_error", close_auth_error);

@@ -91,8 +91,8 @@ void CommandLineDialogs::addUser() const
         cout << endl;
         return;
     }
-    const QString userName = QString::fromStdString(line);
-    const QString fileName = "users/" + userName + ".json";
+    const QString &&userName = QString::fromStdString(line);
+    const QString &&fileName = "users/" + userName + ".json";
 
     {
         UserSettings us(fileName);
@@ -104,7 +104,7 @@ void CommandLineDialogs::addUser() const
 
     cout << "Full user name: ";
     std::getline(cin, line);
-    const QString fullUserName = QString::fromStdString(line);
+    const QString &&fullUserName = QString::fromStdString(line);
 
     cout << "User email address: ";
     std::getline(cin, line);
@@ -116,7 +116,7 @@ void CommandLineDialogs::addUser() const
         cout << endl;
         return;
     }
-    const QString userEmail = QString::fromStdString(line);
+    const QString &&userEmail = QString::fromStdString(line);
 
     cout << "Administrator? [y/N]: ";
     std::getline(cin, line);
@@ -135,21 +135,21 @@ void CommandLineDialogs::addUser() const
         cout << endl;
         return;
     }
-    const QString userId = QString::fromStdString(line);
+    const QString &&userId = QString::fromStdString(line);
 
     cout << "Password: ";
-    const QString password = getPassword();
+    const QString &&password = getPassword();
     if (password.isEmpty()) {
         cout << "Password is empty!" << endl;
         return;
     }
     cout << "Confirm password: ";
-    const QString confirmPassword = getPassword();
+    const QString &&confirmPassword = getPassword();
     if (confirmPassword != password) {
         cout << "Passwords do not match!" << endl;
         return;
     }
-    const QString passwordHash = UserSettings::generatePasswordHash(password);
+    const QString &&passwordHash = UserSettings::generatePasswordHash(password);
 
     UserSettings us;
     us.setFileName(fileName);
@@ -190,8 +190,8 @@ void CommandLineDialogs::delUser() const
     string line;
     cout << "User name: ";
     std::getline(cin, line);
-    const QString userName = QString::fromStdString(line);
-    const QString fileName = "users/" + userName + ".json";
+    const QString &&userName = QString::fromStdString(line);
+    const QString &&fileName = "users/" + userName + ".json";
 
     UserSettings us(fileName);
     if (us.get("user_id").isEmpty()) {
@@ -199,7 +199,7 @@ void CommandLineDialogs::delUser() const
         return;
     }
 
-    const QString fullUserName = us.get("full_user_name");
+    const QString &&fullUserName = us.get("full_user_name");
     if (!fullUserName.isEmpty()) {
         cout << "Are you sure that you want to delete user \""
              << fullUserName.toStdString()
@@ -240,8 +240,8 @@ void CommandLineDialogs::setPassword() const
     string line;
     cout << "User name: ";
     std::getline(cin, line);
-    const QString userName = QString::fromStdString(line);
-    const QString fileName = "users/" + userName + ".json";
+    const QString &&userName = QString::fromStdString(line);
+    const QString &&fileName = "users/" + userName + ".json";
 
     UserSettings us(fileName);
     if (us.get("user_id").isEmpty()) {
@@ -249,7 +249,7 @@ void CommandLineDialogs::setPassword() const
         return;
     }
 
-    const QString fullUserName = us.get("full_user_name");
+    const QString &&fullUserName = us.get("full_user_name");
     if (!fullUserName.isEmpty()) {
         cout << "Are you sure that you want to set new password for user \""
              << fullUserName.toStdString()
@@ -270,13 +270,13 @@ void CommandLineDialogs::setPassword() const
     }
 
     cout << "Password: ";
-    const QString password = getPassword();
+    const QString &&password = getPassword();
     if (password.isEmpty()) {
         cout << "Password is empty!" << endl;
         return;
     }
     cout << "Confirm password: ";
-    const QString confirmPassword = getPassword();
+    const QString &&confirmPassword = getPassword();
     if (confirmPassword != password) {
         cout << "Passwords do not match!" << endl;
         return;
