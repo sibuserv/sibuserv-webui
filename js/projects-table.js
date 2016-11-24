@@ -56,15 +56,20 @@ function add_item_into_projects_table(i, item) {
 }
 
 function fill_in_projects_table(data) {
+    $("#show_more").css("cursor", "pointer");
     var array = $.parseJSON(data);
     $.each(array, add_item_into_projects_table);
     update_cells_width();
 }
 
 function show_more_projects() {
+    if ($("#show_more").css("cursor") === "wait")
+        return false;
+
     var len = +localStorage.projects_per_page;
     var pos = +localStorage.projects_number;
     var data = "pos=" + pos + "&len=" + len;
+    $("#show_more").css("cursor", "wait");
     $.post("?ajax=projects_list", data, fill_in_projects_table);
     return false;
 }

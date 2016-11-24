@@ -34,6 +34,7 @@ function redirect() {
 }
 
 function password_update_result(data) {
+    $("#button_submit_pass_update_form").css("cursor", "pointer");
     var obj = $.parseJSON(data);
 
     if (!obj.hasOwnProperty("status"))
@@ -41,7 +42,10 @@ function password_update_result(data) {
 
     if (obj.status === "success") {
         $("#pass_update_success").show();
-        setTimeout(redirect, 6000);
+        $("#current_password").val("");
+        $("#new_password").val("");
+        $("#confirm_password").val("");
+        setTimeout(redirect, 5000);
     }
     else {
         var error = $("#" + obj.status).text();
@@ -52,13 +56,17 @@ function password_update_result(data) {
 
 function submit_pass_update_form(event) {
     event.preventDefault();
+
+    if ($("#button_submit_pass_update_form").css("cursor") === "wait")
+        return false;
+
     close_all_messages();
 
     var list = ["current_password", "new_password", "confirm_password"];
     for (var k in list) {
         if (!$("#" + list[k]).val().trim()) {
             set_focus(list[k]);
-            return;
+            return false;
         }
     }
 
@@ -67,7 +75,9 @@ function submit_pass_update_form(event) {
         "new_password": $("#new_password").val(),
         "confirm_password": $("#confirm_password").val()
     };
+    $("#button_submit_pass_update_form").css("cursor", "wait");
     $.post("?ajax=password_update", JSON.stringify(data), password_update_result);
+    return false;
 }
 
 $(document).on("click", "#close_pass_update_error", close_pass_update_error);

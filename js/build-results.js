@@ -59,15 +59,20 @@ function add_item_into_results_table(i, item) {
 }
 
 function fill_in_results_table(data) {
+    $("#show_more").css("cursor", "pointer");
     var array = $.parseJSON(data);
     $.each(array, add_item_into_results_table);
     update_cells_width();
 }
 
 function show_more_results() {
+    if ($("#show_more").css("cursor") === "wait")
+        return false;
+
     var len = +localStorage.results_per_page;
     var pos = +localStorage.results_number;
     var data = "pos=" + pos + "&len=" + len;
+    $("#show_more").css("cursor", "wait");
     $.post("?ajax=results_list", data, fill_in_results_table);
     return false;
 }

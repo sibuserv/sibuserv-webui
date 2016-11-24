@@ -51,15 +51,20 @@ function add_item_into_builds_table(i, item) {
 }
 
 function fill_in_builds_table(data) {
+    $("#show_more").css("cursor", "pointer");
     var array = $.parseJSON(data);
     $.each(array, add_item_into_builds_table);
     update_cells_width();
 }
 
 function show_more_builds() {
+    if ($("#show_more").css("cursor") === "wait")
+        return false;
+
     var len = +localStorage.builds_per_page;
     var pos = +localStorage.builds_number;
     var data = "pos=" + pos + "&len=" + len;
+    $("#show_more").css("cursor", "wait");
     $.post("?ajax=builds_list", data, fill_in_builds_table);
     return false;
 }
