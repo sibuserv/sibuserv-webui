@@ -44,6 +44,7 @@ function sign_out() {
 
 function store_user_name() {
     localStorage.setItem("user_name", $("#input_user_name").val());
+    $("#button_submit_auth_form").css("cursor", "wait");
 }
 
 function document_postprocessing() {
