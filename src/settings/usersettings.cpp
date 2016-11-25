@@ -28,6 +28,7 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QTime>
 
 #include "logmanager.h"
 #include "applicationsettings.h"
@@ -73,7 +74,8 @@ QByteArray UserSettings::calcEmailHash(const QString &email)
 QString UserSettings::generatePasswordHash(const QString &password)
 {
     const QByteArray &&salt = randomSalt();
-    return hash(password.toUtf8(), salt, rounds).toHex();
+    const int zzz = QTime::currentTime().msec(); // Let's add more fun
+    return hash(password.toUtf8(), salt, rounds + zzz).toHex();
 }
 
 bool UserSettings::checkPasswordHash(const QString &password) const
