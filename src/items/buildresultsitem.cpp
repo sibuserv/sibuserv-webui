@@ -101,7 +101,7 @@ void BuildResultsItem::generate(const QString &projectName,
                 binFile = projectName + "-" + version + ".zip";
             }
         }
-        else {
+        else if (status != "started") {
             binFile = projectName + "-" + version + ".zip";
         }
     }
