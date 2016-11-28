@@ -118,14 +118,22 @@ void DataFileWithLimitedAccess::generateAjaxResponse(const Request &request,
     if (!isAutorizedUser())
         return;
 
-    if (!isAllowedAccess(projectName, fileName))
-        return;
-
     if (!request.isPost())
         return;
 
     if (request.post("id").isEmpty())
         return;
+
+    if (!isAllowedAccess(projectName, fileName)) {
+        const QJsonObject out = {
+            {"id",          request.post("id")},
+            {"file_name",   QFileInfo(fileName).fileName()},
+            {"size",        0},
+            {"sha256sum",   "?"}
+        };
+        setData(QJsonDocument(out).toJson());
+        return;
+    }
 
     const QString &&cacheDirPath = APP_S().cacheDirectory() + "/projects";
     const QString &&binDirPath   = APP_S().buildServerBinDir();
