@@ -26,10 +26,6 @@ a:hover {
     text-decoration: underline;
 }
 
-h1 {
-    font-size: 26px;
-}
-
 .centered {
     margin: 0 auto;
     max-width: 1024px;
@@ -136,9 +132,5 @@ h1 {
     display: block;
     margin: 8px -1em 8px 0;
     padding: 0;
-}
-
-#content_navigator {
-    margin: 0 0 14px 0;
 }
 
