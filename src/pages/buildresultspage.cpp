@@ -47,6 +47,7 @@ BuildResultsPage::BuildResultsPage(const Request &request,
         generateHtmlTemplate(projectName, version);
         addExtraReplacements("current_project_name", projectName.toUtf8());
         addExtraReplacements("current_build", version.toUtf8());
+        addExtraReplacements("user_role", getUserRole(projectName).toUtf8());
         update();
     }
     else {
@@ -142,6 +143,19 @@ bool BuildResultsPage::isAllowedAccess(const QString &projectName) const
     const UserSettings &us = userSettings();
     const QJsonObject &&obj = us.getObject("projects");
     return obj.contains(projectName);
+}
+
+QString BuildResultsPage::getUserRole(const QString &projectName) const
+{
+    if (isAdmin())
+        return "%admin%";
+
+    const QJsonObject &&obj = userSettings().getObject("projects");
+
+    if (!obj.contains(projectName))
+        return "%none%";
+
+    return ("%" + obj[projectName].toString() + "%");
 }
 
 QStringList BuildResultsPage::allTargets(const QString &projectName,

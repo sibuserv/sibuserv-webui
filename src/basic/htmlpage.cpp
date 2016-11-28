@@ -280,6 +280,9 @@ void HtmlPage::update()
             break;
         }
     }
+    for (const auto &key : d->extraReplacements.keys()) {
+        out.replace("%" + key + "%", d->extraReplacements[key]);
+    }
 
     Localization localization(d->commonSettings.get("l10n_file"));
     if (!d->userSettings.get("l10n_file").isEmpty()) {
@@ -289,9 +292,6 @@ void HtmlPage::update()
     for (const auto &key : localization.keys()) {
         out.replace("%" + key.toUtf8() + "%",
                     localization.get(key).toUtf8());
-    }
-    for (const auto &key : d->extraReplacements.keys()) {
-        out.replace("%" + key + "%", d->extraReplacements[key]);
     }
 
     out.replace("%jquery_url%", APP_S().jqueryUrl().toUtf8());
