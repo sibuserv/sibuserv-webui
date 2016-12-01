@@ -48,6 +48,5 @@ private:
     inline QString detectBuildStatus(const QString &projectName,
                                      const QString &version,
                                      const QFileInfoList &subdirs) const;
-    inline bool isStaticCodeAnalysisFailed(const QString &dir) const;
 };
 

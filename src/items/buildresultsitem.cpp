@@ -75,6 +75,12 @@ void BuildResultsItem::generate(const QString &projectName,
         if (isStaticCodeAnalysisFailed(dir.absolutePath())) {
             status = "failed";
         }
+        else {
+            const ResourceManager rm(dir.absolutePath());
+            if (!rm.contains("cppcheck.stats.txt")) {
+                status = "started";
+            }
+        }
     }
     else {
         logFile = "build.log";

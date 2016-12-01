@@ -163,13 +163,3 @@ QString BuildHistoryItem::detectBuildStatus(const QString &projectName,
     return "passed";
 }
 
-bool BuildHistoryItem::isStaticCodeAnalysisFailed(const QString &dir) const
-{
-    const ResourceManager rm(dir);
-    const QByteArray data = rm.read("cppcheck.stats.txt");
-    if (data.contains(" error")) {
-        return true;
-    }
-    return false;
-}
-
