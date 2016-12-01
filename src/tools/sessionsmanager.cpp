@@ -32,7 +32,7 @@
 #include "sessionsmanager.h"
 #include "logmanager.h"
 
-static const QString dateTimeFormat = "yyyy-MM-dd hh-mm-ss t";
+static const QString dateTimeFormat = "yyyy-MM-dd hh-mm-ss";
 
 struct SessionsManager::SessionsManagerPrivate
 {
@@ -71,7 +71,7 @@ bool SessionsManager::isAutorized() const
                                                     dateTimeFormat);
     const QDateTime currentDateTime = QDateTime::currentDateTime();
 
-    if (expires < currentDateTime)
+    if (currentDateTime < expires)
         return true;
 
     return false;
