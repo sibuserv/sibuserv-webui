@@ -92,6 +92,8 @@ void ProfileSettingsSecurityPage::generateAjaxResponse(const Request &request)
         else {
             userSettings().set("password_hash", newPassHash);
             userSettings().setBool("force_password_update", false);
+            userSettings().syncSettings();
+
             if (userSettings().writeSettings()) {
                 out["status"] = "success";
             }

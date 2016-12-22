@@ -110,6 +110,15 @@ void AbstractSettings::clear()
     d->path.clear();
 }
 
+void AbstractSettings::syncSettings()
+{
+    for (const auto &k : d->defaultSettings.keys()) {
+        if (!d->settings.contains(k)) {
+            d->settings[k] = d->defaultSettings[k];
+        }
+    }
+}
+
 void AbstractSettings::set(const QString &key, const QString &value)
 {
     d->settings[key] = value;

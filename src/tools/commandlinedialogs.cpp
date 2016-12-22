@@ -243,7 +243,9 @@ void CommandLineDialogs::setPassword() const
     const QString &&userName = QString::fromStdString(line);
     const QString &&fileName = "users/" + userName + ".json";
 
-    UserSettings us(fileName);
+    UserSettings us;    // For correct work of syncSettings() method.
+    us.setFileName(fileName);
+    us.readSettings();
     if (us.get("user_id").isEmpty()) {
         cout << "User not found!" << endl;
         return;
@@ -283,6 +285,7 @@ void CommandLineDialogs::setPassword() const
     }
     us.set("password_hash",  UserSettings::generatePasswordHash(password));
     us.setBool("force_password_update", true);
+    us.syncSettings();
 
     QFile f(APP_S().configDirectory() + "/" + fileName);
     if (us.writeSettings()) {

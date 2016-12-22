@@ -59,6 +59,7 @@ public:
 
 protected:
     void clear();
+    void syncSettings();
     void set(const QString &key, const QString &value);
     void setBool(const QString &key, const bool &value);
     void setSettings(const QJsonObject &object);
