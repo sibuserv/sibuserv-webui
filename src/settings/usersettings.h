@@ -47,7 +47,7 @@ public:
 
     bool isValidAutorizationRequest(const Request &request);
     QByteArray gravatarIconUrl() const;
-    QString getProjectRole(const QString &projectName) const;
+    QString getUserRole(const QString &projectName) const;
 
     static QByteArray calcEmailHash(const QString &email);
     static QString generatePasswordHash(const QString &password);

@@ -84,29 +84,25 @@ bool DataFileWithLimitedAccess::isAllowedAccess(const QString &projectName,
 void DataFileWithLimitedAccess::generateHtmlTemplate(const QString &projectName,
                                                      const QString &fileName)
 {
-    if (isAutorizedUser()) {
-        if (isAllowedAccess(projectName, fileName)) {
-            ResourceManager res(APP_S().cacheDirectory() + "/projects");
-            res.addPath(APP_S().buildServerBinDir());
-            if (!res.contains(fileName) && fileName.endsWith(".zip")) {
-                makeArchive(projectName, fileName);
-            }
-            if (res.contains(fileName)) {
-                setData(res.read(fileName));
-                autodetectContentType(fileName);
-            }
-            else {
-                update();
-            }
+    if (isAllowedAccess(projectName, fileName)) {
+        ResourceManager res(APP_S().cacheDirectory() + "/projects");
+        res.addPath(APP_S().buildServerBinDir());
+        if (!res.contains(fileName) && fileName.endsWith(".zip")) {
+            makeArchive(projectName, fileName);
+        }
+        if (res.contains(fileName)) {
+            setData(res.read(fileName));
+            autodetectContentType(fileName);
         }
         else {
-            forbidAccess();
             update();
         }
     }
     else {
         forbidAccess();
-        forceAuthorization();
+        if (!isAutorizedUser()) {
+            forceAuthorization();
+        }
         update();
     }
 }
@@ -115,9 +111,6 @@ void DataFileWithLimitedAccess::generateAjaxResponse(const Request &request,
                                                      const QString &projectName,
                                                      const QString &fileName)
 {
-    if (!isAutorizedUser())
-        return;
-
     if (!request.isPost())
         return;
 

@@ -130,10 +130,7 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
         QJsonObject tmp;
         for (int k = first; k < end; ++k) {
             tmp = ProjectsTableItem(projects[k]).getJsonObject();
-            tmp["role"] = QString("none");
-            if (allowed.contains(projects[k])) {
-                tmp["role"] = userSettings().getProjectRole(projects[k]);
-            }
+            tmp["role"] = getUserRole(projects[k]);
             if (k == fullSize -1) {
                 tmp["last_item"] = true;
             }
@@ -147,10 +144,7 @@ void ProjectsPage::generateAjaxResponse(const Request &request)
             const QString &&projectName = request.post("project_name");
             if (projects.contains(projectName)) {
                 out = ProjectsTableItem(projectName).getJsonObject();
-                out["role"] = QString("none");
-                if (allowed.contains(projectName)) {
-                    out["role"] = userSettings().getProjectRole(projectName);
-                }
+                out["role"] = getUserRole(projectName);
             }
         }
         setData(QJsonDocument(out).toJson());

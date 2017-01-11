@@ -57,7 +57,9 @@ void DebugPage::generateHtmlTemplate(const Request &request)
     }
     else {
         forbidAccess();
-        forceAuthorization();
+        if (!isAutorizedUser()) {
+            forceAuthorization();
+        }
     }
 }
 

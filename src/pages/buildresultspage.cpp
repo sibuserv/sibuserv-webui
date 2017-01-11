@@ -47,7 +47,7 @@ BuildResultsPage::BuildResultsPage(const Request &request,
         generateHtmlTemplate(projectName, version);
         addExtraReplacements("current_project_name", projectName.toUtf8());
         addExtraReplacements("current_build", version.toUtf8());
-        addExtraReplacements("user_role", getUserRole(projectName).toUtf8());
+        addExtraReplacements("user_role", "%" + getUserRole(projectName).toUtf8() + "%");
         update();
     }
     else {
@@ -59,25 +59,22 @@ BuildResultsPage::BuildResultsPage(const Request &request,
 void BuildResultsPage::generateHtmlTemplate(const QString &projectName,
                                             const QString &version)
 {
-    const ResourceManager res;
-    if (isAutorizedUser()) {
-        if (isAllowedAccess(projectName)) {
-            if (!allTargets(projectName, version).isEmpty()) {
-                addScriptToHead("%prefix%js/build-results.js");
-                addStyleSheetToHead("%prefix%css/build-results/%page_style%");
-                setContent(res.read("/html/build-results-template.html"));
-            }
-            else {
-                setContent(res.read("/html/no-build-history-template.html"));
-            }
+    if (isAllowedAccess(projectName)) {
+        const ResourceManager res;
+        if (!allTargets(projectName, version).isEmpty()) {
+            addScriptToHead("%prefix%js/build-results.js");
+            addStyleSheetToHead("%prefix%css/build-results/%page_style%");
+            setContent(res.read("/html/build-results-template.html"));
         }
         else {
-            forbidAccess();
+            setContent(res.read("/html/no-build-history-template.html"));
         }
     }
     else {
         forbidAccess();
-        forceAuthorization();
+        if (!isAutorizedUser()) {
+            forceAuthorization();
+        }
     }
 }
 
@@ -85,7 +82,7 @@ void BuildResultsPage::generateAjaxResponse(const Request &request,
                                             const QString &projectName,
                                             const QString &version)
 {
-    if (!isAutorizedUser() || !isAllowedAccess(projectName))
+    if (!isAllowedAccess(projectName))
         return;
 
     if (projectName.isEmpty() || version.isEmpty())
@@ -143,19 +140,6 @@ bool BuildResultsPage::isAllowedAccess(const QString &projectName) const
     const UserSettings &us = userSettings();
     const QJsonObject &&obj = us.getObject("projects");
     return obj.contains(projectName);
-}
-
-QString BuildResultsPage::getUserRole(const QString &projectName) const
-{
-    if (isAdmin())
-        return "%admin%";
-
-    const QJsonObject &&obj = userSettings().getObject("projects");
-
-    if (!obj.contains(projectName))
-        return "%none%";
-
-    return ("%" + obj[projectName].toString() + "%");
 }
 
 QStringList BuildResultsPage::allTargets(const QString &projectName,

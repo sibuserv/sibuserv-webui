@@ -54,32 +54,29 @@ BuildHistoryPage::BuildHistoryPage(const Request &request, const QString &projec
 
 void BuildHistoryPage::generateHtmlTemplate(const QString &projectName)
 {
-    const ResourceManager res;
-    if (isAutorizedUser()) {
-        if (isAllowedAccess(projectName)) {
-            if (!allBuilds(projectName).isEmpty()) {
-                addScriptToHead("%prefix%js/build-history.js");
-                addStyleSheetToHead("%prefix%css/build-history/%page_style%");
-                setContent(res.read("/html/build-history-template.html"));
-            }
-            else {
-                setContent(res.read("/html/no-build-history-template.html"));
-            }
+    if (isAllowedAccess(projectName)) {
+        const ResourceManager res;
+        if (!allBuilds(projectName).isEmpty()) {
+            addScriptToHead("%prefix%js/build-history.js");
+            addStyleSheetToHead("%prefix%css/build-history/%page_style%");
+            setContent(res.read("/html/build-history-template.html"));
         }
         else {
-            forbidAccess();
+            setContent(res.read("/html/no-build-history-template.html"));
         }
     }
     else {
         forbidAccess();
-        forceAuthorization();
+        if (!isAutorizedUser()) {
+            forceAuthorization();
+        }
     }
 }
 
 void BuildHistoryPage::generateAjaxResponse(const Request &request,
                                             const QString &projectName)
 {
-    if (!isAutorizedUser() || !isAllowedAccess(projectName))
+    if (!isAllowedAccess(projectName))
         return;
 
     if (projectName.isEmpty())

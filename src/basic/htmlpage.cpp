@@ -320,3 +320,18 @@ bool HtmlPage::getBool(const QString &key) const
     return d->commonSettings.getBool(key);
 }
 
+QString HtmlPage::getUserRole(const QString &projectName) const
+{
+    if (isAdmin())
+        return "admin";
+
+    QString role = userSettings().getUserRole(projectName);
+
+    // A little paranoia can not hurt.
+    // Unauthorized user should not have owner privileges.
+    if (!isAutorizedUser() && role == "owner")
+        role = "developer";
+
+    return role;
+}
+

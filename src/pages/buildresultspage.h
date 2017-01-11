@@ -50,8 +50,6 @@ private:
                                      const QString &version);
     inline bool isAllowedAccess(const QString &projectName) const;
 
-    inline QString getUserRole(const QString &projectName) const;
-
     /// \brief Unsorted list of builds.
     inline QStringList allTargets(const QString &projectName,
                                   const QString &version) const;

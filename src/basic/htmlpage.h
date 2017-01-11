@@ -75,6 +75,8 @@ protected:
     /// \brief Get bool value from common settings.
     bool getBool(const QString &key) const;
 
+    QString getUserRole(const QString &projectName) const;
+
 private:
     struct HtmlPagePrivate;
     HtmlPagePrivate * const d;
