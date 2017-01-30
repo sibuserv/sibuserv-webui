@@ -38,6 +38,7 @@
 #include "profilesettingspage.h"
 #include "profilesettingssecuritypage.h"
 #include "settingspage.h"
+#include "helppage.h"
 #include "debugpage.h"
 #include "counterpage.h"
 #include "controller.h"
@@ -139,6 +140,9 @@ void Controller::start()
         }
         else if (pageName.startsWith("settings/users/")) {
             DebugPage(d->request);
+        }
+        else if (pageName == "help") {
+            HelpPage(d->request);
         }
         else if (pageName == "counter") {
             CounterPage(d->request, QByteArray::number(counter));

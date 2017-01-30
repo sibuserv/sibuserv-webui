@@ -10,6 +10,7 @@
         <file alias="/css/build-results/default.css">../css/build-results/default.css</file>
         <file alias="/css/password-update/default.css">../css/password-update/default.css</file>
         <file alias="/css/projects/default.css">../css/projects/default.css</file>
+        <file alias="/css/help/default.css">../css/help/default.css</file>
         <file alias="/js/main.js">../js/main.js</file>
         <file alias="/js/build-history.js">../js/build-history.js</file>
         <file alias="/js/build-results.js">../js/build-results.js</file>
@@ -23,6 +24,7 @@
         <file alias="/html/auth-template.html">../html/auth-template.html</file>
         <file alias="/html/403-template.html">../html/403-template.html</file>
         <file alias="/html/404-template.html">../html/404-template.html</file>
+        <file alias="/html/help-template.html">../html/help-template.html</file>
         <file alias="/html/password-update-template.html">../html/password-update-template.html</file>
         <file alias="/html/projects-template.html">../html/projects-template.html</file>
         <file alias="/html/no-projects-template.html">../html/no-projects-template.html</file>

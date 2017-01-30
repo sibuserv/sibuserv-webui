@@ -51,5 +51,13 @@
     "results": "Results",
     "started_at": "Started at",
     "finished_at": "Finished at",
-    "log_files": "Logs"
+    "log_files": "Logs",
+    "user_roles_in_project": "User roles in project",
+    "access_features": "Access features",
+    "view_projects_list": "View projects list",
+    "view_build_history": "View build history",
+    "download_builds": "Download builds",
+    "view_build_logs": "View build logs",
+    "view_code_analysis": "View code analysis",
+    "manage_projects_members": "Manage projects members"
 }

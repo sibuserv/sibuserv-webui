@@ -52,5 +52,13 @@
     "started_at": "Начато",
     "finished_at": "Завершено",
     "bin_file": "Файлы",
-    "log_files": "Логи"
+    "log_files": "Логи",
+    "user_roles_in_project": "Роли пользователей в проекте",
+    "access_features": "Особенности доступа",
+    "view_projects_list": "Просмотр списка проектов",
+    "view_build_history": "Просмотр истории сборок",
+    "download_builds": "Загрузка сборок",
+    "view_build_logs": "Просмотр логов сборок",
+    "view_code_analysis": "Просмотр анализа кода",
+    "manage_projects_members": "Управление участниками проекта"
 }

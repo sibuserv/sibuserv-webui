@@ -1,0 +1,32 @@
+#user_roles table {
+    margin: 10px 0;
+    width: 100%;
+    border: solid 1px #686868;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+#user_roles th {
+    background-color: #f1f1f1;
+    padding: 5px;
+    border: solid 1px #686868;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+#user_roles td {
+    padding: 5px;
+    border: solid 1px #686868;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+#user_roles .bold-font {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#user_roles .left-aligned {
+    text-align: left;
+}
+
