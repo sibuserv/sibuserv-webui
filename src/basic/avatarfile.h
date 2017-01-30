@@ -25,48 +25,17 @@
 
 #pragma once
 
-#include <QString>
-#include <QByteArray>
-#include <QCryptographicHash>
-
-#include "abstractsettings.h"
+#include "htmlpage.h"
 #include "request.h"
 
-class UserSettings : public AbstractSettings
+class AvatarFile : public HtmlPage
 {
-    friend class CommandLineDialogs;
-    friend class ProfileSettingsSecurityPage;
-
 public:
-    explicit UserSettings();
-    explicit UserSettings(const QString &fileName);
-    UserSettings(const UserSettings &in) = delete;
-    UserSettings(UserSettings &&in) = delete;
-    UserSettings& operator=(const UserSettings &in) = delete;
-    virtual ~UserSettings() = default;
-
-    bool isValidAutorizationRequest(const Request &request);
-    QByteArray getAvatarUrl() const;
-    QByteArray gravatarIconUrl() const;
-    QString getUserRole(const QString &projectName) const;
-
-    static QString generatePasswordHash(const QString &password);
-
-protected:
-    bool checkPasswordHash(const QString &password) const;
-
-private:
-    static bool slowEquals(const QByteArray &a, const QByteArray &b);
-    static QByteArray pbkdf2(const QCryptographicHash::Algorithm method,
-                             const QByteArray &password,
-                             const QByteArray &salt,
-                             const int rounds,
-                             const int keyLength);
-    static QByteArray hash(const QByteArray &password,
-                           const QByteArray &salt,
-                           const int rounds);
-    static QByteArray randomSalt();
-    static QByteArray calcEmailHash(const QString &email);
-    static QByteArray calcUserIdHash(const QString &id);
+    explicit AvatarFile(const Request &request);
+    AvatarFile(const AvatarFile &in) = delete;
+    AvatarFile(AvatarFile &&in) = delete;
+    AvatarFile& operator=(const AvatarFile &in) = delete;
+    virtual ~AvatarFile() = default;
 };
+
 

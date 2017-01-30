@@ -28,9 +28,11 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QStringList>
 #include <QTime>
 
 #include "logmanager.h"
+#include "resourcemanager.h"
 #include "applicationsettings.h"
 #include "usersettings.h"
 
@@ -47,6 +49,22 @@ UserSettings::UserSettings(const QString &fileName) :
     AbstractSettings(APP_S().configDirectory(), fileName)
 {
     ;
+}
+
+QByteArray UserSettings::getAvatarUrl() const
+{
+    const ResourceManager res(APP_S().configDirectory() + "/avatar");
+    const QByteArray userIdHash = calcUserIdHash(get("user_id"));
+
+    const QStringList filenameExtensions = {
+        ".png", ".jpg", ".jpeg", ".gif"
+    };
+    for (const auto &ext : filenameExtensions) {
+        if (res.contains(QString::fromLatin1(userIdHash) + ext)) {
+            return "%prefix%avatar/" + userIdHash + "?s=52";
+        }
+    }
+    return gravatarIconUrl();
 }
 
 QByteArray UserSettings::gravatarIconUrl() const
@@ -73,6 +91,12 @@ QByteArray UserSettings::calcEmailHash(const QString &email)
 {
     QByteArray data = email.toUtf8();
     data.replace(" ","");
+    return QCryptographicHash::hash(data, QCryptographicHash::Md5).toHex();
+}
+
+QByteArray UserSettings::calcUserIdHash(const QString &id)
+{
+    const QByteArray data = id.toUtf8();
     return QCryptographicHash::hash(data, QCryptographicHash::Md5).toHex();
 }
 

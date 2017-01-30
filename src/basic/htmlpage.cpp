@@ -219,9 +219,6 @@ void HtmlPage::checkAutorization(const Request &request)
         else {
             out += "            not_admin();\n";
         }
-        if (d->userSettings.get("user_email").isEmpty()) {
-            out += "            email_is_unknown();\n";
-        }
         if (d->userSettings.getBool("force_password_update")) {
             if (sm.get("authorization_type") == "local") {
                 out += "            force_password_update();\n";
@@ -260,7 +257,7 @@ void HtmlPage::update()
     out.replace("%content%",    d->content);
     out.replace("%page_style%", d->userSettings.get("page_style").toUtf8());
     out.replace("%user_email%", d->userSettings.get("user_email").toUtf8());
-    out.replace("%gravatar_icon_url%", d->userSettings.gravatarIconUrl());
+    out.replace("%avatar_url%", d->userSettings.getAvatarUrl());
 
     if (!d->autorized) {
         const ResourceManager res;

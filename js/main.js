@@ -13,7 +13,6 @@ function authorized_user() {
     document.getElementById("sign_in").remove();
     document.getElementById("sign_out").style.display = "inline-block";
     document.getElementById("user_name").style.display = "inline-block";
-    document.getElementById("user_avatar").style.display = "inline-block";
     document.getElementById("auth").remove();
 }
 
@@ -21,7 +20,7 @@ function unauthorized_user() {
     document.getElementById("sign_in").style.display = "inline-block";
     document.getElementById("sign_out").remove();
     document.getElementById("user_name").remove();
-    email_is_unknown();
+    remove_user_avatar();
     not_admin();
 }
 
@@ -33,7 +32,11 @@ function not_admin() {
     document.getElementById("settings_page").remove();
 }
 
-function email_is_unknown() {
+function show_user_avatar() {
+    document.getElementById("user_avatar").style.display = "inline-block";
+}
+
+function remove_user_avatar() {
     document.getElementById("user_avatar").remove();
 }
 
@@ -50,6 +53,14 @@ function store_user_name() {
 function document_postprocessing() {
     if ($("#input_user_name")) {
         $("#input_user_name").val(localStorage.getItem("user_name"));
+    }
+    if ($("#user_avatar").find("img").attr("src")) {
+        if ($("#user_avatar").find("img").attr("src").trim()) {
+            show_user_avatar();
+        }
+        else {
+            remove_user_avatar();
+        }
     }
 }
 

@@ -23,50 +23,28 @@
  *                                                                           *
  *****************************************************************************/
 
-#pragma once
+#include "applicationsettings.h"
+#include "resourcemanager.h"
+#include "avatarfile.h"
 
-#include <QString>
-#include <QByteArray>
-#include <QCryptographicHash>
-
-#include "abstractsettings.h"
-#include "request.h"
-
-class UserSettings : public AbstractSettings
+AvatarFile::AvatarFile(const Request &request) :
+    HtmlPage(request)
 {
-    friend class CommandLineDialogs;
-    friend class ProfileSettingsSecurityPage;
+    const ResourceManager res(APP_S().configDirectory() + "/avatar");
 
-public:
-    explicit UserSettings();
-    explicit UserSettings(const QString &fileName);
-    UserSettings(const UserSettings &in) = delete;
-    UserSettings(UserSettings &&in) = delete;
-    UserSettings& operator=(const UserSettings &in) = delete;
-    virtual ~UserSettings() = default;
+    QString fileName = request.scriptName();
+    fileName.remove(0, APP_S().prefixString().size() + 7);
 
-    bool isValidAutorizationRequest(const Request &request);
-    QByteArray getAvatarUrl() const;
-    QByteArray gravatarIconUrl() const;
-    QString getUserRole(const QString &projectName) const;
-
-    static QString generatePasswordHash(const QString &password);
-
-protected:
-    bool checkPasswordHash(const QString &password) const;
-
-private:
-    static bool slowEquals(const QByteArray &a, const QByteArray &b);
-    static QByteArray pbkdf2(const QCryptographicHash::Algorithm method,
-                             const QByteArray &password,
-                             const QByteArray &salt,
-                             const int rounds,
-                             const int keyLength);
-    static QByteArray hash(const QByteArray &password,
-                           const QByteArray &salt,
-                           const int rounds);
-    static QByteArray randomSalt();
-    static QByteArray calcEmailHash(const QString &email);
-    static QByteArray calcUserIdHash(const QString &id);
-};
+    const QStringList filenameExtensions = {
+        ".png", ".jpg", ".jpeg", ".gif"
+    };
+    for (const auto &ext : filenameExtensions) {
+        if (res.contains(fileName + ext)) {
+            // TODO: add support of image cropping and resizing
+            setData(res.read(fileName + ext));
+            autodetectContentType(fileName);
+        }
+    }
+    show();
+}
 

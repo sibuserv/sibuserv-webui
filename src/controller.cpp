@@ -29,6 +29,7 @@
 #include "applicationsettings.h"
 #include "request.h"
 #include "logmanager.h"
+#include "avatarfile.h"
 #include "datafile.h"
 #include "datafilewithlimitedaccess.h"
 #include "javascriptredirect.h"
@@ -119,6 +120,9 @@ void Controller::start()
                                               fileName);
                 }
             }
+        }
+        else if (pageName.startsWith("avatar/")) {
+            AvatarFile(d->request);
         }
         else if (pageName == "profile/settings") {
             ProfileSettingsPage(d->request);
