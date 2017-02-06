@@ -17,7 +17,7 @@ SPAWNFCGI="/usr/bin/spawn-fcgi"
 FCGIPROGRAM="/usr/bin/sibuserv-webui"
 
 # Number of children to spawn
-FCGI_CHILDREN=5
+FCGI_CHILDREN=10
 
 # Read settings from config file if it exists
 [ -e "${CONF_FILE}" ] && . "${CONF_FILE}"
