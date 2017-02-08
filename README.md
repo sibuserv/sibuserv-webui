@@ -25,19 +25,20 @@ Sibuserv Web UI supported features:
 * Support of website localization
 * ...
 
-Sibuserv CI supported features and future plans:
+Sibuserv CI supported features, unsupported features and future plans:
 
 Task        | Status | Priority | Comment
 ----------- | ------ | -------- | -------
-Trigger     | ✔ / ✘  | low      | Triggers for testing of merge requests are not supported yet.
-Update      | ✔      | hight    | 
-Analyse     | ✔      | hight    | 
-Build       | ✔      | hight    | 
-UnitTest    | ✘      | medium   | 
-Deploy      | ✘      | low      | 
-Test        | ✘      | low      | 
-Archive     | ✔      | hight    | 
-Report      | ✘      | medium   | 
+Trigger     | ✔ / ✘  | low      | Daemon regularly (with a fixed period of time) checks changes of project. Triggers for testing of merge requests are not supported yet.
+Update      | ✔      | hight    | Currently supported version control systems: git, subversion and mercurial repositories
+(with native tools or with help of git-svn and git-remote-hg)
+Analyse     | ✔      | hight    | Only `cppcheck` static code analyzer is supported for now. Clang Static Analyzer and PVS-Studio are in plans.
+Build       | ✔      | hight    | Supported target systems: GNU/Linux, MS Windows, Android. Supported projects: qmake-, cmake- and autotools-based. 
+UnitTest    | ✘      | medium   | In plans.
+Deploy      | ✘      | none     | Usefulness of this function is questionable in our case.
+Test        | ✘      | low      | In far plans.
+Archive     | ✔      | hight    | User may download built binaries or *.zip archives (if project installs a number of files) by one mouse click at page with results of build.
+Report      | ✘      | medium   | In plans.
 
 For information how to install and how to use Sibuserv Web UI see files [INSTALL](./INSTALL) and [HOWTO](./HOWTO).
 
