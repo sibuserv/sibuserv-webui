@@ -30,8 +30,7 @@ Sibuserv CI supported features, unsupported features and future plans:
 Task        | Status | Priority | Comment
 ----------- | ------ | -------- | -------
 Trigger     | ✔ / ✘  | low      | Daemon regularly (with a fixed period of time) checks changes of project. Triggers for testing of merge requests are not supported yet.
-Update      | ✔      | hight    | Currently supported version control systems: git, subversion and mercurial repositories
-(with native tools or with help of git-svn and git-remote-hg)
+Update      | ✔      | hight    | Currently supported version control systems: git, subversion and mercurial repositories (with native tools or with help of git-svn and git-remote-hg)
 Analyse     | ✔      | hight    | Only `cppcheck` static code analyzer is supported for now. Clang Static Analyzer and PVS-Studio are in plans.
 Build       | ✔      | hight    | Supported target systems: GNU/Linux, MS Windows, Android. Supported projects: qmake-, cmake- and autotools-based. 
 UnitTest    | ✘      | medium   | In plans.
