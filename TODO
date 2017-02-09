@@ -2,3 +2,4 @@
 * Add support of authorization using LDAP.
 * Provide SVG icons with status of last builds.
 * Make Sibuserv plugin for GitLab.
+? Add ability to restart last build from project settings page.
