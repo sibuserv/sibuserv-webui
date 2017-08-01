@@ -14,14 +14,10 @@
     "username": "Username",
     "password": "Password",
     "auth_error": "Incorrect username or password.",
-    "no_available_projects": "<h1>There are no available projects</h1>
-            <p>For viewing existing projects ask project owners or website admins about giving you access to them.</p>",
+    "no_available_projects": "<h1>There are no available projects</h1>\n<p>For viewing existing projects ask project owners or website admins about giving you access to them.</p>",
     "403_error_message": "You do not have permissions to view this web page.",
     "404_error_message": "This is not the web page you are looking for.",
-    "noscript_warning": "<h1>Hey there!</h1>
-            <p>Looks like you have JavaScript disabled.</p>
-            <p>Sibuserv Web UI needs JavaScript to work properly.</p>
-            <p>Please enable JavaScript and reload this page.</p>",
+    "noscript_warning": "<h1>Hey there!</h1>\n<p>Looks like you have JavaScript disabled.</p>\n<p>Sibuserv Web UI needs JavaScript to work properly.</p>\n<p>Please enable JavaScript and reload this page.</p>",
     "no_build_history": "<h1>There are no available builds yet</h1>",
     "pass_update_error": "Password update error",
     "pass_update_success": "Password is successfully updated",
