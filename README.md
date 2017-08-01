@@ -61,6 +61,10 @@ For information how to install and how to use Sibuserv Web UI see files [INSTALL
     <img src="https://tehnick.github.io/sibuserv/screenshots/12.png" width="49.5%">
 </a>
 
+### Translations
+
+[Localization files](https://www.transifex.com/tehnick/sibuserv-webui/) are managed using [Transifex](https://en.wikipedia.org/wiki/Transifex) web servise.
+
 ### Useful links
 
 * https://en.wikipedia.org/wiki/Comparison_of_continuous_integration_software
