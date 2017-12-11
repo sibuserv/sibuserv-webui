@@ -24,6 +24,7 @@
  *****************************************************************************/
 
 #include <random>
+#include <chrono>
 #include <QMessageAuthenticationCode>
 #include <QJsonParseError>
 #include <QJsonDocument>
@@ -179,8 +180,15 @@ bool UserSettings::slowEquals(const QByteArray &a, const QByteArray &b)
 
 QByteArray UserSettings::randomSalt()
 {
+#if defined(Q_OS_LINUX)
     std::random_device seed;
     std::mt19937 generator(seed());
+#else // MS Windows, Android, macOS, *BSD, etc.
+    // https://stackoverflow.com/questions/18880654/why-do-i-get-the-same-sequence-for-every-run-with-stdrandom-device-with-mingw
+    // For non-Linux systems this seed is used just in case.
+    const auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 generator(seed);
+#endif
     std::uniform_int_distribution<int> distribution(0, 255);
 
     QByteArray out(32, '?');
