@@ -75,7 +75,7 @@ function show_more_projects() {
 }
 
 function load_projects_table() {
-    localStorage.projects_per_page = 10;
+    localStorage.projects_per_page = 20;
     localStorage.projects_number = 0;
     show_more_projects();
 }
