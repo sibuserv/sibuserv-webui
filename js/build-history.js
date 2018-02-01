@@ -70,7 +70,7 @@ function show_more_builds() {
 }
 
 function load_builds_table() {
-    localStorage.builds_per_page = 20;
+    localStorage.builds_per_page = 10;
     localStorage.builds_number = 0;
     show_more_builds();
 }
