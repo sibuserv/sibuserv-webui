@@ -2,7 +2,7 @@
 
 ### Copyright
 
-2016-2017 Boris Pek \<tehnick-8@yandex.ru\>
+2016-2018 Boris Pek \<tehnick-8@yandex.ru\>
 
 ### License
 
