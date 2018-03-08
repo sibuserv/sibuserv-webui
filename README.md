@@ -1,8 +1,8 @@
-## Sibuserv Web UI – Simple Build Server Web User Interface
+## Sibuserv Web UI &ndash; Simple Build Server Web User Interface
 
 ### Copyright
 
-2016-2018 Boris Pek \<tehnick-8@yandex.ru\>
+2016-2018 Boris Pek <<tehnick-8@yandex.ru>>
 
 ### License
 
@@ -39,7 +39,7 @@ Test        | ✘      | low      | In far plans.
 Archive     | ✔      | hight    | User may download built binaries or *.zip archives (if project installs a number of files) by one mouse click at page with results of build.
 Report      | ✘      | medium   | In plans.
 
-For information how to install and how to use Sibuserv Web UI see files [INSTALL](./INSTALL) and [HOWTO](./HOWTO).
+For information how to install and how to use Sibuserv Web UI see files [INSTALL](https://github.com/sibuserv/sibuserv-webui/blob/master/INSTALL) and [HOWTO](https://github.com/sibuserv/sibuserv-webui/blob/master/HOWTO).
 
 ### Screenshots
 
