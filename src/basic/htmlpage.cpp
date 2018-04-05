@@ -188,9 +188,9 @@ void HtmlPage::checkAutorization(const Request &request)
         sm.setFileName(d->userSettings.get("user_id") + ".json");
         if (sm.beginNewSession(d->userSettings.get("user_name"))) {
             const bool httpsOnly = d->commonSettings.getBool("https_only");
-            setCookie("user_id", d->userSettings.get("user_id"),
+            setCookie("sibuserv_user_id", d->userSettings.get("user_id"),
                       "", "/", "", httpsOnly, true);
-            setCookie("session_id", sm.get("session_id"),
+            setCookie("sibuserv_session_id", sm.get("session_id"),
                       "", "/", "", httpsOnly, true);
         }
     }
@@ -198,16 +198,16 @@ void HtmlPage::checkAutorization(const Request &request)
         if (request.isPost()) {
             if (!request.post().isEmpty()) {
                 if (!request.post("user_name").isEmpty() &&
-                        !request.post("password").isEmpty()) {
+                    !request.post("password").isEmpty()) {
                     out += "            show_auth_error();\n";
                     out += "            begin_authorization();\n";
                 }
             }
         }
-        else if (!request.cookie("user_id").isEmpty() &&
-                 !request.cookie("session_id").isEmpty()) {
-            setCookie("user_id", "", "Thu, 01 Jan 1970 00:00:00 UTC", "/");
-            setCookie("session_id", "", "Thu, 01 Jan 1970 00:00:00 UTC", "/");
+        else if (!request.cookie("sibuserv_user_id").isEmpty() &&
+                 !request.cookie("sibuserv_session_id").isEmpty()) {
+            setCookie("sibuserv_user_id", "", "Thu, 01 Jan 1970 00:00:00 UTC", "/");
+            setCookie("sibuserv_session_id", "", "Thu, 01 Jan 1970 00:00:00 UTC", "/");
         }
     }
     if (d->autorized) {

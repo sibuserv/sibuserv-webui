@@ -42,11 +42,11 @@ struct SessionsManager::SessionsManagerPrivate
 
 SessionsManager::SessionsManager(const Request &request) :
     AbstractSettings(APP_S().sessionsDirectory(),
-                     request.cookie("user_id") + ".json"),
+                     request.cookie("sibuserv_user_id") + ".json"),
     d(new SessionsManagerPrivate)
 {
-    d->user_id = request.cookie("user_id");
-    d->session_id = request.cookie("session_id");
+    d->user_id = request.cookie("sibuserv_user_id");
+    d->session_id = request.cookie("sibuserv_session_id");
 }
 
 SessionsManager::~SessionsManager()
