@@ -43,7 +43,7 @@ BuildResultsPage::BuildResultsPage(const Request &request,
     HtmlPage(request)
 {
     if (request.get("ajax").isEmpty()) {
-        addToTitle(" - %projects% - %current_project_name% - %current_build%");
+        addToTitle(" - %current_project_name% - %current_build%");
         generateHtmlTemplate(projectName, version);
         addExtraReplacements("current_project_name", projectName.toUtf8());
         addExtraReplacements("current_build", version.toUtf8());
