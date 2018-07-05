@@ -41,7 +41,7 @@ BuildHistoryPage::BuildHistoryPage(const Request &request, const QString &projec
     HtmlPage(request)
 {
     if (request.get("ajax").isEmpty()) {
-        addToTitle(" - %projects% - %current_project_name%");
+        addToTitle(" - %current_project_name%");
         generateHtmlTemplate(projectName);
         addExtraReplacements("current_project_name", projectName.toUtf8());
         update();
