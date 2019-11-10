@@ -29,6 +29,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QCollator>
+#include <QLocale>
 
 #include "logmanager.h"
 #include "resourcemanager.h"
@@ -145,6 +146,7 @@ QStringList BuildHistoryPage::allBuilds(const QString &projectName) const
 void BuildHistoryPage::sortBuilds(QStringList &builds) const
 {
     QCollator coll;
+    coll.setLocale(QLocale::English);
     coll.setNumericMode(true);
     const auto comp = [&coll](const QString &s1, const QString &s2) -> bool {
         return coll.compare(s2, s1) < 0;

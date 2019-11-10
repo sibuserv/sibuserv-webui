@@ -27,6 +27,7 @@
 #include <QFile>
 #include <QDateTime>
 #include <QCollator>
+#include <QLocale>
 
 #include "applicationsettings.h"
 #include "buildhistoryitem.h"
@@ -92,6 +93,7 @@ QString ProjectsTableItem::getLastVersion(const QString &projectName) const
     auto builds = projectBinDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
     if (!builds.isEmpty()) {
         QCollator coll;
+        coll.setLocale(QLocale::English);
         coll.setNumericMode(true);
         const auto comp = [&coll](const QString &s1, const QString &s2) -> bool {
             return coll.compare(s1, s2) < 0;
